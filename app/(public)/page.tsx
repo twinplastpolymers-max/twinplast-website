@@ -9,9 +9,11 @@ import {
   CheckCircle,
   Truck
 } from 'lucide-react';
+import Image from 'next/image';
 import { createClient } from '@/lib/supabase/server';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Product, HomepageMedia } from '@/types';
+import { getOptimizedImageUrl } from '@/lib/cloudinary';
 
 export const metadata: Metadata = {
   title: 'Twinplast Polymers | Industrial PP Sheets Manufacturer | Thoothukudi',
@@ -105,7 +107,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
             {/* Left Content */}
-            <div className="lg:col-span-6 flex flex-col justify-center text-center lg:text-left space-y-6">
+            <div className="lg:col-span-5 flex flex-col justify-center text-center lg:text-left space-y-6">
               <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 block">
                 PREMIUM QUALITY
               </span>
@@ -148,15 +150,23 @@ export default async function HomePage() {
             </div>
             
             {/* Right Media Frame */}
-            <div className="lg:col-span-6 w-full max-w-xl mx-auto lg:max-w-none">
-              <div className="p-2 border border-slate-200/50 bg-white dark:bg-slate-950 rounded-2xl shadow-sm">
-                <ImageContainer
-                  src={heroImage}
+            <div className="lg:col-span-7 relative w-full h-[280px] sm:h-[400px] lg:h-[500px] flex justify-end">
+              {heroImage ? (
+                <Image
+                  src={getOptimizedImageUrl(heroImage, { width: 1000, quality: 'auto' })}
                   alt="Twinplast Polymers fluted sheet stacked together"
-                  aspectRatio="video"
+                  fill
                   priority
+                  sizes="(max-width: 1024px) 100vw, 58vw"
+                  className="object-contain object-right pointer-events-none"
                 />
-              </div>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
+                  <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+                    Select Hero Image in CMS
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>

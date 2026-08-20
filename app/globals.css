@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
+  color-scheme: light;
+  
   /* Premium Bright & Clean Industrial Palette */
   --background: #ffffff; /* Crisp white background */
   --foreground: #0f172a; /* Deep slate-900 text */
@@ -29,27 +33,6 @@
   /* Accessibility focus outline */
   --focus-ring: 2px solid var(--accent);
   --focus-offset: 2px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f172a; /* Slate 900 */
-    --foreground: #f8fafc;
-    
-    --primary: #f8fafc;
-    --primary-foreground: #0f172a;
-    
-    --secondary: #1e293b; /* Slate 800 */
-    --secondary-foreground: #f8fafc;
-    
-    --accent: #3b82f6;
-    --accent-foreground: #ffffff;
-    
-    --surface: #0f172a;
-    --surface-border: #1e293b;
-    
-    --muted: #94a3b8;
-  }
 }
 
 @theme {

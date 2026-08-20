@@ -7,6 +7,7 @@ interface ImageContainerProps {
   aspectRatio?: 'video' | 'square' | 'wide' | 'tall' | 'portrait';
   className?: string;
   priority?: boolean;
+  unstyled?: boolean;
 }
 
 export function ImageContainer({
@@ -15,6 +16,7 @@ export function ImageContainer({
   aspectRatio = 'video',
   className = '',
   priority = false,
+  unstyled = false,
 }: ImageContainerProps) {
   // Map aspect ratio to Tailwind classes
   const aspectClasses = {
@@ -35,17 +37,23 @@ export function ImageContainer({
     quality: 'auto',
   }) : null;
 
+  const containerClasses = unstyled
+    ? `relative w-full overflow-hidden ${selectedAspect} ${className}`
+    : `relative w-full overflow-hidden rounded-xl border border-surface-border bg-slate-50 dark:bg-slate-900/20 transition-all duration-300 ${selectedAspect} ${className}`;
+
+  const imageClasses = unstyled
+    ? "object-contain transition-transform duration-500 hover:scale-102"
+    : "object-cover transition-transform duration-500 hover:scale-102";
+
   return (
-    <div
-      className={`relative w-full overflow-hidden rounded-xl border border-surface-border bg-slate-50 dark:bg-slate-900/20 transition-all duration-300 ${selectedAspect} ${className}`}
-    >
+    <div className={containerClasses}>
       {resolvedUrl ? (
         <Image
           src={resolvedUrl}
           alt={alt}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-500 hover:scale-102"
+          className={imageClasses}
           priority={priority}
         />
       ) : (
