@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { generateSignature } from '@/lib/cloudinary';
+import { generateSignature } from '@/lib/cloudinary/server';
 
 export async function POST(request: Request) {
   try {
