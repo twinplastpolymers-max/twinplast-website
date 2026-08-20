@@ -140,7 +140,15 @@ create index idx_company_settings_key on public.company_settings(key);
 create policy "Public can read company settings"
     on public.company_settings
     for select
-    using (true); -- Publicly readable for contact/SEO info
+    using (key in (
+        'company_name',
+        'public_phone',
+        'public_email',
+        'public_address',
+        'website_metadata',
+        'social_links',
+        'business_info'
+    ));
 
 create policy "Admins can manage company settings"
     on public.company_settings

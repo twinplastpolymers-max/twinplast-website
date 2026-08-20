@@ -110,10 +110,12 @@ erDiagram
 3. **`enquiries`**: B2B customer submissions. Index-optimized on `(status, created_at desc)`.
 4. **`company_settings`**: Flexible settings dictionary storing key-value pairs (JSONB) for site headers/footers, contact info, strengths, and social links.
 
-### Seeding Strategies
-- **Database is Single Source of Truth**: The public website consumes data exclusively from Supabase; no secondary local hardcoded product catalog fallbacks are maintained.
-- **Null Media Seeds**: Initial catalogue database seeds do not contain mock Cloudinary asset IDs or fake image paths. The seeded `image_cloudinary_public_id` and `image_url` fields are initially set to `NULL` and will be populated only when real images are uploaded via the CMS.
-- **Preservation of CMS Records**: Database seed scripts utilize `ON CONFLICT (slug) DO NOTHING`. This ensures that subsequent updates or runs do not overwrite existing, administrator-customized product details or Cloudinary links.
+### Seeding Strategies & Database Setup
+- **Fresh Database Setup**: Brand-new deployments should run [schema.sql](file:///C:/Users/USER/OneDrive/Desktop/Twin%20plast/supabase/schema.sql) directly to establish the complete database layout, RLS parameters, triggers, functions, and initial seed data.
+- **Existing Database Migrations**: Existing databases should run the safe migration script [001_pre_phase3_security.sql](file:///C:/Users/USER/OneDrive/Desktop/Twin%20plast/supabase/migrations/001_pre_phase3_security.sql). This migration drops the role column defaults, restricts public settings access, and inserts catalog seeds without dropping active tables.
+- **Null Media Seeds**: Initial catalog seeds insert verified product descriptions, slugs, categories, and display parameters, but default the `image_cloudinary_public_id` and `image_url` columns to `NULL`.
+- **Preservation of CMS Records**: Seed scripts utilize `ON CONFLICT (slug) DO NOTHING`. This ensures subsequent seed runs or database updates never overwrite customization edits or images added by admins.
+- **Public-Safe Settings Key Whitelist**: To prevent administrators from accidentally storing secret API tokens, operational codes, or keys in `company_settings` and leaking them to the public, the public SELECT RLS policy strictly restricts queries to an explicit whitelist of safe keys: `company_name`, `public_phone`, `public_email`, `public_address`, `website_metadata`, `social_links`, and `business_info`. Any other keys are invisible to anonymous requests.
 
 ### Secure Row Level Security (RLS) Rules
 We implement custom functions to enforce clean authorization:
