@@ -30,6 +30,33 @@ export interface Database {
         }
         Relationships: []
       }
+      homepage_media: {
+        Row: {
+          id: string
+          slot: string
+          image_cloudinary_public_id: string | null
+          image_url: string | null
+          alt_text: string | null
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slot: string
+          image_cloudinary_public_id?: string | null
+          image_url?: string | null
+          alt_text?: string | null
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slot?: string
+          image_cloudinary_public_id?: string | null
+          image_url?: string | null
+          alt_text?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       enquiries: {
         Row: {
           id: string

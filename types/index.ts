@@ -11,6 +11,7 @@ export type EnquiryInsert = Database['public']['Tables']['enquiries']['Insert'];
 export type EnquiryUpdate = Database['public']['Tables']['enquiries']['Update'];
 
 export type CompanySettings = Database['public']['Tables']['company_settings']['Row'];
+export type HomepageMedia = Database['public']['Tables']['homepage_media']['Row'];
 
 export type UserRole = Database['public']['Tables']['user_roles']['Row'];
 export type RoleType = Database['public']['Enums']['user_role'];

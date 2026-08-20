@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { LayoutDashboard, ShoppingBag, Mail, Settings, ExternalLink } from 'lucide-react';
+import { LayoutDashboard, Home, ShoppingBag, Mail, Settings, ExternalLink } from 'lucide-react';
 import { SignOutButton } from '@/components/admin/SignOutButton';
 
 export default function AdminLayout({
@@ -9,6 +9,7 @@ export default function AdminLayout({
 }) {
   const sidebarLinks = [
     { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+    { label: 'Homepage', href: '/admin/homepage', icon: Home },
     { label: 'Products', href: '/admin/products', icon: ShoppingBag },
     { label: 'Enquiries', href: '/admin/enquiries', icon: Mail },
     { label: 'Settings', href: '/admin/settings', icon: Settings },

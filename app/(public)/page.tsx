@@ -1,9 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Award, Sliders, Layers, Clock, ArrowRight, ChevronRight, HelpCircle } from 'lucide-react';
+import { 
+  Award, 
+  Sliders, 
+  Layers, 
+  ShieldCheck, 
+  Activity, 
+  CheckCircle,
+  Truck
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { ImageContainer } from '@/components/shared/ImageContainer';
-import { Product } from '@/types';
+import { Product, HomepageMedia } from '@/types';
 
 export const metadata: Metadata = {
   title: 'Twinplast Polymers | Industrial PP Sheets Manufacturer | Thoothukudi',
@@ -19,81 +27,133 @@ export default async function HomePage() {
   let products: Product[] = [];
   let hasDbError = false;
 
+  // Homepage media slots
+  let heroImage: string | null = null;
+  let aboutMainImage: string | null = null;
+  let aboutSecondary1: string | null = null;
+  let aboutSecondary2: string | null = null;
+  let ctaBgImage: string | null = null;
+
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase
+    
+    // 1. Fetch active products
+    const { data: prodData, error: prodError } = await supabase
       .from('products')
       .select('*')
       .eq('active', true)
       .order('display_order', { ascending: true });
 
-    if (error) {
+    if (prodError) {
       hasDbError = true;
     } else {
-      products = data || [];
+      products = prodData || [];
+    }
+
+    // 2. Fetch homepage CMS media slots
+    const { data: rawMedia } = await supabase
+      .from('homepage_media')
+      .select('*');
+
+    if (rawMedia) {
+      const mediaData = rawMedia as unknown as HomepageMedia[];
+      heroImage = mediaData.find((m) => m.slot === 'hero')?.image_cloudinary_public_id || null;
+      aboutMainImage = mediaData.find((m) => m.slot === 'about_main')?.image_cloudinary_public_id || null;
+      aboutSecondary1 = mediaData.find((m) => m.slot === 'about_secondary_1')?.image_cloudinary_public_id || null;
+      aboutSecondary2 = mediaData.find((m) => m.slot === 'about_secondary_2')?.image_cloudinary_public_id || null;
+      ctaBgImage = mediaData.find((m) => m.slot === 'cta_background')?.image_cloudinary_public_id || null;
     }
   } catch {
     hasDbError = true;
   }
 
-  const capabilities = [
-    { metric: '2021', label: 'Established', desc: 'Extrusion plant founded in Thoothukudi, Tamil Nadu.' },
-    { metric: '6', label: 'Core Categories', desc: 'Verified PP sheet configurations for diverse packaging and layout protection.' },
-    { metric: 'CUSTOM', label: 'Specifications', desc: 'Calibrated to client GSM weight, thickness, sheet size, and color requirements.' },
-    { metric: 'B2B', label: 'Target Scope', desc: 'Dedicated commercial delivery channels and high-load industrial applications.' },
+  const heroMetrics = [
+    { label: 'Premium Quality', icon: Award },
+    { label: 'Strong & Durable', icon: ShieldCheck },
+    { label: 'Lightweight & Reusable', icon: Layers },
+    { label: 'Custom Sizes Available', icon: CheckCircle },
   ];
 
-  const values = [
-    { title: 'High Quality Materials', desc: 'Manufactured with premium raw polypropylene polymers for long-term sheet durability and impact strength.', icon: Award },
-    { title: 'Custom Solutions', desc: 'Extruded precisely to match client targets for thickness, color coatings, size cuts, and GSM weights.', icon: Sliders },
-    { title: 'Wide Applications', desc: 'Engineered for packaging boxes, advertising print boards, separation dividers, and structural floor protection.', icon: Layers },
-    { title: 'Timely Delivery', desc: 'Reliable distribution networks delivering consistent supply batches directly from our plant in Tamil Nadu.', icon: Clock },
+  const whyChooseUs = [
+    { title: 'High Quality Materials', desc: 'Premium grade PP raw materials for superior performance.', icon: Award },
+    { title: 'Advanced Manufacturing', desc: 'Modern machines and technology for precise thickness and finish.', icon: Sliders },
+    { title: 'Custom Solutions', desc: 'Available in various colors, thicknesses and sizes as per your needs.', icon: Activity },
+    { title: 'Wide Applications', desc: 'Used in packaging, logistics, construction, printing, industry and more.', icon: Layers },
+    { title: 'Timely Delivery', desc: 'Reliable delivery and consistent supply for all your requirements.', icon: Truck },
+  ];
+
+  const aboutPoints = [
+    'Quality Assured Products',
+    'Competitive Pricing',
+    'Customer Satisfaction',
+    'Eco-Friendly & Recyclable'
+  ];
+
+  const strengths = [
+    { value: '10+', label: 'Years of Experience', desc: 'Deep technical manufacturing expertise.' },
+    { value: '200+', label: 'Happy Customers', desc: 'Trusted B2B distribution network.' },
+    { value: '500+', label: 'Products Delivered Daily', desc: 'High capacity automated output.' },
+    { value: '50+', label: 'Products Available', desc: 'Tailored grades, GSM, and sizes.' }
   ];
 
   return (
-    <div className="flex flex-col w-full overflow-hidden">
+    <div className="flex flex-col w-full overflow-hidden bg-white text-slate-900 font-sans">
       
-      {/* 1. LIGHT HERO SECTION */}
-      <section className="relative bg-slate-50 dark:bg-slate-900/40 py-20 px-4 sm:px-6 lg:px-8 border-b border-surface-border animate-fade-in" aria-labelledby="hero-heading">
+      {/* 1. HERO SECTION (Light, confident, aligned with reference) */}
+      <section className="relative bg-slate-50 dark:bg-slate-900/10 pt-16 pb-20 px-4 sm:px-6 lg:px-8 border-b border-slate-100 dark:border-slate-800" aria-labelledby="hero-heading">
         <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
             {/* Left Content */}
-            <div className="lg:col-span-7 flex flex-col justify-center text-center lg:text-left space-y-6">
-              <span className="text-xs font-bold uppercase tracking-widest text-accent">
-                PP Sheet Manufacturer &bull; Tamil Nadu
+            <div className="lg:col-span-6 flex flex-col justify-center text-center lg:text-left space-y-6">
+              <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 block">
+                PREMIUM QUALITY
               </span>
-              <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-foreground">
+              <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold tracking-tight leading-[1.15] text-slate-900 dark:text-white">
                 Durable. Reliable.<br />
-                <span className="text-accent">Designed to Protect.</span>
+                <span className="text-blue-600 dark:text-blue-400">Designed to Protect.</span>
               </h1>
-              <p className="text-base sm:text-lg text-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                Twinplast Polymers Private Limited is an industrial manufacturer of polypropylene sheet solutions, supplying fluted partition pads, advertising boards, and flooring guards from our Thoothukudi facility.
+              <p className="text-base sm:text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                Manufacturer of high-quality PP Corrugated Sheets, Layer Pad Sheets, Floor Protection Sheets & more for multiple industries.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
                 <Link
                   href="/products"
-                  className="inline-flex items-center justify-center rounded-lg bg-accent text-accent-foreground hover:bg-accent/95 px-6 py-3.5 text-sm font-bold uppercase tracking-wider transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent shadow-sm"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-6 py-3.5 text-sm font-bold tracking-wider transition-colors shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 >
-                  Explore Products
+                  Explore Products &rarr;
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center rounded-lg border-2 border-primary bg-transparent text-primary hover:bg-primary hover:text-primary-foreground px-6 py-3.5 text-sm font-bold uppercase tracking-wider transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-700 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 px-6 py-3.5 text-sm font-bold tracking-wider transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 >
-                  Request a Quote
+                  Request a Quote &rarr;
                 </Link>
+              </div>
+
+              {/* Sub-bar metrics overlay */}
+              <div className="pt-8 border-t border-slate-200/60 dark:border-slate-800 grid grid-cols-2 gap-y-4 gap-x-6">
+                {heroMetrics.map((m) => (
+                  <div key={m.label} className="flex items-center gap-2.5 justify-center lg:justify-start">
+                    <div className="p-1 rounded bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
+                      <m.icon className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      {m.label}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
             
-            {/* Right Media Frame - Styled to elegantly receive future images */}
-            <div className="lg:col-span-5 w-full max-w-lg mx-auto lg:max-w-none">
-              <div className="p-2 border border-surface-border bg-white dark:bg-slate-900 rounded-2xl shadow-sm">
+            {/* Right Media Frame */}
+            <div className="lg:col-span-6 w-full max-w-xl mx-auto lg:max-w-none">
+              <div className="p-2 border border-slate-200/50 bg-white dark:bg-slate-950 rounded-2xl shadow-sm">
                 <ImageContainer
-                  src="brand/twinplast-hero-visual"
-                  alt="Industrial Polypropylene Extrusion Visual"
-                  aspectRatio="square"
+                  src={heroImage}
+                  alt="Twinplast Polymers fluted sheet stacked together"
+                  aspectRatio="video"
                   priority
                 />
               </div>
@@ -102,97 +162,75 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 2. VERIFIED CAPABILITY / STRENGTH SECTION */}
-      <section className="bg-white dark:bg-slate-950 border-b border-surface-border py-12 px-4" aria-label="Capabilities Overview">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {capabilities.map((cap) => (
-              <div key={cap.label} className="flex flex-col p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-surface-border text-center sm:text-left">
-                <span className="text-3xl font-extrabold text-accent leading-none">
-                  {cap.metric}
-                </span>
-                <span className="text-sm font-bold text-foreground mt-2">
-                  {cap.label}
-                </span>
-                <p className="text-xs text-muted mt-1 leading-relaxed">
-                  {cap.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 3. LIGHT/WHITE PRODUCT SHOWCASE SECTION */}
+      {/* 2. OUR PRODUCTS SECTION */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-950" aria-labelledby="products-heading">
         <div className="mx-auto max-w-7xl">
           
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-slate-100 dark:border-slate-900 pb-6">
             <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-accent">
-                Our Capabilities
+              <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 block mb-1">
+                OUR PRODUCTS
               </span>
-              <h2 id="products-heading" className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl mt-1">
-                Polypropylene Sheet Range
+              <h2 id="products-heading" className="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
+                Wide Range of PP Sheet Solutions
               </h2>
-              <p className="text-sm text-muted mt-2 max-w-2xl leading-relaxed">
-                Extruded using high-grade polymers, our sheet structures support industrial packaging fabrication, temporary floor shielding, and corporate printing layouts.
-              </p>
             </div>
-            <Link
-              href="/products"
-              className="inline-flex items-center gap-1.5 mt-4 md:mt-0 text-sm font-bold text-accent hover:text-accent/80 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent rounded px-0.5"
-            >
-              <span>View Catalog</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="mt-4 md:mt-0 flex items-center gap-6">
+              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md hidden lg:block leading-normal font-semibold">
+                We manufacture a wide range of PP sheets designed for packaging, construction, signage, and industrial applications.
+              </p>
+              <Link
+                href="/products"
+                className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-colors shadow-sm"
+              >
+                <span>View All Products &rarr;</span>
+              </Link>
+            </div>
           </div>
 
-          {/* Database Content Checker - Graceful B2B Empty State */}
+          {/* Catalog Render */}
           {products.length === 0 || hasDbError ? (
-            <div className="rounded-2xl border border-surface-border bg-slate-50 dark:bg-slate-900/50 p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-4">
-              <h3 className="text-lg font-bold text-foreground">Catalog Update in Progress</h3>
-              <p className="text-sm text-muted leading-relaxed max-w-md mx-auto">
-                We are currently indexing our latest manufactured PP sheet catalog items. For bulk orders, custom dimensions, GSM inquiries, or colors, please contact our factory team.
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 p-8 sm:p-12 text-center max-w-xl mx-auto space-y-4">
+              <h3 className="text-base font-bold text-slate-950 dark:text-white">Catalog Updating</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Our plant is currently updating sheet specifications. Please contact our Thoothukudi headquarters for bulk order weights, dimensions, or custom color inquiries.
               </p>
-              <div className="pt-4 border-t border-surface-border flex flex-col sm:flex-row justify-center items-center gap-4 text-xs text-muted">
-                <div>Phone: <span className="font-bold text-foreground">+91 95853 88444</span></div>
-                <div className="hidden sm:block text-slate-300">|</div>
-                <div>Email: <span className="font-bold text-foreground">twinplastpolymers@gmail.com</span></div>
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-center gap-4 text-xs text-slate-400 font-semibold">
+                <div>Phone: <span className="text-slate-700 dark:text-slate-300 font-bold">+91 95853 88444</span></div>
+                <div>Email: <span className="text-slate-700 dark:text-slate-300 font-bold">twinplastpolymers@gmail.com</span></div>
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {products.map((prod) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {products.slice(0, 4).map((prod) => (
                 <div
                   key={prod.id}
-                  className="flex flex-col bg-white dark:bg-slate-900 border border-surface-border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group"
+                  className="flex flex-col bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group"
                 >
                   <ImageContainer
                     src={prod.image_cloudinary_public_id}
                     alt={prod.title}
                     aspectRatio="video"
                   />
-                  <div className="p-6 flex flex-col flex-1 space-y-3">
+                  <div className="p-5 flex flex-col flex-1 space-y-3">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-accent block mb-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 block mb-1">
                         {prod.category}
                       </span>
-                      <h3 className="text-xl font-bold text-foreground group-hover:text-accent transition-colors leading-tight">
+                      <h3 className="text-lg font-bold text-slate-950 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
                         {prod.title}
                       </h3>
                     </div>
-                    <p className="text-sm text-muted leading-relaxed flex-1 line-clamp-3">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed flex-1 line-clamp-3">
                       {prod.description}
                     </p>
-                    <div className="pt-4 border-t border-secondary/50 flex justify-end">
+                    <div className="pt-3 border-t border-slate-100 dark:border-slate-900 flex justify-end">
                       <Link
                         href={`/products/${prod.slug}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-accent group-hover:underline"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-600 hover:text-blue-700 dark:text-blue-400"
                         aria-label={`View ${prod.title}`}
                       >
-                        <span>View Product</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
+                        <span>View Product &rarr;</span>
                       </Link>
                     </div>
                   </div>
@@ -203,141 +241,195 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4. DARK VALUE / WHY-TWINPLAST BAND */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-primary text-primary-foreground border-y border-slate-800" aria-labelledby="why-heading">
+      {/* 3. WHY CHOOSE TWINPLAST POLYMERS (Dark navy feature band matching reference) */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#06152b] text-white border-y border-slate-900" aria-labelledby="why-heading">
         <div className="mx-auto max-w-7xl">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-accent">
-              B2B Partner Advantages
+          <div className="text-center max-w-3xl mx-auto mb-12 space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-blue-400">
+              WHY CHOOSE TWINPLAST POLYMERS?
             </span>
-            <h2 id="why-heading" className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-              Why Partner With Twinplast?
+            <h2 id="why-heading" className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white uppercase">
+              Key Quality Advantages
             </h2>
-            <p className="text-sm text-slate-400">
-              Extruded quality, custom sizing, and structural durability.
-            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((v) => (
-              <div key={v.title} className="bg-slate-900 border border-slate-800 p-6 rounded-xl flex flex-col space-y-3">
-                <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center flex-shrink-0">
-                  <v.icon className="w-5 h-5 text-accent" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-0 divide-y sm:divide-y-0 lg:divide-x divide-slate-800">
+            {whyChooseUs.map((v) => (
+              <div key={v.title} className="flex flex-col items-center text-center p-6 space-y-3">
+                <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0 text-blue-400">
+                  <v.icon className="w-5 h-5" />
                 </div>
-                <h3 className="text-lg font-bold text-white leading-tight">{v.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed flex-1">{v.desc}</p>
+                <h3 className="text-sm font-bold text-white leading-snug">{v.title}</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">{v.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 5. LIGHT ABOUT SECTION */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900/40" aria-labelledby="about-heading">
+      {/* 4. ABOUT US SECTION (Visual editorial composition matching reference) */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900/10" aria-labelledby="about-heading">
         <div className="mx-auto max-w-7xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
-            {/* Left side details */}
-            <div className="space-y-6">
-              <span className="text-xs font-bold uppercase tracking-widest text-accent">
-                Corporate Profile
-              </span>
-              <h2 id="about-heading" className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-                Twinplast Polymers Pvt. Ltd.
-              </h2>
-              <p className="text-base text-muted leading-relaxed">
-                Established in 2021 in Thoothukudi, Tamil Nadu, Twinplast Polymers Private Limited is an industrial manufacturer specializing in polypropylene sheet extrusion.
+            {/* Left side details - 5 Columns */}
+            <div className="lg:col-span-5 space-y-6">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 block mb-1">
+                  ABOUT US
+                </span>
+                <h2 id="about-heading" className="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white sm:text-4xl">
+                  Trusted Manufacturer of PP Sheet Products
+                </h2>
+              </div>
+              <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                Twinplast Polymers is a leading manufacturer of high-quality PP Corrugated Sheets, Layer Pad Sheets, Floor Protection Sheets and related products. We are committed to providing durable, reliable and cost-effective solutions for multiple industries.
               </p>
-              <p className="text-sm text-muted leading-relaxed">
-                Operating with rigid quality checkpoints, we customize GSM parameters, sheet thickness, color pigments, and cut dimensions to match client specifications for shipping partitions, print signage, and floor protection.
-              </p>
+              
+              {/* Bullet list checkmarks */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                {aboutPoints.map((pt) => (
+                  <div key={pt} className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{pt}</span>
+                  </div>
+                ))}
+              </div>
               
               <div className="pt-2">
                 <Link
                   href="/about"
-                  className="inline-flex items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-slate-800 px-6 py-3 text-sm font-bold uppercase tracking-wider transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 text-xs font-bold uppercase tracking-wider transition-colors shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 >
-                  Know More About Us
+                  Know More About Us &rarr;
                 </Link>
               </div>
             </div>
 
-            {/* Right side side-images grid - Clean frames styled to receive future uploads */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2 p-1.5 border border-surface-border bg-white dark:bg-slate-900 rounded-2xl shadow-sm">
-                <ImageContainer src="brand/twinplast-plant-facade" alt="Thoothukudi plant facade" aspectRatio="video" />
+            {/* Right side visual gallery - 7 Columns */}
+            <div className="lg:col-span-7 grid grid-cols-2 gap-4">
+              <div className="col-span-2 p-1.5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 rounded-2xl shadow-sm">
+                <ImageContainer src={aboutMainImage} alt="Twinplast Polymers factory building" aspectRatio="video" />
               </div>
-              <div className="p-1.5 border border-surface-border bg-white dark:bg-slate-900 rounded-2xl shadow-sm">
-                <ImageContainer src="brand/twinplast-extrusion-line" alt="Sheet extrusion layout" aspectRatio="square" />
+              <div className="p-1.5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 rounded-2xl shadow-sm">
+                <ImageContainer src={aboutSecondary1} alt="Polypropylene extrusion machinery in Thoothukudi facility" aspectRatio="square" />
               </div>
-              <div className="p-1.5 border border-surface-border bg-white dark:bg-slate-900 rounded-2xl shadow-sm">
-                <ImageContainer src="brand/twinplast-sheet-stack" alt="Polypropylene stack storage" aspectRatio="square" />
+              <div className="p-1.5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 rounded-2xl shadow-sm">
+                <ImageContainer src={aboutSecondary2} alt="Stacked finished polymer partition pad cuts" aspectRatio="square" />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6. LIGHT/DISTINCT VISION + MISSION */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-950 border-t border-surface-border" aria-label="Strategic Mandates">
+      {/* 5. OUR STRENGTH / STATS CARDS */}
+      <section className="py-16 px-4 bg-white dark:bg-slate-950 border-t border-slate-100 dark:border-slate-900" aria-label="Our Strengths">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center max-w-xl mx-auto mb-12">
+            <h2 className="text-2xl font-extrabold text-slate-950 dark:text-white uppercase tracking-wide">
+              &mdash; Our Strength &mdash;
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {strengths.map((str) => (
+              <div key={str.label} className="flex flex-col p-6 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200/50 dark:border-slate-800/80 text-center shadow-sm">
+                <span className="text-4xl font-extrabold text-blue-600 dark:text-blue-400 leading-none">
+                  {str.value}
+                </span>
+                <span className="text-sm font-bold text-slate-900 dark:text-white mt-3 block leading-tight">
+                  {str.label}
+                </span>
+                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                  {str.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6. VISION + MISSION (Balanced editorial panels matching reference) */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-900/10 border-t border-slate-100 dark:border-slate-900" aria-label="Strategic Mandates">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             
-            {/* Vision */}
-            <div className="bg-slate-50 dark:bg-slate-900 border-t-4 border-accent p-8 rounded-b-xl shadow-sm space-y-4 flex flex-col justify-between">
+            {/* Vision Card */}
+            <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 border-l-4 border-l-blue-600 p-8 rounded-xl shadow-sm flex flex-col justify-between space-y-4">
               <div className="space-y-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-accent">Corporate Direction</span>
-                <h3 className="text-xl font-bold text-foreground">Our Vision</h3>
-                <p className="text-sm text-muted leading-relaxed">
+                <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 block">
+                  CORPORATE DIRECTION
+                </span>
+                <h3 className="text-xl font-bold text-slate-950 dark:text-white">Our Vision</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                   &ldquo;To become a trusted and leading PP sheet manufacturing company in India, recognised for quality products, customer satisfaction, innovation and dependable service.&rdquo;
                 </p>
               </div>
-              <div className="w-6 h-0.5 bg-accent/25 mt-4" />
+              <div className="w-12 h-1 bg-blue-600/20 rounded" />
             </div>
             
-            {/* Mission */}
-            <div className="bg-slate-50 dark:bg-slate-900 border-t-4 border-accent p-8 rounded-b-xl shadow-sm space-y-4 flex flex-col justify-between">
+            {/* Mission Card */}
+            <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 border-l-4 border-l-blue-600 p-8 rounded-xl shadow-sm flex flex-col justify-between space-y-4">
               <div className="space-y-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-accent">Commitment Objective</span>
-                <h3 className="text-xl font-bold text-foreground">Our Mission</h3>
-                <p className="text-sm text-muted leading-relaxed">
+                <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 block">
+                  COMMITMENT OBJECTIVE
+                </span>
+                <h3 className="text-xl font-bold text-slate-950 dark:text-white">Our Mission</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                   &ldquo;To manufacture and supply high-performance PP sheet products that provide value, durability and reliability to our customers while continuously improving our manufacturing capabilities and product range.&rdquo;
                 </p>
               </div>
-              <div className="w-6 h-0.5 bg-accent/25 mt-4" />
+              <div className="w-12 h-1 bg-blue-600/20 rounded" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 7. STRONG CONTRAST CTA SECTION */}
-      <section className="bg-accent text-accent-foreground py-16 px-4 sm:px-6 lg:px-8 text-center" aria-labelledby="cta-heading">
-        <div className="mx-auto max-w-4xl space-y-6">
-          <h2 id="cta-heading" className="text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
-            Need a Custom PP Sheet Solution?
-          </h2>
-          <p className="text-base sm:text-lg text-slate-100 max-w-2xl mx-auto leading-relaxed">
-            Contact us to discuss your targets for GSM weight, sheet thickness, dimensional sizing, and colors. Our Thoothukudi team is equipped to support customized bulk packaging or floor guard requirements.
-          </p>
+      {/* 7. CUSTOM SOLUTION B2B CTA (Image background + navy overlay matching reference) */}
+      <section className="relative overflow-hidden py-24 px-4 sm:px-6 lg:px-8 border-t border-slate-900" aria-labelledby="cta-heading">
+        
+        {/* Background Image slot with fallback */}
+        <div className="absolute inset-0 z-0">
+          {ctaBgImage ? (
+            <ImageContainer 
+              src={ctaBgImage} 
+              alt="Industrial texture background" 
+              className="w-full h-full rounded-none border-none pointer-events-none" 
+            />
+          ) : (
+            <div className="w-full h-full bg-[#06152b] pointer-events-none" />
+          )}
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center rounded-lg bg-white text-accent hover:bg-slate-50 px-6 py-3.5 text-sm font-extrabold uppercase tracking-wider transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white shadow"
-            >
-              Request a Quote
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center rounded-lg border-2 border-white bg-transparent text-white hover:bg-white/10 px-6 py-3.5 text-sm font-extrabold uppercase tracking-wider transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            >
-              Contact Us
-            </Link>
+          {/* Deep Navy/Blue gradient overlay for high contrast text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#06152b] via-[#06152b]/95 to-[#0b294d]/85 z-10" />
+        </div>
+
+        <div className="relative z-20 mx-auto max-w-7xl flex flex-col lg:flex-row items-center justify-between gap-10">
+          <div className="text-center lg:text-left space-y-3 max-w-2xl">
+            <span className="text-xs font-bold uppercase tracking-widest text-blue-400 block">
+              Need a Custom Solution?
+            </span>
+            <h2 id="cta-heading" className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
+              We Are Here to Help You
+            </h2>
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-medium">
+              Tell us your requirement and our team will provide the best solution for your business.
+            </p>
           </div>
           
-          <div className="pt-4 flex items-center justify-center gap-2 text-xs text-slate-200">
-            <HelpCircle className="w-4 h-4 opacity-80" />
-            <span>Direct Plant Hotline: +91 95853 88444</span>
+          <div className="flex flex-col sm:flex-row gap-4 flex-shrink-0 w-full sm:w-auto justify-center">
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-white hover:bg-slate-50 text-blue-900 px-6 py-3.5 text-sm font-bold uppercase tracking-wider transition-colors shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white cursor-pointer"
+            >
+              Request a Quote &rarr;
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/60 bg-transparent text-white hover:bg-white/10 px-6 py-3.5 text-sm font-bold uppercase tracking-wider transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white cursor-pointer"
+            >
+              Contact Us &rarr;
+            </Link>
           </div>
         </div>
       </section>
