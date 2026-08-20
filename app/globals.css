@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+:root {
+  /* Premium Bright & Clean Industrial Palette */
+  --background: #ffffff; /* Crisp white background */
+  --foreground: #0f172a; /* Deep slate-900 text */
+  
+  /* Brand Slate Primary (used for dark rhythm bands and footer) */
+  --primary: #0f172a; 
+  --primary-foreground: #f8fafc;
+  
+  --secondary: #f1f5f9; /* Warm slate-100 for secondary backgrounds */
+  --secondary-foreground: #0f172a;
+  
+  --accent: #2563eb; /* Active Brand Blue */
+  --accent-foreground: #ffffff;
+  
+  /* Brand Accent Highlights from Logo */
+  --accent-red: #dc2626;
+  --accent-yellow: #ca8a04;
+  --accent-green: #16a34a;
+  
+  --surface: #ffffff;
+  --surface-border: #e2e8f0; /* Slate-200 for clean subtle borders */
+  
+  --muted: #475569; /* Slate-600 for highly readable secondary copy */
+  --muted-foreground: #64748b; /* Slate-500 helper labels */
+  
+  /* Accessibility focus outline */
+  --focus-ring: 2px solid var(--accent);
+  --focus-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a; /* Slate 900 */
+    --foreground: #f8fafc;
+    
+    --primary: #f8fafc;
+    --primary-foreground: #0f172a;
+    
+    --secondary: #1e293b; /* Slate 800 */
+    --secondary-foreground: #f8fafc;
+    
+    --accent: #3b82f6;
+    --accent-foreground: #ffffff;
+    
+    --surface: #0f172a;
+    --surface-border: #1e293b;
+    
+    --muted: #94a3b8;
+  }
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  --color-accent-red: var(--accent-red);
+  --color-accent-yellow: var(--accent-yellow);
+  --color-accent-green: var(--accent-green);
+  
+  --color-surface: var(--surface);
+  --color-surface-border: var(--surface-border);
+  
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  
+  --animate-fade-in: fade-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+/* Accessibility focus styles */
+*:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
