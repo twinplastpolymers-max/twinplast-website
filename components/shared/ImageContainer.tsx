@@ -28,7 +28,7 @@ export function ImageContainer({
   const selectedAspect = aspectClasses[aspectRatio];
 
   // Resolve Cloudinary optimised delivery URL
-  const isPlaceholder = !src || src.startsWith('products/') || src.startsWith('brand/');
+  const isPlaceholder = !src;
   const resolvedUrl = (!isPlaceholder && src) ? getOptimizedImageUrl(src, {
     width: aspectRatio === 'square' ? 600 : 800,
     crop: 'fill',
