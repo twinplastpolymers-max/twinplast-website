@@ -13,11 +13,12 @@ export function Footer() {
           <div className="md:col-span-5 flex flex-col gap-5">
             <Link href="/" className="relative h-16 w-60 block focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded">
               <Image
-                src="/logo.png"
+                src="/logo-white.png"
                 alt="Twinplast Polymers Logo"
                 fill
-                sizes="240px"
-                className="object-contain object-left brightness-0 invert" // Fully white logo on dark footer
+                priority
+                sizes="260px"
+                className="object-contain object-left" // Fully white logo on dark footer
               />
             </Link>
             <p className="text-sm text-slate-400 leading-relaxed max-w-md">
@@ -104,10 +105,10 @@ export function Footer() {
           </p>
           <div className="flex gap-4">
             <Link
-              href="/admin"
-              className="text-xs text-slate-500 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded px-0.5"
+              href="https://www.ekodrix.com/"
+              className="text-sm text-slate-500 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded px-0.5 inline-flex items-center gap-1"
             >
-              Management Console
+              Crafted with love by <span className="inline-flex items-center font-semibold">Ek<Image src="/ekodrix-logo.png" alt="o" width={14} height={14} className="mx-0.5 inline-block rounded-full align-middle" />drix</span>
             </Link>
           </div>
         </div>
