@@ -84,7 +84,7 @@ export async function submitEnquiry(data: EnquiryInsert) {
           },
           to: [
             {
-              email: 'info@twinplastpolymers.com',
+              email: 'muhammedjaseemkc277@gmail.com',
               name: 'Twinplast Polymers Info',
             },
           ],
