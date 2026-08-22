@@ -2,9 +2,20 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { ContactForm } from './contact-form';
 
+import { getSiteUrl } from '@/lib/site';
+
 export const metadata: Metadata = {
-  title: 'Request B2B Quote | Twinplast Polymers',
-  description: 'Submit your fluted sheet or polymer product specifications to the Twinplast Polymers plant in Thoothukudi, Tamil Nadu. Established 2021.',
+  title: 'Contact Twinplast Polymers | Request a PP Sheet Quote',
+  description: 'Contact Twinplast Polymers in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and B2B quotations.',
+  alternates: {
+    canonical: getSiteUrl('/contact'),
+  },
+  openGraph: {
+    title: 'Contact Twinplast Polymers | Request a PP Sheet Quote',
+    description: 'Contact Twinplast Polymers in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and B2B quotations.',
+    url: getSiteUrl('/contact'),
+    type: 'website',
+  },
 };
 
 export default function ContactPage() {

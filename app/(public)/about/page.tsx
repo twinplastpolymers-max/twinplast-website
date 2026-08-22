@@ -2,9 +2,20 @@ import type { Metadata } from 'next';
 import { Award, Layers, Target, Compass } from 'lucide-react';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 
+import { getSiteUrl } from '@/lib/site';
+
 export const metadata: Metadata = {
-  title: 'About Our Plant | Twinplast Polymers',
-  description: 'Twinplast Polymers Private Limited was established in 2021 in Thoothukudi, Tamil Nadu, as a dedicated polypropylene (PP) sheets manufacturer.',
+  title: 'About Twinplast Polymers | PP Sheet Manufacturer',
+  description: 'Learn about Twinplast Polymers Private Limited, a PP sheet manufacturer established in 2021 in Thoothukudi, Tamil Nadu, serving B2B industrial and packaging applications.',
+  alternates: {
+    canonical: getSiteUrl('/about'),
+  },
+  openGraph: {
+    title: 'About Twinplast Polymers | PP Sheet Manufacturer',
+    description: 'Learn about Twinplast Polymers Private Limited, a PP sheet manufacturer established in 2021 in Thoothukudi, Tamil Nadu, serving B2B industrial and packaging applications.',
+    url: getSiteUrl('/about'),
+    type: 'website',
+  },
 };
 
 export default function AboutPage() {

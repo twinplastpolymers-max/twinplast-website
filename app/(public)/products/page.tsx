@@ -5,9 +5,20 @@ import { createClient } from '@/lib/supabase/server';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Product } from '@/types';
 
+import { getSiteUrl } from '@/lib/site';
+
 export const metadata: Metadata = {
-  title: 'PP Sheets Catalog | Twinplast Polymers',
-  description: 'Explore the complete range of custom Polypropylene (PP) sheets manufactured by Twinplast Polymers, including fluted, hollow, corrugated, and layer pad sheets.',
+  title: 'PP Sheets | Corrugated, Sunpack & More | Twinplast Polymers',
+  description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets from Twinplast Polymers for B2B industrial and packaging applications.',
+  alternates: {
+    canonical: getSiteUrl('/products'),
+  },
+  openGraph: {
+    title: 'PP Sheets | Corrugated, Sunpack & More | Twinplast Polymers',
+    description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets from Twinplast Polymers for B2B industrial and packaging applications.',
+    url: getSiteUrl('/products'),
+    type: 'website',
+  },
 };
 
 export default async function ProductsCatalogPage() {

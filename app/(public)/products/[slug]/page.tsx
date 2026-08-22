@@ -6,6 +6,8 @@ import { createClient } from '@/lib/supabase/server';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Product } from '@/types';
 
+import { getSiteUrl } from '@/lib/site';
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -13,6 +15,8 @@ interface PageProps {
 // Dynamically generate metadata by querying Supabase
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  const canonicalUrl = getSiteUrl(`/products/${slug}`);
+
   try {
     const supabase = await createClient();
     const { data: product } = await supabase
@@ -26,12 +30,29 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       return { title: 'Product Not Found | Twinplast Polymers' };
     }
 
+    const title = `${product.title} | Twinplast Polymers`;
+    const description = product.description;
+
     return {
-      title: `${product.title} | Polypropylene Sheets | Twinplast Polymers`,
-      description: product.description,
+      title,
+      description,
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title,
+        description,
+        url: canonicalUrl,
+        type: 'website',
+      },
     };
   } catch {
-    return { title: 'Product Specifications | Twinplast Polymers' };
+    return {
+      title: 'Product Specifications | Twinplast Polymers',
+      alternates: {
+        canonical: canonicalUrl,
+      },
+    };
   }
 }
 
