@@ -20,12 +20,20 @@ import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Product, HomepageMedia } from '@/types';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 
+import { getSiteUrl } from '@/lib/site';
+
+import { JsonLd } from '@/components/shared/JsonLd';
+
 export const metadata: Metadata = {
-  title: 'Twinplast Polymers | Industrial PP Sheets Manufacturer | Thoothukudi',
-  description: 'Twinplast Polymers Private Limited manufactures premium PP Corrugated, Sunpack, Hollow, Layer Pad, and Floor Protection sheets in Thoothukudi, Tamil Nadu. Established in 2021.',
+  title: 'Twinplast Polymers | PP Sheet Manufacturer in Tamil Nadu',
+  description: 'Twinplast Polymers Private Limited is a PP sheet manufacturer in Thoothukudi, Tamil Nadu, supplying PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets for B2B industrial applications.',
+  alternates: {
+    canonical: getSiteUrl('/'),
+  },
   openGraph: {
-    title: 'Twinplast Polymers | Premium PP Sheets Manufacturer',
-    description: 'High-quality Polypropylene sheet solutions custom manufactured in Thoothukudi, Tamil Nadu. Established 2021.',
+    title: 'Twinplast Polymers | PP Sheet Manufacturer in Tamil Nadu',
+    description: 'Twinplast Polymers Private Limited is a PP sheet manufacturer in Thoothukudi, Tamil Nadu, supplying PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets for B2B industrial applications.',
+    url: getSiteUrl('/'),
     type: 'website',
   },
 };
@@ -103,8 +111,30 @@ export default async function HomePage() {
     { value: '50+', label: 'Product Specifications', desc: 'Tailored grades, GSM, colors, and cuts.' }
   ];
 
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${getSiteUrl('/')}#organization`,
+    name: 'Twinplast Polymers Private Limited',
+    url: getSiteUrl('/'),
+    logo: getSiteUrl('/logo.png'),
+    description: 'Twinplast Polymers Private Limited is a specialized B2B manufacturer of PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection, and Box sheets located in Thoothukudi, Tamil Nadu, India.',
+    foundingDate: '2021',
+    telephone: '+91 95853 88444',
+    email: 'twinplastpolymers@gmail.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan',
+      addressLocality: 'Thoothukudi',
+      addressRegion: 'Tamil Nadu',
+      postalCode: '628101',
+      addressCountry: 'IN',
+    },
+  };
+
   return (
     <div className="flex flex-col w-full overflow-hidden bg-white text-slate-900 font-sans">
+      <JsonLd data={organizationSchema} />
       
       {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden bg-gradient-to-b from-slate-50/70 via-white to-white dark:from-slate-900/20 dark:via-slate-950 dark:to-slate-950 pt-8 sm:pt-12 lg:pt-16 pb-12 lg:pb-16 border-b border-slate-100 dark:border-slate-800 min-h-[520px] lg:min-h-[580px] xl:min-h-[640px] flex flex-col justify-center" aria-labelledby="hero-heading">
