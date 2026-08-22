@@ -5,12 +5,14 @@ import Link from 'next/link';
 import { Search, Plus, Filter, Trash2, Edit, Star, ShieldAlert } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { Product } from '@/types';
+import { useToast } from '@/components/ui/Toast';
 
 interface ProductListProps {
   initialProducts: Product[];
 }
 
 export function ProductList({ initialProducts }: ProductListProps) {
+  const toast = useToast();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createClient() as any;
   const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -41,9 +43,15 @@ export function ProductList({ initialProducts }: ProductListProps) {
         setProducts((prev) =>
           prev.map((p) => (p.id === id ? { ...p, active: !currentVal } : p))
         );
+        toast.success(
+          !currentVal ? 'Product Published' : 'Product Unpublished',
+          'Product visibility status updated.'
+        );
+      } else {
+        toast.error('Failed to update status', error.message);
       }
     } catch {
-      // Graceful error fallback
+      toast.error('Network Error', 'Failed to update product status.');
     } finally {
       setMutatingId(null);
     }
@@ -61,9 +69,15 @@ export function ProductList({ initialProducts }: ProductListProps) {
         setProducts((prev) =>
           prev.map((p) => (p.id === id ? { ...p, featured: !currentVal } : p))
         );
+        toast.success(
+          !currentVal ? 'Added to Featured' : 'Removed from Featured',
+          'Homepage product spotlight updated.'
+        );
+      } else {
+        toast.error('Failed to update featured status', error.message);
       }
     } catch {
-      // Graceful error fallback
+      toast.error('Network Error', 'Failed to update product spotlight status.');
     } finally {
       setMutatingId(null);
     }
@@ -75,7 +89,7 @@ export function ProductList({ initialProducts }: ProductListProps) {
     setIsDeleting(true);
 
     try {
-      // Delete the Supabase product record (without deleting Cloudinary asset as per safety rules)
+      // Delete the Supabase product record
       const { error } = await supabase
         .from('products')
         .delete()
@@ -83,10 +97,13 @@ export function ProductList({ initialProducts }: ProductListProps) {
 
       if (!error) {
         setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
+        toast.success('Product Deleted', `"${productToDelete.title}" was removed.`);
         setProductToDelete(null);
+      } else {
+        toast.error('Deletion Failed', error.message);
       }
     } catch {
-      // Graceful error fallback
+      toast.error('Network Error', 'Failed to delete product record.');
     } finally {
       setIsDeleting(false);
     }

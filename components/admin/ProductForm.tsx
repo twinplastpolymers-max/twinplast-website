@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, Upload, X, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Save, Upload, X, ShieldAlert, CheckCircle2, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Product } from '@/types';
+import { useToast } from '@/components/ui/Toast';
 
 interface ProductFormProps {
   product?: Product | null;
@@ -14,6 +15,7 @@ interface ProductFormProps {
 
 export function ProductForm({ product }: ProductFormProps) {
   const router = useRouter();
+  const toast = useToast();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createClient() as any;
   const isEditMode = !!product;
@@ -53,7 +55,7 @@ export function ProductForm({ product }: ProductFormProps) {
     }
   };
 
-  // Secure Cloudinary Signed Uploader Handler
+  // Secure Image Uploader Handler
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -62,14 +64,18 @@ export function ProductForm({ product }: ProductFormProps) {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
     if (!allowedTypes.includes(file.type)) {
       setUploadState('error');
-      setUploadError('Invalid format. Please select a JPG, PNG, or WEBP image.');
+      const err = 'Invalid format. Please select a JPG, PNG, or WEBP image.';
+      setUploadError(err);
+      toast.error('Upload Error', err);
       return;
     }
 
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
       setUploadState('error');
-      setUploadError('File is too large. Maximum size limit is 5MB.');
+      const err = 'File is too large. Maximum size limit is 5MB.';
+      setUploadError(err);
+      toast.error('Upload Error', err);
       return;
     }
 
@@ -101,7 +107,7 @@ export function ProductForm({ product }: ProductFormProps) {
       const { signature } = await signRes.json();
       setUploadProgress(40);
 
-      // 3. Post payload directly to Cloudinary secure REST endpoint
+      // 3. Post payload directly to secure cloud endpoint
       const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'twinplast';
       const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || '';
 
@@ -123,7 +129,7 @@ export function ProductForm({ product }: ProductFormProps) {
       );
 
       if (!cloudinaryRes.ok) {
-        throw new Error('Cloudinary upload request failed.');
+        throw new Error('Image upload failed. Please try again.');
       }
 
       const uploadResult = await cloudinaryRes.json();
@@ -134,9 +140,12 @@ export function ProductForm({ product }: ProductFormProps) {
       setImageUrl(uploadResult.secure_url);
       setUploadState('success');
       setUploadProgress(100);
+      toast.success('Image uploaded successfully', 'Remember to save your product changes.');
     } catch (err) {
       setUploadState('error');
-      setUploadError(err instanceof Error ? err.message : 'Upload failed. Verify connection.');
+      const msg = err instanceof Error ? err.message : 'Upload failed. Verify connection.';
+      setUploadError(msg);
+      toast.error('Image Upload Failed', msg);
     }
   };
 
@@ -148,7 +157,9 @@ export function ProductForm({ product }: ProductFormProps) {
     setSuccessMsg('');
 
     if (!title || !slug || !category || !description) {
-      setSubmitError('Please complete all required fields.');
+      const err = 'Please complete all required fields.';
+      setSubmitError(err);
+      toast.error('Validation Error', err);
       setIsSaving(false);
       return;
     }
@@ -184,7 +195,9 @@ export function ProductForm({ product }: ProductFormProps) {
           .maybeSingle();
 
         if (conflictProduct) {
-          setSubmitError(`A product with the slug "${slug}" already exists. Slugs must be unique.`);
+          const err = `A product with the slug "${slug}" already exists. Slugs must be unique.`;
+          setSubmitError(err);
+          toast.error('Slug Conflict', err);
           setIsSaving(false);
           return;
         }
@@ -198,15 +211,20 @@ export function ProductForm({ product }: ProductFormProps) {
 
       if (queryError) {
         setSubmitError(queryError.message);
+        toast.error('Failed to Save Product', queryError.message);
       } else {
-        setSuccessMsg(isEditMode ? 'Product updated successfully.' : 'Product created successfully.');
+        const msg = isEditMode ? 'Product updated successfully.' : 'Product created successfully.';
+        setSuccessMsg(msg);
+        toast.success('Saved Successfully!', msg);
         setTimeout(() => {
           router.push('/admin/products');
           router.refresh();
         }, 1200);
       }
     } catch {
-      setSubmitError('Failed to save product due to connection problems.');
+      const connErr = 'Failed to save product due to connection problems.';
+      setSubmitError(connErr);
+      toast.error('Network Error', connErr);
     } finally {
       setIsSaving(false);
     }
@@ -347,7 +365,26 @@ export function ProductForm({ product }: ProductFormProps) {
             </div>
           </div>
 
-          <div className="pt-4 flex justify-end">
+          {/* Action Bar with Immediate Local Feedback near Save Button */}
+          <div className="pt-4 flex items-center justify-between gap-4 border-t border-slate-100 dark:border-slate-800 mt-2">
+            <div className="flex-1 text-xs">
+              {isSaving && (
+                <span className="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-semibold">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" /> Saving product...
+                </span>
+              )}
+              {!isSaving && successMsg && (
+                <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold animate-fade-in">
+                  <CheckCircle2 className="w-4 h-4" /> {successMsg}
+                </span>
+              )}
+              {!isSaving && submitError && (
+                <span className="inline-flex items-center gap-1.5 text-red-600 dark:text-red-400 font-semibold animate-fade-in">
+                  <ShieldAlert className="w-4 h-4" /> {submitError}
+                </span>
+              )}
+            </div>
+
             <button
               type="submit"
               disabled={isSaving || uploadState === 'uploading'}
@@ -364,7 +401,7 @@ export function ProductForm({ product }: ProductFormProps) {
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Product Image</h3>
             <p className="text-xs text-muted mt-1 leading-normal">
-              Manage the visual card layout delivered from Cloudinary CDN on view catalog screens.
+              Manage the product image displayed on catalog screens.
             </p>
           </div>
 
@@ -408,7 +445,7 @@ export function ProductForm({ product }: ProductFormProps) {
             {uploadState === 'uploading' && (
               <div className="space-y-1">
                 <div className="flex justify-between text-xs text-blue-600">
-                  <span>Uploading to Cloudinary...</span>
+                  <span>Uploading image...</span>
                   <span>{uploadProgress}%</span>
                 </div>
                 <div className="w-full bg-slate-100 rounded-full h-1.5 dark:bg-slate-800">

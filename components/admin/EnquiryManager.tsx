@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { Search, Mail, Phone, Clock, FileText, CheckCircle2, Archive, Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { Enquiry } from '@/types';
+import { useToast } from '@/components/ui/Toast';
 
 interface EnquiryManagerProps {
   initialEnquiries: Enquiry[];
 }
 
 export function EnquiryManager({ initialEnquiries }: EnquiryManagerProps) {
+  const toast = useToast();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createClient() as any;
   const [enquiries, setEnquiries] = useState<Enquiry[]>(initialEnquiries);
@@ -34,9 +36,15 @@ export function EnquiryManager({ initialEnquiries }: EnquiryManagerProps) {
         setEnquiries((prev) =>
           prev.map((e) => (e.id === id ? { ...e, status: newStatus } : e))
         );
+        toast.success(
+          'Enquiry Updated',
+          `Status changed to ${newStatus.replace('_', ' ')}.`
+        );
+      } else {
+        toast.error('Update Failed', error.message);
       }
     } catch {
-      // Graceful error handling
+      toast.error('Network Error', 'Failed to update enquiry status.');
     } finally {
       setLoadingId(null);
     }
