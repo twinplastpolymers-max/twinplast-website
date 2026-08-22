@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Save, ShieldAlert } from 'lucide-react';
+import { Save, ShieldAlert, CheckCircle2, Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { useToast } from '@/components/ui/Toast';
 
 interface SettingRow {
   key: string;
@@ -14,6 +15,7 @@ interface SettingsManagerProps {
 }
 
 export function SettingsManager({ initialSettings }: SettingsManagerProps) {
+  const toast = useToast();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createClient() as any;
 
@@ -78,12 +80,18 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
       }
 
       if (hasError) {
-        setErrorMsg(lastErrorMessage || 'Failed to update settings parameters.');
+        const msg = lastErrorMessage || 'Failed to update settings parameters.';
+        setErrorMsg(msg);
+        toast.error('Failed to Update Settings', msg);
       } else {
-        setSuccessMsg('Corporate settings parameters updated successfully.');
+        const msg = 'Corporate settings parameters updated successfully.';
+        setSuccessMsg(msg);
+        toast.success('Settings Saved', msg);
       }
     } catch {
-      setErrorMsg('A connection error occurred while saving.');
+      const err = 'A connection error occurred while saving.';
+      setErrorMsg(err);
+      toast.error('Network Error', err);
     } finally {
       setIsSaving(false);
     }
@@ -249,7 +257,25 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
         </div>
 
         {/* Submit Actions */}
-        <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-900">
+        <div className="flex items-center justify-between gap-4 pt-4 border-t border-slate-100 dark:border-slate-900">
+          <div className="flex-1 text-xs">
+            {isSaving && (
+              <span className="inline-flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-semibold">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" /> Saving settings...
+              </span>
+            )}
+            {!isSaving && successMsg && (
+              <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold animate-fade-in">
+                <CheckCircle2 className="w-4 h-4" /> {successMsg}
+              </span>
+            )}
+            {!isSaving && errorMsg && (
+              <span className="inline-flex items-center gap-1.5 text-red-600 dark:text-red-400 font-semibold animate-fade-in">
+                <ShieldAlert className="w-4 h-4" /> {errorMsg}
+              </span>
+            )}
+          </div>
+
           <button
             type="submit"
             disabled={isSaving}

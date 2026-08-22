@@ -5,12 +5,14 @@ import { Save, Upload, X, ShieldAlert, CheckCircle2, Loader2 } from 'lucide-reac
 import { createClient } from '@/lib/supabase/client';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { HomepageMedia } from '@/types';
+import { useToast } from '@/components/ui/Toast';
 
 interface HomepageMediaManagerProps {
   initialMedia: HomepageMedia[];
 }
 
 export function HomepageMediaManager({ initialMedia }: HomepageMediaManagerProps) {
+  const toast = useToast();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createClient() as any;
 
@@ -37,13 +39,17 @@ export function HomepageMediaManager({ initialMedia }: HomepageMediaManagerProps
     // 1. File Type & Size Validation
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
     if (!allowedTypes.includes(file.type)) {
-      setErrors((prev) => ({ ...prev, [slot]: 'Format error. Select JPG, PNG, or WEBP.' }));
+      const err = 'Format error. Select JPG, PNG, or WEBP.';
+      setErrors((prev) => ({ ...prev, [slot]: err }));
+      toast.error('Upload Error', err);
       return;
     }
 
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-      setErrors((prev) => ({ ...prev, [slot]: 'File size exceeds 5MB limit.' }));
+      const err = 'File size exceeds 5MB limit.';
+      setErrors((prev) => ({ ...prev, [slot]: err }));
+      toast.error('Upload Error', err);
       return;
     }
 
@@ -75,7 +81,7 @@ export function HomepageMediaManager({ initialMedia }: HomepageMediaManagerProps
       const { signature } = await signRes.json();
       setUploadProgress((prev) => ({ ...prev, [slot]: 40 }));
 
-      // 3. Post to Cloudinary
+      // 3. Post to upload endpoint
       const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'twinplast';
       const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || '';
 
@@ -97,7 +103,7 @@ export function HomepageMediaManager({ initialMedia }: HomepageMediaManagerProps
       );
 
       if (!cloudinaryRes.ok) {
-        throw new Error('Upload to Cloudinary failed.');
+        throw new Error('Image upload failed. Please try again.');
       }
 
       const uploadResult = await cloudinaryRes.json();
@@ -115,11 +121,14 @@ export function HomepageMediaManager({ initialMedia }: HomepageMediaManagerProps
             : m
         )
       );
+      toast.success('Image uploaded', 'Remember to save your slot changes.');
     } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Asset upload failed.';
       setErrors((prev) => ({
         ...prev,
-        [slot]: err instanceof Error ? err.message : 'Asset upload failed.',
+        [slot]: msg,
       }));
+      toast.error('Upload Error', msg);
     } finally {
       setUploadingSlot(null);
     }
@@ -171,12 +180,16 @@ export function HomepageMediaManager({ initialMedia }: HomepageMediaManagerProps
         throw new Error(error.message);
       }
 
-      setSuccessMsg(`Homepage slot "${slot.replace('_', ' ')}" updated successfully.`);
+      const msg = `Homepage slot "${slot.replace('_', ' ')}" updated successfully.`;
+      setSuccessMsg(msg);
+      toast.success('Media Saved', msg);
     } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Save query failed.';
       setErrors((prev) => ({
         ...prev,
-        [slot]: err instanceof Error ? err.message : 'Save query failed.',
+        [slot]: msg,
       }));
+      toast.error('Save Failed', msg);
     } finally {
       setSavingSlot(null);
     }
