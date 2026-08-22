@@ -5,7 +5,8 @@ import { Mail, HelpCircle } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Product } from '@/types';
-
+import { getOptimizedImageUrl } from '@/lib/cloudinary';
+import { JsonLd } from '@/components/shared/JsonLd';
 import { getSiteUrl } from '@/lib/site';
 
 interface PageProps {
@@ -80,8 +81,58 @@ export default async function ProductDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const productImageUrl = product.image_cloudinary_public_id
+    ? getOptimizedImageUrl(product.image_cloudinary_public_id, { width: 800, quality: 'auto' })
+    : product.image_url || getSiteUrl('/logo.png');
+
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    '@id': `${getSiteUrl(`/products/${product.slug}`)}#product`,
+    name: product.title,
+    description: product.description,
+    image: productImageUrl,
+    url: getSiteUrl(`/products/${product.slug}`),
+    category: product.category,
+    brand: {
+      '@type': 'Brand',
+      name: 'Twinplast Polymers',
+    },
+    manufacturer: {
+      '@type': 'Organization',
+      '@id': `${getSiteUrl('/')}#organization`,
+      name: 'Twinplast Polymers Private Limited',
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: getSiteUrl('/'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Products',
+        item: getSiteUrl('/products'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: product.title,
+        item: getSiteUrl(`/products/${product.slug}`),
+      },
+    ],
+  };
+
   return (
     <div className="flex-1 py-12 px-4 sm:px-6 lg:px-8 bg-background">
+      <JsonLd data={[productSchema, breadcrumbSchema]} />
       <div className="mx-auto max-w-5xl">
         {/* Breadcrumb Navigation */}
         <nav className="mb-8" aria-label="Breadcrumb">

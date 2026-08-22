@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { ContactForm } from './contact-form';
-
 import { getSiteUrl } from '@/lib/site';
+import { JsonLd } from '@/components/shared/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Contact Twinplast Polymers | Request a PP Sheet Quote',
@@ -19,8 +19,32 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
+  const localBusinessSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': `${getSiteUrl('/')}#localbusiness`,
+    name: 'Twinplast Polymers Private Limited',
+    url: getSiteUrl('/contact'),
+    logo: getSiteUrl('/logo.png'),
+    description: 'Sales and customer support for PP sheet orders in Thoothukudi, Tamil Nadu.',
+    telephone: '+91 95853 88444',
+    email: 'twinplastpolymers@gmail.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan',
+      addressLocality: 'Thoothukudi',
+      addressRegion: 'Tamil Nadu',
+      postalCode: '628101',
+      addressCountry: 'IN',
+    },
+    parentOrganization: {
+      '@id': `${getSiteUrl('/')}#organization`,
+    },
+  };
+
   return (
     <div className="flex-1 py-16 px-4 sm:px-6 lg:px-8 bg-background">
+      <JsonLd data={localBusinessSchema} />
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 text-center sm:text-left">
           <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">

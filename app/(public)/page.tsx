@@ -17,6 +17,8 @@ import { getOptimizedImageUrl } from '@/lib/cloudinary';
 
 import { getSiteUrl } from '@/lib/site';
 
+import { JsonLd } from '@/components/shared/JsonLd';
+
 export const metadata: Metadata = {
   title: 'Twinplast Polymers | PP Sheet Manufacturer in Tamil Nadu',
   description: 'Twinplast Polymers Private Limited is a PP sheet manufacturer in Thoothukudi, Tamil Nadu, supplying PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets for B2B industrial applications.',
@@ -104,8 +106,30 @@ export default async function HomePage() {
     { value: '50+', label: 'Products Available', desc: 'Tailored grades, GSM, and sizes.' }
   ];
 
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${getSiteUrl('/')}#organization`,
+    name: 'Twinplast Polymers Private Limited',
+    url: getSiteUrl('/'),
+    logo: getSiteUrl('/logo.png'),
+    description: 'Twinplast Polymers Private Limited is a specialized B2B manufacturer of PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection, and Box sheets located in Thoothukudi, Tamil Nadu, India.',
+    foundingDate: '2021',
+    telephone: '+91 95853 88444',
+    email: 'twinplastpolymers@gmail.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan',
+      addressLocality: 'Thoothukudi',
+      addressRegion: 'Tamil Nadu',
+      postalCode: '628101',
+      addressCountry: 'IN',
+    },
+  };
+
   return (
     <div className="flex flex-col w-full overflow-hidden bg-white text-slate-900 font-sans">
+      <JsonLd data={organizationSchema} />
       
       {/* 1. HERO SECTION (Light, confident, aligned with reference) */}
       <section className="relative bg-slate-50 dark:bg-slate-900/10 pt-16 pb-20 px-4 sm:px-6 lg:px-8 border-b border-slate-100 dark:border-slate-800" aria-labelledby="hero-heading">

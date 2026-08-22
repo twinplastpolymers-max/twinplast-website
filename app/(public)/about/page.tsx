@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Award, Layers, Target, Compass } from 'lucide-react';
 import { ImageContainer } from '@/components/shared/ImageContainer';
-
 import { getSiteUrl } from '@/lib/site';
+import { JsonLd } from '@/components/shared/JsonLd';
 
 export const metadata: Metadata = {
   title: 'About Twinplast Polymers | PP Sheet Manufacturer',
@@ -24,8 +24,32 @@ export default function AboutPage() {
     { title: 'Quality Controls', desc: 'Consistent testing procedures safeguarding structural and visual parameters.', icon: Award },
   ];
 
+  const localBusinessSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': `${getSiteUrl('/')}#localbusiness`,
+    name: 'Twinplast Polymers Private Limited',
+    url: getSiteUrl('/about'),
+    logo: getSiteUrl('/logo.png'),
+    description: 'Polypropylene (PP) sheet manufacturing facility operating in Thoothukudi, Tamil Nadu, India.',
+    telephone: '+91 95853 88444',
+    email: 'twinplastpolymers@gmail.com',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan',
+      addressLocality: 'Thoothukudi',
+      addressRegion: 'Tamil Nadu',
+      postalCode: '628101',
+      addressCountry: 'IN',
+    },
+    parentOrganization: {
+      '@id': `${getSiteUrl('/')}#organization`,
+    },
+  };
+
   return (
     <div className="flex-1 py-16 px-4 sm:px-6 lg:px-8 bg-background">
+      <JsonLd data={localBusinessSchema} />
       <div className="mx-auto max-w-4xl space-y-12">
         
         {/* Section Header */}
