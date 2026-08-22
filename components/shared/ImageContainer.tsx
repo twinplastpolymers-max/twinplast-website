@@ -8,6 +8,7 @@ interface ImageContainerProps {
   className?: string;
   priority?: boolean;
   unstyled?: boolean;
+  fit?: 'contain' | 'cover';
 }
 
 export function ImageContainer({
@@ -17,6 +18,7 @@ export function ImageContainer({
   className = '',
   priority = false,
   unstyled = false,
+  fit = 'contain',
 }: ImageContainerProps) {
   // Map aspect ratio to Tailwind classes
   const aspectClasses = {
@@ -29,21 +31,21 @@ export function ImageContainer({
 
   const selectedAspect = aspectClasses[aspectRatio];
 
-  // Resolve Cloudinary optimised delivery URL
+  // Resolve Cloudinary optimised delivery URL with high-DPI support (1200px - 1600px)
   const isPlaceholder = !src;
   const resolvedUrl = (!isPlaceholder && src) ? getOptimizedImageUrl(src, {
-    width: aspectRatio === 'square' ? 600 : 800,
-    crop: 'fill',
-    quality: 'auto',
+    width: aspectRatio === 'square' ? 1200 : 1600,
+    crop: fit === 'contain' ? 'fit' : 'fill',
+    quality: 'best',
   }) : null;
 
   const containerClasses = unstyled
     ? `relative w-full overflow-hidden ${selectedAspect} ${className}`
-    : `relative w-full overflow-hidden rounded-xl border border-surface-border bg-slate-50 dark:bg-slate-900/20 transition-all duration-300 ${selectedAspect} ${className}`;
+    : `relative w-full overflow-hidden rounded-xl border border-surface-border bg-slate-50/60 dark:bg-slate-900/30 transition-all duration-300 ${selectedAspect} ${className}`;
 
   const imageClasses = unstyled
-    ? "object-contain transition-transform duration-500 hover:scale-102"
-    : "object-cover transition-transform duration-500 hover:scale-102";
+    ? (fit === 'contain' ? "object-contain p-2 transition-transform duration-500 group-hover:scale-105" : "object-cover transition-transform duration-500 group-hover:scale-105")
+    : (fit === 'contain' ? "object-contain p-2.5 transition-transform duration-500 group-hover:scale-105" : "object-cover transition-transform duration-500 group-hover:scale-105");
 
   return (
     <div className={containerClasses}>
@@ -52,7 +54,8 @@ export function ImageContainer({
           src={resolvedUrl}
           alt={alt}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          unoptimized
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 60vw, 50vw"
           className={imageClasses}
           priority={priority}
         />
