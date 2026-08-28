@@ -9,11 +9,13 @@ import {
   Gem,
   Activity, 
   CheckCircle,
-  Truck,
   Eye,
   Target,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  ChevronRight,
+  Clock,
+  Users
 } from 'lucide-react';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/server';
@@ -90,12 +92,29 @@ export default async function HomePage() {
     { label: 'Custom Sizes Available', icon: Gem },
   ];
 
-  const whyChooseUs = [
-    { title: 'High Quality Materials', desc: 'Premium grade virgin PP raw materials for maximum tensile strength and finish.', icon: CheckCircle },
-    { title: 'Advanced Manufacturing', desc: 'Modern automated extrusion lines ensuring precise flute thickness and GSM tolerance.', icon: Sliders },
-    { title: 'Custom Solutions', desc: 'Available in diverse GSM grades, thicknesses, custom corona treatments & tailored sizes.', icon: Activity },
-    { title: 'Wide Applications', desc: 'Engineered for packaging, logistics separations, construction protection & print signage.', icon: Layers },
-    { title: 'Timely Delivery', desc: 'Reliable pan-India delivery network with committed high-volume turnaround timelines.', icon: Truck },
+  const mainAdvantages = [
+    {
+      title: 'High Quality Materials',
+      desc: 'Premium grade virgin PP raw materials for maximum tensile strength and finish.',
+      icon: Shield,
+    },
+    {
+      title: 'Advanced Manufacturing',
+      desc: 'Modern automated extrusion lines ensuring precise flute thickness and GSM tolerance.',
+      icon: Sliders,
+    },
+    {
+      title: 'Custom Solutions',
+      desc: 'Available in diverse GSM grades, thicknesses, custom sizes and colors to meet your needs.',
+      icon: Activity,
+    },
+  ];
+
+  const bottomFeatures = [
+    { label: 'Consistent Quality', icon: Shield },
+    { label: 'Precision Engineering', icon: Target },
+    { label: 'On-Time Delivery', icon: Clock },
+    { label: 'Dedicated Support', icon: Users },
   ];
 
   const aboutPoints = [
@@ -289,44 +308,29 @@ export default async function HomePage() {
             <div>
               <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-1.5">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>OUR PRODUCTS</span>
+                <span>MANUFACTURING PRODUCT RANGE</span>
               </div>
-              <h2 id="products-heading" className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-950 dark:text-white">
-                Wide Range of PP Sheet Solutions
+              <h2 id="products-heading" className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                Our Products
               </h2>
             </div>
-            <div className="flex items-center gap-6">
-              <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md hidden lg:block leading-relaxed font-medium">
-                We manufacture a wide range of PP sheets designed for packaging, construction, signage, and industrial applications.
-              </p>
-              <Link
-                href="/products"
-                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 text-slate-800 dark:text-slate-200 px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all shadow-2xs shrink-0"
-              >
-                <span>View All Products</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+            <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md">
+              High-performance polypropylene corrugated sheets and solutions engineered for packaging, layer pads, and surface protection.
+            </p>
           </div>
 
-          {/* Catalog Render */}
-          {products.length === 0 || hasDbError ? (
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 p-8 sm:p-12 text-center max-w-xl mx-auto space-y-4 shadow-xs">
-              <h3 className="text-base font-bold text-slate-950 dark:text-white">Catalog Updating</h3>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                Our plant is currently updating sheet specifications. Please contact our Thoothukudi headquarters for bulk order weights, dimensions, or custom color inquiries.
+          {hasDbError ? (
+            <div className="p-8 text-center bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
+              <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">
+                Unable to load products right now. Please check back shortly.
               </p>
-              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-center gap-4 text-xs text-slate-400 font-semibold">
-                <div>Phone: <a href="tel:+919585388444" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">+91 95853 88444</a></div>
-                <div>Email: <a href="mailto:twinplastpolymers@gmail.com" className="text-blue-600 dark:text-blue-400 font-bold hover:underline">twinplastpolymers@gmail.com</a></div>
-              </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {products.slice(0, 4).map((prod) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {products.map((prod) => (
                 <div
                   key={prod.id}
-                  className="flex flex-col bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 rounded-2xl overflow-hidden shadow-2xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
+                  className="group relative flex flex-col rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
                   <div className="relative overflow-hidden bg-slate-50/80 dark:bg-slate-900/60 p-3 border-b border-slate-100 dark:border-slate-850">
                     <ImageContainer
@@ -337,16 +341,12 @@ export default async function HomePage() {
                       unstyled
                     />
                   </div>
-                  <div className="p-5 flex flex-col flex-1 space-y-3">
-                    <div>
-                      <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2.5 py-0.5 rounded-md mb-1.5">
-                        {prod.category}
-                      </span>
-                      <h3 className="text-base sm:text-lg font-bold text-slate-950 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">
-                        {prod.title}
-                      </h3>
-                    </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed flex-1 line-clamp-3">
+
+                  <div className="flex flex-1 flex-col p-6 space-y-3">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      {prod.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed flex-1">
                       {prod.description}
                     </p>
                     <div className="pt-3 border-t border-slate-100 dark:border-slate-900 flex justify-end">
@@ -367,40 +367,83 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 3. WHY CHOOSE TWINPLAST POLYMERS (Modern High-Tech Dark Grid) */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#06152b] text-white relative overflow-hidden border-y border-slate-800" aria-labelledby="why-heading">
+      {/* 3. WHY CHOOSE TWINPLAST POLYMERS (High-Tech Dark Manufacturing Section) */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-[#06142c] text-white relative overflow-hidden border-y border-slate-800" aria-labelledby="why-heading">
         
-        {/* Subtle Ambient Radial Glow */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Ambient Radial Glow */}
+        <div className="absolute top-1/4 right-10 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="mx-auto max-w-7xl relative z-10">
-          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-14 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-blue-400 block">
-              WHY CHOOSE TWINPLAST POLYMERS?
-            </span>
+          
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12 space-y-2">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-950/80 border border-blue-800/60 text-blue-400 text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2 shadow-2xs">
+              <Shield className="w-3.5 h-3.5 text-blue-400" />
+              <span>WHY CHOOSE TWINPLAST POLYMERS?</span>
+            </div>
             <h2 id="why-heading" className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white">
-              Key Manufacturing Advantages
+              Key Manufacturing <span className="text-blue-500">Advantages</span>
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
               Precision extrusion, stringent GSM tolerance, and durable industrial performance.
             </p>
+            <div className="w-12 h-0.5 bg-blue-500 rounded-full mx-auto pt-0.5 mt-3" />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
-            {whyChooseUs.map((v) => (
+          {/* 3 Stacked Advantage Cards matching reference screenshot */}
+          <div className="space-y-4 max-w-4xl mx-auto mb-8 sm:mb-10">
+            {mainAdvantages.map((card) => (
               <div 
-                key={v.title} 
-                className="flex flex-col items-start sm:items-center text-left sm:text-center p-6 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.07] hover:border-blue-400/30 transition-all duration-300 space-y-3 group shadow-xs"
+                key={card.title} 
+                className="relative group rounded-2xl bg-gradient-to-r from-[#0b1c3d]/90 via-[#0a1835]/80 to-[#0b1c3d]/90 border border-blue-900/40 hover:border-blue-500/50 p-4 sm:p-6 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-blue-900/20 overflow-hidden flex items-center justify-between gap-3 sm:gap-4"
               >
-                <div className="w-12 h-12 rounded-xl bg-blue-500/15 border border-blue-400/20 flex items-center justify-center shrink-0 text-blue-400 group-hover:scale-110 group-hover:bg-blue-500/25 transition-all">
-                  <v.icon className="w-5 h-5" />
+                {/* Subtle hover background highlight */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-transparent to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+                {/* Left Side: Icon Container + Text */}
+                <div className="flex items-center gap-3.5 sm:gap-6 relative z-10 min-w-0 flex-1">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-blue-600/30 to-blue-950/90 border border-blue-500/40 text-blue-400 flex items-center justify-center shrink-0 shadow-md shadow-blue-950/50 group-hover:scale-105 group-hover:border-blue-400/60 transition-all">
+                    <card.icon className="w-6 h-6 sm:w-7 sm:h-7" />
+                  </div>
+                  <div className="space-y-1 text-left min-w-0">
+                    <h3 className="text-base sm:text-lg font-bold text-white tracking-tight leading-tight">{card.title}</h3>
+                    <div className="w-6 h-0.5 bg-blue-500/80 rounded-full" />
+                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">{card.desc}</p>
+                  </div>
                 </div>
-                <h3 className="text-sm sm:text-base font-bold text-white leading-snug">{v.title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">{v.desc}</p>
+
+                {/* Right Side: Decorative Dot Grid Matrix & Circular Action Button */}
+                <div className="flex items-center gap-3 sm:gap-4 relative z-10 shrink-0">
+                  {/* Decorative 4x4 Dot Matrix (Visible on sm and up) */}
+                  <svg className="hidden sm:block w-10 h-10 sm:w-12 sm:h-12 text-blue-500/20 pointer-events-none" fill="currentColor" viewBox="0 0 40 40">
+                    <circle cx="5" cy="5" r="1.5" /><circle cx="16" cy="5" r="1.5" /><circle cx="27" cy="5" r="1.5" /><circle cx="38" cy="5" r="1.5" />
+                    <circle cx="5" cy="16" r="1.5" /><circle cx="16" cy="16" r="1.5" /><circle cx="27" cy="16" r="1.5" /><circle cx="38" cy="16" r="1.5" />
+                    <circle cx="5" cy="27" r="1.5" /><circle cx="16" cy="27" r="1.5" /><circle cx="27" cy="27" r="1.5" /><circle cx="38" cy="27" r="1.5" />
+                    <circle cx="5" cy="38" r="1.5" /><circle cx="16" cy="38" r="1.5" /><circle cx="27" cy="38" r="1.5" /><circle cx="38" cy="38" r="1.5" />
+                  </svg>
+
+                  {/* Circular Arrow Button */}
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-600 group-hover:bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-110 transition-all">
+                    <ChevronRight className="w-4 h-4" />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
+
+          {/* Bottom 4-Feature Strip Card matching reference screenshot */}
+          <div className="max-w-4xl mx-auto rounded-2xl bg-gradient-to-r from-[#0a1835]/90 via-[#0c1d42]/80 to-[#0a1835]/90 border border-blue-900/40 p-3.5 sm:p-5 shadow-sm grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 divide-y sm:divide-y-0 sm:divide-x divide-blue-900/30">
+            {bottomFeatures.map((f) => (
+              <div key={f.label} className="flex flex-col items-center text-center p-2 pt-3 sm:pt-2">
+                <div className="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 text-blue-400 flex items-center justify-center mb-2 shadow-2xs">
+                  <f.icon className="w-5 h-5" />
+                </div>
+                <span className="text-xs sm:text-sm font-bold text-white leading-tight">{f.label}</span>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
 
