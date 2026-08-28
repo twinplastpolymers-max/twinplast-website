@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { 
-  Star, 
   Sliders, 
   Layers, 
-  ShieldCheck, 
+  Shield,
+  Leaf,
+  Droplet,
+  Gem,
   Activity, 
-  Maximize2,
   CheckCircle,
   Truck,
   Eye,
@@ -83,10 +84,10 @@ export default async function HomePage() {
   }
 
   const heroMetrics = [
-    { label: 'Premium Quality', icon: Star },
-    { label: 'Strong & Durable', icon: ShieldCheck },
-    { label: 'Lightweight & Reusable', icon: Layers },
-    { label: 'Custom Sizes Available', icon: Maximize2 },
+    { label: 'Premium Quality', icon: Shield },
+    { label: 'Lightweight & Durable', icon: Leaf },
+    { label: 'Moisture & Chemical Resistant', icon: Droplet },
+    { label: 'Custom Sizes Available', icon: Gem },
   ];
 
   const whyChooseUs = [
@@ -137,89 +138,128 @@ export default async function HomePage() {
       <JsonLd data={organizationSchema} />
       
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-50/70 via-white to-white dark:from-slate-900/20 dark:via-slate-950 dark:to-slate-950 pt-8 sm:pt-12 lg:pt-16 pb-12 lg:pb-16 border-b border-slate-100 dark:border-slate-800 min-h-[520px] lg:min-h-[580px] xl:min-h-[640px] flex flex-col justify-center" aria-labelledby="hero-heading">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50/30 via-slate-50/40 to-white dark:from-slate-900/30 dark:via-slate-950 dark:to-slate-950 pt-5 sm:pt-10 lg:pt-16 pb-8 lg:pb-16 border-b border-slate-100 dark:border-slate-800 min-h-[520px] lg:min-h-[580px] xl:min-h-[640px] flex flex-col justify-center" aria-labelledby="hero-heading">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center">
             
             {/* Left Content Column */}
-            <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-center lg:text-left space-y-5 sm:space-y-6">
+            <div className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center text-left items-start space-y-4 sm:space-y-6">
               
               {/* Eyebrow Tag */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/40 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-wider self-center lg:self-start">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50/90 dark:bg-blue-950/80 border border-blue-100 dark:border-blue-900/60 text-blue-600 dark:text-blue-400 text-[11px] sm:text-xs font-bold uppercase tracking-wider self-start shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400 shrink-0"></span>
                 <span>PREMIUM QUALITY</span>
               </div>
 
               {/* Headline */}
-              <h1 id="hero-heading" className="text-3xl sm:text-4xl md:text-5xl lg:text-[48px] xl:text-[54px] font-extrabold tracking-tight leading-[1.14] text-slate-900 dark:text-white">
-                Durable. Reliable.<br className="hidden sm:inline" />
+              <h1 id="hero-heading" className="text-3xl xs:text-4xl sm:text-5xl lg:text-[48px] xl:text-[54px] font-extrabold tracking-tight leading-[1.12] lg:leading-[1.14] text-slate-900 dark:text-white">
+                Durable. Reliable.<br />
                 <span className="text-blue-600 dark:text-blue-400"> Designed to Protect.</span>
               </h1>
 
               {/* Supporting Paragraph */}
-              <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-400 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+              <p className="text-xs xs:text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed font-normal">
                 Manufacturer of high-quality PP Corrugated Sheets, Layer Pad Sheets, Floor Protection Sheets &amp; more for multiple industries.
               </p>
               
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start pt-1">
+              <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-4 justify-start pt-1 w-full max-w-md">
                 <Link
                   href="/products"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-6 py-3.5 text-sm font-bold tracking-wide transition-all shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/30 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-6 py-3.5 text-sm font-bold tracking-wide transition-all shadow-md shadow-blue-600/25 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 >
                   <span>Explore Products</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 bg-white/80 hover:bg-slate-50 text-slate-700 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:bg-slate-800 px-6 py-3.5 text-sm font-bold tracking-wide transition-all active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 shadow-2xs"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-xl border border-blue-200/80 dark:border-blue-900/60 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 px-6 py-3.5 text-sm font-bold tracking-wide transition-all shadow-2xs active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 >
                   <span>Request a Quote</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 text-slate-400" />
                 </Link>
               </div>
             </div>
 
-            {/* Mobile/Tablet Inline Product Image (Clean, elevated card) */}
-            <div className="lg:hidden flex items-center justify-center w-full my-2">
-              <div className="relative w-full max-w-[480px] h-[240px] sm:h-[320px] p-3 rounded-2xl bg-gradient-to-b from-slate-50/90 to-slate-100/40 dark:from-slate-900/50 dark:to-slate-900/20 border border-slate-200/60 dark:border-slate-800 shadow-xs">
-                {heroImage ? (
-                  <Image
-                    src={getOptimizedImageUrl(heroImage, { quality: 'best', sharpen: 90, upscale: true })}
-                    alt="Twinplast Polymers PP Corrugated Sheets Stack"
-                    fill
-                    priority
-                    unoptimized
-                    sizes="(max-width: 1024px) 100vw, 480px"
-                    className="object-contain object-center pointer-events-none p-2"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                    <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
-                      Select Hero Image in CMS
-                    </span>
-                  </div>
-                )}
+            {/* Mobile/Tablet Product Showcase Card */}
+            <div className="lg:hidden w-full pt-2 sm:pt-4">
+              <div className="relative w-full rounded-2xl sm:rounded-3xl bg-gradient-to-tr from-slate-100/90 via-blue-50/40 to-slate-50/70 dark:from-slate-900/80 dark:via-slate-900/40 dark:to-slate-950 border border-blue-100/80 dark:border-slate-800 p-3 sm:p-5 shadow-sm overflow-hidden">
+                
+                {/* Floating Product Badge Top-Left inside card */}
+                <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/95 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-[11px] sm:text-xs font-semibold shadow-2xs">
+                  <Layers className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span>PP Corrugated Sheets</span>
+                </div>
+
+                {/* Soft blue radial glow behind product */}
+                <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-blue-200/40 dark:bg-blue-600/20 blur-2xl pointer-events-none" />
+
+                {/* Geometric concentric arcs in background */}
+                <div className="absolute -top-12 -right-12 w-64 h-64 sm:w-80 sm:h-80 rounded-full border border-blue-200/40 dark:border-blue-900/30 pointer-events-none" />
+                <div className="absolute -top-6 -right-6 w-48 h-48 sm:w-60 sm:h-60 rounded-full border border-blue-200/30 dark:border-blue-900/20 pointer-events-none" />
+
+                {/* 3x4 Dot grid matrix overlay bottom-left */}
+                <svg className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 w-12 h-16 sm:w-16 sm:h-20 text-blue-300/40 dark:text-blue-600/20 pointer-events-none" fill="currentColor" viewBox="0 0 40 50">
+                  <circle cx="5" cy="5" r="2" /><circle cx="20" cy="5" r="2" /><circle cx="35" cy="5" r="2" />
+                  <circle cx="5" cy="18" r="2" /><circle cx="20" cy="18" r="2" /><circle cx="35" cy="18" r="2" />
+                  <circle cx="5" cy="31" r="2" /><circle cx="20" cy="31" r="2" /><circle cx="35" cy="31" r="2" />
+                  <circle cx="5" cy="44" r="2" /><circle cx="20" cy="44" r="2" /><circle cx="35" cy="44" r="2" />
+                </svg>
+
+                {/* Integrated Product Image */}
+                <div className="relative w-full h-[220px] xs:h-[240px] sm:h-[320px] z-10 pt-6">
+                  {heroImage ? (
+                    <Image
+                      src={getOptimizedImageUrl(heroImage, { quality: 'best', sharpen: 90, upscale: true })}
+                      alt="Twinplast Polymers PP Corrugated Sheets Stack"
+                      fill
+                      priority
+                      unoptimized
+                      sizes="(max-width: 1024px) 100vw, 480px"
+                      className="object-contain object-right-bottom pointer-events-none p-1"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                      <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+                        Select Hero Image in CMS
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
           </div>
 
-          {/* Sub-bar metrics: Horizontal row on desktop, 2x2 modern micro-cards on mobile */}
-          <div className="pt-8 sm:pt-10 mt-8 sm:mt-10 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 md:flex md:flex-wrap items-center justify-between gap-3 sm:gap-6 lg:gap-8 max-w-4xl">
-            {heroMetrics.map((m) => (
-              <div 
-                key={m.label} 
-                className="flex items-center gap-2.5 p-2.5 sm:p-0 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 sm:bg-transparent border border-slate-100 dark:border-slate-800/60 sm:border-none transition-colors"
-              >
-                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 shadow-2xs">
-                  <m.icon className="w-4 h-4" />
+          {/* Sub-bar metrics: Horizontal row on desktop, 4-column modern card on mobile matching reference */}
+          <div className="pt-6 sm:pt-10 mt-6 sm:mt-10">
+            {/* Mobile 4-Column Feature Card (Matching reference design bottom bar) */}
+            <div className="lg:hidden bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-100 dark:border-slate-800 p-2.5 sm:p-3.5 shadow-xs grid grid-cols-4 divide-x divide-slate-100 dark:divide-slate-800">
+              {heroMetrics.map((m) => (
+                <div key={m.label} className="flex flex-col items-center text-center px-1">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-1.5 shadow-2xs">
+                    <m.icon className="w-4 h-4" />
+                  </div>
+                  <span className="text-[10px] sm:text-xs font-bold text-slate-800 dark:text-slate-200 leading-tight tracking-tight">
+                    {m.label}
+                  </span>
                 </div>
-                <span className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 leading-tight">
-                  {m.label}
-                </span>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Desktop Metrics Row */}
+            <div className="hidden lg:flex items-center justify-between gap-6 lg:gap-8 max-w-4xl border-t border-slate-100 dark:border-slate-800/80 pt-8 mt-8">
+              {heroMetrics.map((m) => (
+                <div key={m.label} className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 shadow-2xs">
+                    <m.icon className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 leading-tight">
+                    {m.label}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
