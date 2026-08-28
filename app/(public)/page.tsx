@@ -447,50 +447,76 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4. ABOUT US SECTION */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/60 dark:bg-slate-900/10" aria-labelledby="about-heading">
-        <div className="mx-auto max-w-7xl">
+      {/* 4. ABOUT US / SHEET PRODUCTS SECTION */}
+      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-blue-50/30 via-slate-50/50 to-white dark:from-slate-950 dark:via-slate-900/40 dark:to-slate-950 relative overflow-hidden border-t border-slate-100 dark:border-slate-800" aria-labelledby="about-heading">
+        
+        {/* Subtle dot matrix background detail on top-right */}
+        <svg className="absolute top-8 right-6 w-20 h-24 text-blue-200/40 dark:text-blue-900/20 pointer-events-none" fill="currentColor" viewBox="0 0 50 60">
+          <circle cx="5" cy="5" r="2" /><circle cx="20" cy="5" r="2" /><circle cx="35" cy="5" r="2" />
+          <circle cx="5" cy="20" r="2" /><circle cx="20" cy="20" r="2" /><circle cx="35" cy="20" r="2" />
+          <circle cx="5" cy="35" r="2" /><circle cx="20" cy="35" r="2" /><circle cx="35" cy="35" r="2" />
+          <circle cx="5" cy="50" r="2" /><circle cx="20" cy="50" r="2" /><circle cx="35" cy="50" r="2" />
+        </svg>
+
+        <div className="mx-auto max-w-7xl relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             
             {/* Left side details - 5 Columns */}
             <div className="lg:col-span-5 space-y-6">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 block mb-1.5">
-                  ABOUT US
+              <div className="space-y-1">
+                <span className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 block">
+                  OUR PRODUCTS
                 </span>
-                <h2 id="about-heading" className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-950 dark:text-white leading-tight">
-                  Trusted Manufacturer of PP Sheet Products
+                <div className="w-8 h-0.5 bg-blue-600 dark:bg-blue-500 rounded-full mb-3" />
+                <h2 id="about-heading" className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                  Sheet Products
                 </h2>
               </div>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
+
+              <p className="text-xs sm:text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed font-normal">
                 Twinplast Polymers is a leading manufacturer of high-quality PP Corrugated Sheets, Layer Pad Sheets, Floor Protection Sheets and related products. We are committed to providing durable, reliable and cost-effective solutions for multiple industries.
               </p>
               
-              {/* Modern Checkmark Pill Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              {/* Interactive Feature Cards */}
+              <div className="space-y-2.5 pt-1">
                 {aboutPoints.map((pt) => (
-                  <div key={pt} className="flex items-center gap-2.5 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 shadow-2xs">
-                    <div className="w-5 h-5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 flex items-center justify-center shrink-0">
-                      <CheckCircle className="w-3.5 h-3.5" />
+                  <div 
+                    key={pt} 
+                    className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 shadow-2xs hover:shadow-md hover:border-blue-300 dark:hover:border-blue-800 transition-all duration-200 group cursor-pointer"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 shadow-2xs">
+                        <CheckCircle className="w-5 h-5" />
+                      </div>
+                      <div className="h-5 w-[1px] bg-slate-200/80 dark:bg-slate-800" />
+                      <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">{pt}</span>
                     </div>
-                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{pt}</span>
+                    <ChevronRight className="w-4 h-4 text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform shrink-0" />
                   </div>
                 ))}
               </div>
               
+              {/* CTA Button */}
               <div className="pt-2">
                 <Link
                   href="/about"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-6 py-3.5 text-xs font-bold uppercase tracking-wider transition-all shadow-md shadow-blue-600/20 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-6 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all shadow-md shadow-blue-600/25 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 >
                   <span>Know More About Us</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
+
+              {/* Mobile Integrated Facility Image */}
+              <div className="lg:hidden w-full pt-4">
+                <div className="p-1.5 sm:p-2 border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-950 rounded-3xl shadow-sm overflow-hidden">
+                  <ImageContainer src={aboutMainImage} alt="Twinplast Polymers factory building" aspectRatio="video" fit="cover" />
+                </div>
+              </div>
             </div>
 
-            {/* Right side visual gallery - 7 Columns */}
-            <div className="lg:col-span-7 grid grid-cols-2 gap-3 sm:gap-4">
+            {/* Desktop Visual Gallery - 7 Columns */}
+            <div className="hidden lg:grid lg:col-span-7 grid-cols-2 gap-3 sm:gap-4">
               <div className="col-span-2 p-2 border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-950 rounded-2xl shadow-xs">
                 <ImageContainer src={aboutMainImage} alt="Twinplast Polymers factory building" aspectRatio="video" fit="cover" />
               </div>
