@@ -622,17 +622,21 @@ export default async function HomePage() {
         {/* Background Image slot with fallback */}
         <div className="absolute inset-0 z-0">
           {ctaBgImage ? (
-            <ImageContainer 
-              src={ctaBgImage} 
-              alt="Industrial texture background" 
-              className="w-full h-full rounded-none border-none pointer-events-none" 
+            <Image
+              src={getOptimizedImageUrl(ctaBgImage, { quality: 'best', sharpen: 90, upscale: true })}
+              alt="Industrial texture background"
+              fill
+              priority
+              unoptimized
+              sizes="100vw"
+              className="object-cover object-center pointer-events-none"
             />
           ) : (
             <div className="w-full h-full bg-[#06152b] pointer-events-none" />
           )}
           
           {/* Deep Navy/Blue gradient overlay for high contrast text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#06152b] via-[#06152b]/95 to-[#0b294d]/85 z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#06152b] via-[#06152b]/90 to-[#0b294d]/80 z-10" />
         </div>
 
         <div className="relative z-20 mx-auto max-w-7xl flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10">
