@@ -9,6 +9,60 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      certifications: {
+        Row: {
+          id: string
+          title: string
+          credential_type: 'iso' | 'plexconcil' | 'other'
+          certificate_number: string
+          issuing_organization: string
+          scope: string | null
+          issue_date: string | null
+          expiry_date: string | null
+          image_url: string | null
+          image_cloudinary_public_id: string | null
+          display_order: number
+          active: boolean
+          featured: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          credential_type: 'iso' | 'plexconcil' | 'other'
+          certificate_number: string
+          issuing_organization: string
+          scope?: string | null
+          issue_date?: string | null
+          expiry_date?: string | null
+          image_url?: string | null
+          image_cloudinary_public_id?: string | null
+          display_order?: number
+          active?: boolean
+          featured?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          credential_type?: 'iso' | 'plexconcil' | 'other'
+          certificate_number?: string
+          issuing_organization?: string
+          scope?: string | null
+          issue_date?: string | null
+          expiry_date?: string | null
+          image_url?: string | null
+          image_cloudinary_public_id?: string | null
+          display_order?: number
+          active?: boolean
+          featured?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       company_settings: {
         Row: {
           id: string
@@ -53,6 +107,102 @@ export interface Database {
           image_cloudinary_public_id?: string | null
           image_url?: string | null
           alt_text?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      homepage_sections: {
+        Row: {
+          id: string
+          section_key: string
+          content: Json
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          section_key: string
+          content: Json
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          section_key?: string
+          content?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      industries: {
+        Row: {
+          id: string
+          title: string
+          description: string
+          icon_name: string | null
+          image_url: string | null
+          image_cloudinary_public_id: string | null
+          display_order: number
+          active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          description: string
+          icon_name?: string | null
+          image_url?: string | null
+          image_cloudinary_public_id?: string | null
+          display_order?: number
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          description?: string
+          icon_name?: string | null
+          image_url?: string | null
+          image_cloudinary_public_id?: string | null
+          display_order?: number
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      manufacturing_steps: {
+        Row: {
+          id: string
+          step_number: number
+          title: string
+          description: string
+          icon_name: string | null
+          display_order: number
+          active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          step_number: number
+          title: string
+          description: string
+          icon_name?: string | null
+          display_order?: number
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          step_number?: number
+          title?: string
+          description?: string
+          icon_name?: string | null
+          display_order?: number
+          active?: boolean
+          created_at?: string
           updated_at?: string
         }
         Relationships: []
