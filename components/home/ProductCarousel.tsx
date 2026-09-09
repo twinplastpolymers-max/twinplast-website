@@ -10,7 +10,7 @@ interface ProductCarouselProps {
   products: Product[];
 }
 
-const AUTOPLAY_INTERVAL = 4500; // 4.5 seconds per slide
+const AUTOPLAY_INTERVAL = 4000; // 4 seconds per slide
 
 function subscribeToReducedMotion(callback: () => void) {
   if (typeof window === 'undefined') return () => {};
@@ -30,6 +30,7 @@ function getReducedMotionServerSnapshot() {
 
 export function ProductCarousel({ products }: ProductCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const interactionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [activeIdx, setActiveIdx] = useState(0);
@@ -42,6 +43,25 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
     getReducedMotionSnapshot,
     getReducedMotionServerSnapshot
   );
+
+  // Cleanup interaction timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (interactionTimeoutRef.current) {
+        clearTimeout(interactionTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const triggerInteractionPause = useCallback((delay = 1000) => {
+    setIsInteracting(true);
+    if (interactionTimeoutRef.current) {
+      clearTimeout(interactionTimeoutRef.current);
+    }
+    interactionTimeoutRef.current = setTimeout(() => {
+      setIsInteracting(false);
+    }, delay);
+  }, []);
 
   // Update scroll bounds and active index for dots
   const checkScroll = useCallback(() => {
@@ -109,15 +129,13 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
     const el = scrollRef.current;
     const card = el?.querySelector('[data-carousel-card]');
     if (!el || !card) return;
-    setIsInteracting(true);
+    triggerInteractionPause(1200);
     el.scrollTo({ left: idx * (card.clientWidth + 24), behavior: 'smooth' });
-    setTimeout(() => setIsInteracting(false), 800);
   };
 
   const handleManualScroll = (direction: 'left' | 'right') => {
-    setIsInteracting(true);
+    triggerInteractionPause(1200);
     scrollToDirection(direction);
-    setTimeout(() => setIsInteracting(false), 800);
   };
 
   if (!products || products.length === 0) {
@@ -175,9 +193,7 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           onTouchStart={() => setIsInteracting(true)}
-          onTouchEnd={() => {
-            setTimeout(() => setIsInteracting(false), 2000);
-          }}
+          onTouchEnd={() => triggerInteractionPause(2000)}
           onFocus={() => setIsHovered(true)}
           onBlur={() => setIsHovered(false)}
           tabIndex={0}
