@@ -162,7 +162,7 @@ create trigger trigger_homepage_sections_updated_at
     for each row execute function public.update_updated_at_column();
 
 
--- 6. Expand company_settings RLS whitelist to include primary/official/alternate contact keys
+-- 6. Apply strict company_settings RLS whitelist (expose public keys only)
 drop policy if exists "Public can read company settings" on public.company_settings;
 create policy "Public can read company settings"
     on public.company_settings
@@ -172,11 +172,6 @@ create policy "Public can read company settings"
         'public_phone',
         'public_email',
         'public_address',
-        'primary_phone',
-        'alternate_phone',
-        'primary_email',
-        'official_email',
-        'alternate_email',
         'website_metadata',
         'social_links',
         'business_info'

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { LayoutDashboard, Home, ShoppingBag, Mail, Settings, ExternalLink } from 'lucide-react';
+import { LayoutDashboard, Home, ShoppingBag, Award, Building2, Layers, Mail, Settings, ExternalLink } from 'lucide-react';
 import { SignOutButton } from '@/components/admin/SignOutButton';
 
 export default function AdminLayout({
@@ -9,8 +9,11 @@ export default function AdminLayout({
 }) {
   const sidebarLinks = [
     { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-    { label: 'Homepage', href: '/admin/homepage', icon: Home },
     { label: 'Products', href: '/admin/products', icon: ShoppingBag },
+    { label: 'Certifications', href: '/admin/certifications', icon: Award },
+    { label: 'Industries', href: '/admin/industries', icon: Building2 },
+    { label: 'Process', href: '/admin/manufacturing', icon: Layers },
+    { label: 'Homepage Content', href: '/admin/homepage', icon: Home },
     { label: 'Enquiries', href: '/admin/enquiries', icon: Mail },
     { label: 'Settings', href: '/admin/settings', icon: Settings },
   ];
@@ -24,7 +27,7 @@ export default function AdminLayout({
           <span className="font-bold tracking-tight text-blue-600 dark:text-blue-400 text-lg">Twinplast Admin</span>
         </div>
         
-        <nav className="flex-1 px-4 py-6 space-y-1.5" aria-label="Admin Navigation">
+        <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto" aria-label="Admin Navigation">
           {sidebarLinks.map((item) => (
             <Link
               key={item.href}
@@ -57,7 +60,7 @@ export default function AdminLayout({
         <header className="h-16 border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 flex items-center justify-between px-4 md:hidden">
           <span className="font-bold text-blue-600 dark:text-blue-400 text-md">Twinplast Admin</span>
           
-          <nav className="flex items-center gap-3" aria-label="Mobile Navigation">
+          <nav className="flex items-center gap-2 overflow-x-auto" aria-label="Mobile Navigation">
             {sidebarLinks.map((item) => (
               <Link
                 key={item.href}
@@ -69,10 +72,10 @@ export default function AdminLayout({
               </Link>
             ))}
             
-            <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800 mx-1" />
+            <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800 mx-1 shrink-0" />
             
             {/* Direct, clean log out support for mobile admins */}
-            <div className="w-10">
+            <div className="w-10 shrink-0">
               <SignOutButton />
             </div>
           </nav>

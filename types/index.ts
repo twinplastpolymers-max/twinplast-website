@@ -49,3 +49,69 @@ export interface HeroConfig {
   ctaText: string;
   ctaLink: string;
 }
+
+// Canonical Homepage CMS Section Content Types
+export interface HeroSectionContent {
+  eyebrow?: string;
+  headline: string;
+  subheadline: string;
+  primary_cta_label: string;
+  primary_cta_url: string;
+  secondary_cta_label: string;
+  secondary_cta_url: string;
+  location?: string;
+}
+
+export interface AboutSectionContent {
+  eyebrow?: string;
+  heading: string;
+  subheadline?: string;
+  content: string;
+  cta_label: string;
+  cta_url: string;
+}
+
+export interface VisionMissionSectionContent {
+  vision: {
+    title: string;
+    content: string;
+  };
+  mission: {
+    title: string;
+    content: string;
+  };
+  objectives: string[];
+}
+
+export interface WhyChoosePillar {
+  title: string;
+  description: string;
+}
+
+export interface WhyChooseSectionContent {
+  eyebrow?: string;
+  heading: string;
+  pillars: WhyChoosePillar[];
+}
+
+export interface QualityCommitmentSectionContent {
+  heading: string;
+  content: string;
+  parameters: string[];
+}
+
+export interface MarketsSectionContent {
+  heading: string;
+  content: string;
+  regions: string[];
+}
+
+export interface FinalCtaSectionContent {
+  heading: string;
+  subheadline: string;
+  primary_cta_label: string;
+  primary_cta_url: string;
+  secondary_cta_label: string;
+  secondary_cta_url: string;
+}
+

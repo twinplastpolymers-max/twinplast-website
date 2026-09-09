@@ -5,9 +5,20 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronDown } from 'lucide-react';
 
-export function Footer() {
+interface FooterProps {
+  publicPhone?: string;
+  publicEmail?: string;
+  publicAddress?: string;
+}
+
+export function Footer({ publicPhone, publicEmail, publicAddress }: FooterProps) {
   const currentYear = new Date().getFullYear();
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+
+  const phone = publicPhone || '+91 95853 88444';
+  const email = publicEmail || 'twinplastpolymers@gmail.com';
+  const address = publicAddress || 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan, Thoothukudi, Tamil Nadu • 628101';
+  const cleanPhone = phone.replace(/[^+\d]/g, '');
 
   const toggleSection = (key: string) => {
     setOpenSections((prev) => ({
@@ -138,15 +149,14 @@ export function Footer() {
               {openSections.contact && (
                 <div className="pb-3.5 space-y-2.5 pl-1 text-xs text-slate-600 dark:text-slate-400 animate-fade-in">
                   <p className="leading-relaxed">
-                    SF.NO.1/2A1, South Sillukanpatti Village,<br />
-                    Milavittan, Thoothukudi, Tamil Nadu &bull; 628101
+                    {address}
                   </p>
                   <div className="space-y-1 pt-1">
                     <p>
-                      Phone: <a href="tel:+919585388444" className="font-bold text-slate-800 dark:text-white hover:text-blue-600 transition-colors">+91 95853 88444</a>
+                      Phone: <a href={`tel:${cleanPhone}`} className="font-bold text-slate-800 dark:text-white hover:text-blue-600 transition-colors">{phone}</a>
                     </p>
                     <p>
-                      Email: <a href="mailto:twinplastpolymers@gmail.com" className="font-bold text-slate-800 dark:text-white hover:text-blue-600 transition-colors">twinplastpolymers@gmail.com</a>
+                      Email: <a href={`mailto:${email}`} className="font-bold text-slate-800 dark:text-white hover:text-blue-600 transition-colors">{email}</a>
                     </p>
                   </div>
                 </div>
@@ -242,17 +252,15 @@ export function Footer() {
               </span>
               <address className="not-italic space-y-3 text-sm text-slate-400">
                 <p className="leading-relaxed text-xs">
-                  SF.NO.1/2A1, South Sillukanpatti Village,<br />
-                  Milavittan, Thoothukudi,<br />
-                  Tamil Nadu &bull; 628101
+                  {address}
                 </p>
                 
                 <div className="pt-2 space-y-1 text-xs">
                   <p>
-                    P: <a href="tel:+919585388444" className="text-white hover:text-blue-400 transition-colors font-bold">+91 95853 88444</a>
+                    P: <a href={`tel:${cleanPhone}`} className="text-white hover:text-blue-400 transition-colors font-bold">{phone}</a>
                   </p>
                   <p>
-                    E: <a href="mailto:twinplastpolymers@gmail.com" className="text-white hover:text-blue-400 transition-colors font-bold">twinplastpolymers@gmail.com</a>
+                    E: <a href={`mailto:${email}`} className="text-white hover:text-blue-400 transition-colors font-bold">{email}</a>
                   </p>
                 </div>
               </address>
