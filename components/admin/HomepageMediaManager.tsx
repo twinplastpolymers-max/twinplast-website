@@ -205,9 +205,9 @@ export function HomepageMediaManager({ initialMedia }: HomepageMediaManagerProps
     },
     {
       slot: 'about_main',
-      label: 'About Main Facility Image',
+      label: 'About Page / Facility Main Image',
       aspect: 'video' as const,
-      guide: 'Large landscape building facade or structural factory layout photo.',
+      guide: 'Landscape manufacturing plant / facility photograph displayed on the public About Us page (/about) and homepage About section.',
     },
     {
       slot: 'about_secondary_1',

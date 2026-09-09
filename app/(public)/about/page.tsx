@@ -1,24 +1,50 @@
 import type { Metadata } from 'next';
 import { Award, Layers, Target, Compass } from 'lucide-react';
+import { createClient } from '@/lib/supabase/server';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { getSiteUrl } from '@/lib/site';
 import { JsonLd } from '@/components/shared/JsonLd';
+import { HomepageMedia } from '@/types';
 
 export const metadata: Metadata = {
   title: 'About Twinplast Polymers | PP Sheet Manufacturer',
-  description: 'Learn about Twinplast Polymers Private Limited, a PP sheet manufacturer established in 2021 in Thoothukudi, Tamil Nadu, serving B2B industrial and packaging applications.',
+  description: 'Learn about Twinplast Polymers Pvt. Ltd., a specialized Polypropylene (PP) Corrugated Sheets and PP-based products manufacturer in Tuticorin, Tamil Nadu, India.',
   alternates: {
     canonical: getSiteUrl('/about'),
   },
   openGraph: {
     title: 'About Twinplast Polymers | PP Sheet Manufacturer',
-    description: 'Learn about Twinplast Polymers Private Limited, a PP sheet manufacturer established in 2021 in Thoothukudi, Tamil Nadu, serving B2B industrial and packaging applications.',
+    description: 'Learn about Twinplast Polymers Pvt. Ltd., a specialized Polypropylene (PP) Corrugated Sheets and PP-based products manufacturer in Tuticorin, Tamil Nadu, India.',
     url: getSiteUrl('/about'),
     type: 'website',
   },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  let aboutImageId: string | null = null;
+  let aboutAltText = 'Twinplast Polymers manufacturing plant in Tuticorin';
+
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from('homepage_media')
+      .select('image_cloudinary_public_id, alt_text')
+      .eq('slot', 'about_main')
+      .maybeSingle();
+
+    if (data) {
+      const media = data as unknown as HomepageMedia;
+      if (media.image_cloudinary_public_id) {
+        aboutImageId = media.image_cloudinary_public_id;
+      }
+      if (media.alt_text?.trim()) {
+        aboutAltText = media.alt_text.trim();
+      }
+    }
+  } catch {
+    // Graceful fallback to null image which renders editorial placeholder without broken icon
+  }
+
   const companyStrengths = [
     { title: 'Modern Extrusion', desc: 'Operating advanced polymer extrusion machines to achieve accurate sheet finishes.', icon: Layers },
     { title: 'Quality Controls', desc: 'Consistent testing procedures safeguarding structural and visual parameters.', icon: Award },
@@ -28,12 +54,12 @@ export default function AboutPage() {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${getSiteUrl('/')}#localbusiness`,
-    name: 'Twinplast Polymers Private Limited',
+    name: 'Twinplast Polymers Pvt. Ltd.',
     url: getSiteUrl('/about'),
     logo: getSiteUrl('/logo.png'),
-    description: 'Polypropylene (PP) sheet manufacturing facility operating in Thoothukudi, Tamil Nadu, India.',
-    telephone: '+91 95853 88444',
-    email: 'twinplastpolymers@gmail.com',
+    description: 'Polypropylene (PP) sheet manufacturing facility operating in Tuticorin, Tamil Nadu, India.',
+    telephone: '+91 96458 32154',
+    email: 'info@twinplastpolymers.com',
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan',
@@ -58,30 +84,44 @@ export default function AboutPage() {
             Twinplast Story
           </span>
           <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-            About Twinplast Polymers
+            About Us
           </h1>
           <p className="text-base text-muted max-w-2xl">
-            Established in 2021 &bull; Plant Location in Thoothukudi, Tamil Nadu, India
+            Twinplast Polymers Pvt. Ltd. &bull; Tuticorin, Tamil Nadu, India
           </p>
         </div>
 
-        {/* Plant Facade image with locking aspect */}
+        {/* Plant Facade image */}
         <ImageContainer
-          src="brand/twinplast-plant-facade"
-          alt="Twinplast Polymers Manufacturing plant in Thoothukudi"
+          src={aboutImageId}
+          alt={aboutAltText}
           aspectRatio="video"
           priority
         />
 
-        {/* Factual Narrative Panels */}
+        {/* Authoritative About Us Text with Exact Source Bold Emphasis */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-          <div className="md:col-span-7 space-y-6">
-            <h2 className="text-xl font-bold text-foreground">Our Extrusion History</h2>
-            <p className="text-sm text-muted leading-relaxed">
-              Twinplast Polymers Private Limited commenced manufacturing operations in 2021 in the industrial hub of Thoothukudi, Tamil Nadu. Our core focus centers on fabricating robust polypropylene (PP) sheets designed to support commercial packaging, stack warehousing partitions, and heavy floor guard shields.
+          <div className="md:col-span-7 space-y-4">
+            <h2 className="text-xl font-bold text-foreground">Twinplast Polymers Pvt. Ltd.</h2>
+            
+            {/* Paragraph 1 */}
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+              <strong className="font-bold text-slate-900 dark:text-white">Twinplast Polymers Pvt. Ltd.</strong> is a manufacturer of high-quality <strong className="font-bold text-slate-900 dark:text-white">Polypropylene (PP) Corrugated Sheets and PP-based products</strong>, serving customers across <strong className="font-bold text-slate-900 dark:text-white">packaging, construction, industrial, advertising</strong> and other <strong className="font-bold text-slate-900 dark:text-white">commercial applications</strong>.
             </p>
-            <p className="text-sm text-muted leading-relaxed">
-              Operating with an customer-centric model, our engineering departments custom-calibrate GSM weights, dimensions, colors, and thicknesses to align with B2B shipping or material handling specifications. We serve key logistics, construction, and advertising entities across local and national channels.
+
+            {/* Paragraph 2 */}
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+              Based in <strong className="font-bold text-slate-900 dark:text-white">Tuticorin, Tamil Nadu, India</strong>, Twinplast specializes in manufacturing versatile PP sheet solutions designed to provide <strong className="font-bold text-slate-900 dark:text-white">lightweight, durable, reusable and moisture-resistant alternatives</strong> for a wide range of applications.
+            </p>
+
+            {/* Paragraph 3 */}
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+              Our product range includes <strong className="font-bold text-slate-900 dark:text-white">PP Corrugated Sheets, PP Layer Pad Sheets, PP Sunpack Sheets, PP Floor Protection Sheets, PP Corrugated Boxes and customized PP products</strong>.
+            </p>
+
+            {/* Paragraph 4 */}
+            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+              With a focus on product quality, customization and reliable supply, we work closely with customers to understand their requirements and provide practical PP solutions for their specific applications.
             </p>
           </div>
 
@@ -111,7 +151,7 @@ export default function AboutPage() {
             </div>
             <h3 className="text-lg font-bold text-foreground">Our Vision</h3>
             <p className="text-sm text-muted leading-relaxed flex-1">
-              To become a trusted and leading PP sheet manufacturing company in India, recognised for quality products, customer satisfaction, innovation and dependable service.
+              To become a trusted and recognized manufacturer of innovative polypropylene sheet and packaging solutions, delivering quality products and sustainable value to customers in India and international markets.
             </p>
           </div>
           <div className="bg-surface border border-surface-border p-8 rounded-xl shadow-sm space-y-4 flex flex-col">
@@ -120,7 +160,7 @@ export default function AboutPage() {
             </div>
             <h3 className="text-lg font-bold text-foreground">Our Mission</h3>
             <p className="text-sm text-muted leading-relaxed flex-1">
-              To manufacture and supply high-performance PP sheet products that provide value, durability and reliability to customers while continuously improving manufacturing capabilities and product range.
+              Our mission is to manufacture high-quality PP products that combine durability, functionality and cost-effectiveness while continuously improving our technology, manufacturing processes and customer service.
             </p>
           </div>
         </div>
