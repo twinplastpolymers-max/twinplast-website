@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { Award, Layers, Target, Compass } from 'lucide-react';
+import { createClient } from '@/lib/supabase/server';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { getSiteUrl } from '@/lib/site';
 import { JsonLd } from '@/components/shared/JsonLd';
+import { HomepageMedia } from '@/types';
 
 export const metadata: Metadata = {
   title: 'About Twinplast Polymers | PP Sheet Manufacturer',
@@ -18,7 +20,31 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  let aboutImageId: string | null = null;
+  let aboutAltText = 'Twinplast Polymers manufacturing plant in Tuticorin';
+
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from('homepage_media')
+      .select('image_cloudinary_public_id, alt_text')
+      .eq('slot', 'about_main')
+      .maybeSingle();
+
+    if (data) {
+      const media = data as unknown as HomepageMedia;
+      if (media.image_cloudinary_public_id) {
+        aboutImageId = media.image_cloudinary_public_id;
+      }
+      if (media.alt_text?.trim()) {
+        aboutAltText = media.alt_text.trim();
+      }
+    }
+  } catch {
+    // Graceful fallback to null image which renders editorial placeholder without broken icon
+  }
+
   const companyStrengths = [
     { title: 'Modern Extrusion', desc: 'Operating advanced polymer extrusion machines to achieve accurate sheet finishes.', icon: Layers },
     { title: 'Quality Controls', desc: 'Consistent testing procedures safeguarding structural and visual parameters.', icon: Award },
@@ -67,8 +93,8 @@ export default function AboutPage() {
 
         {/* Plant Facade image */}
         <ImageContainer
-          src="brand/twinplast-plant-facade"
-          alt="Twinplast Polymers Manufacturing plant in Tuticorin"
+          src={aboutImageId}
+          alt={aboutAltText}
           aspectRatio="video"
           priority
         />

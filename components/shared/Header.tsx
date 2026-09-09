@@ -33,15 +33,26 @@ export function Header({ publicPhone, publicEmail }: HeaderProps) {
         {/* Brand Logo */}
         <Link 
           href="/" 
-          className="flex items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 rounded-md py-1 shrink-0"
+          className="flex items-center gap-2.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 rounded-md py-1 shrink-0"
+          aria-label="Twinplast Polymers Home"
         >
-          <div className="relative h-10 w-44 sm:h-12 sm:w-52">
+          <div className="relative h-9 w-9 sm:h-10 sm:w-10 shrink-0 flex items-center justify-center">
             <Image
-              src="/logo.png"
-              alt="Twinplast Polymers Logo"
+              src="/twinplast logo icon.png"
+              alt="Twinplast Polymers Logo Icon"
               fill
               priority
-              sizes="(max-width: 640px) 176px, 208px"
+              sizes="40px"
+              className="object-contain"
+            />
+          </div>
+          <div className="relative h-7 w-36 sm:h-8 sm:w-44 shrink-0 flex items-center">
+            <Image
+              src="/twinplast logo text-black.png"
+              alt="Twinplast Polymers"
+              fill
+              priority
+              sizes="(max-width: 640px) 144px, 176px"
               className="object-contain object-left"
             />
           </div>
