@@ -136,7 +136,6 @@ export default async function HomePage() {
   const aboutEyebrow = (aboutContentData.eyebrow as string) || 'ABOUT OUR COMPANY';
   const aboutHeading = (aboutContentData.heading as string) || (aboutContentData.title as string) || 'Twinplast Polymers Private Limited';
   const aboutSubheadline = (aboutContentData.subheadline as string) || (aboutContentData.subtitle as string) || 'Established in 2021 in Thoothukudi, Tamil Nadu, India.';
-  const aboutBody = (aboutContentData.content as string) || 'We are a trusted manufacturer of polypropylene sheets and PP products, delivering innovative and high-quality solutions for industrial and commercial applications. With advanced manufacturing facilities and a commitment to excellence, we serve customers across diverse industries.';
   const aboutCtaLabel = (aboutContentData.cta_label as string) || 'More About Us';
   const aboutCtaUrl = (aboutContentData.cta_url as string) || '/about';
 
@@ -362,7 +361,7 @@ export default async function HomePage() {
               </div>
 
               <p className="text-sm text-slate-600 leading-relaxed font-normal">
-                {aboutBody}
+                <strong className="font-bold text-slate-900">Twinplast Polymers Pvt. Ltd.</strong> is a manufacturer of high-quality <strong className="font-bold text-slate-900">Polypropylene (PP) Corrugated Sheets and PP-based products</strong>, serving customers across <strong className="font-bold text-slate-900">packaging, construction, industrial, advertising</strong> and other <strong className="font-bold text-slate-900">commercial applications</strong>.
               </p>
               
               <div className="pt-2">
