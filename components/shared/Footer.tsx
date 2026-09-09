@@ -52,39 +52,23 @@ export function Footer({ publicPhone, publicEmail, publicAddress }: FooterProps)
           
           {/* Mobile Brand Area */}
           <div className="space-y-3">
-            <Link 
-              href="/" 
-              className="flex items-center gap-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 rounded"
-              aria-label="Twinplast Polymers Home"
-            >
-              <div className="relative h-9 w-9 shrink-0 flex items-center justify-center">
-                <Image
-                  src="/twinplast logo icon.png"
-                  alt="Twinplast Polymers Logo Icon"
-                  fill
-                  priority
-                  sizes="36px"
-                  className="object-contain"
-                />
-              </div>
-              <div className="relative h-7 w-36 shrink-0 flex items-center">
-                <Image
-                  src="/twinplast logo text-black.png"
-                  alt="Twinplast Polymers"
-                  fill
-                  priority
-                  sizes="144px"
-                  className="object-contain object-left dark:hidden"
-                />
-                <Image
-                  src="/twinplast logo text-white.png"
-                  alt="Twinplast Polymers"
-                  fill
-                  priority
-                  sizes="144px"
-                  className="object-contain object-left hidden dark:block"
-                />
-              </div>
+            <Link href="/" className="relative h-12 w-48 block focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 rounded">
+              <Image
+                src="/logo.png"
+                alt="Twinplast Polymers Logo"
+                fill
+                priority
+                sizes="200px"
+                className="object-contain object-left dark:hidden"
+              />
+              <Image
+                src="/logo-white.png"
+                alt="Twinplast Polymers Logo"
+                fill
+                priority
+                sizes="200px"
+                className="object-contain object-left hidden dark:block"
+              />
             </Link>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
               Specialized B2B manufacturer of polypropylene fluted sheets. Established in 2021 in Thoothukudi, Tamil Nadu.
@@ -208,31 +192,15 @@ export function Footer({ publicPhone, publicEmail, publicAddress }: FooterProps)
             
             {/* Brand/About column - Left 5 cols */}
             <div className="md:col-span-5 flex flex-col gap-5">
-              <Link 
-                href="/" 
-                className="flex items-center gap-2.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded py-1 shrink-0"
-                aria-label="Twinplast Polymers Home"
-              >
-                <div className="relative h-10 w-10 shrink-0 flex items-center justify-center">
-                  <Image
-                    src="/twinplast logo icon.png"
-                    alt="Twinplast Polymers Logo Icon"
-                    fill
-                    priority
-                    sizes="40px"
-                    className="object-contain"
-                  />
-                </div>
-                <div className="relative h-8 w-44 shrink-0 flex items-center">
-                  <Image
-                    src="/twinplast logo text-white.png"
-                    alt="Twinplast Polymers"
-                    fill
-                    priority
-                    sizes="176px"
-                    className="object-contain object-left"
-                  />
-                </div>
+              <Link href="/" className="relative h-16 w-60 block focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded">
+                <Image
+                  src="/logo-white.png"
+                  alt="Twinplast Polymers Logo"
+                  fill
+                  priority
+                  sizes="260px"
+                  className="object-contain object-left"
+                />
               </Link>
               <p className="text-sm text-slate-400 leading-relaxed max-w-md">
                 Twinplast Polymers Private Limited is a specialized B2B manufacturer of polypropylene fluted sheets. Established in 2021 in Thoothukudi, Tamil Nadu, we engineer durable packaging, separations, and flooring protection products.
