@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
@@ -10,12 +10,40 @@ interface ProductCarouselProps {
   products: Product[];
 }
 
+const AUTOPLAY_INTERVAL = 4500; // 4.5 seconds per slide
+
+function subscribeToReducedMotion(callback: () => void) {
+  if (typeof window === 'undefined') return () => {};
+  const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  mediaQuery.addEventListener('change', callback);
+  return () => mediaQuery.removeEventListener('change', callback);
+}
+
+function getReducedMotionSnapshot() {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function getReducedMotionServerSnapshot() {
+  return false;
+}
+
 export function ProductCarousel({ products }: ProductCarouselProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [activeIdx, setActiveIdx] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isInteracting, setIsInteracting] = useState(false);
 
+  // Subscribe to prefers-reduced-motion using useSyncExternalStore
+  const prefersReducedMotion = useSyncExternalStore(
+    subscribeToReducedMotion,
+    getReducedMotionSnapshot,
+    getReducedMotionServerSnapshot
+  );
+
+  // Update scroll bounds and active index for dots
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -26,7 +54,7 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
     const cardWidth = card?.clientWidth || 1;
     const gap = 24;
     const idx = Math.round(el.scrollLeft / (cardWidth + gap));
-    setActiveIdx(Math.min(idx, products.length - 1));
+    setActiveIdx(Math.min(Math.max(0, idx), products.length - 1));
   }, [products.length]);
 
   useEffect(() => {
@@ -41,16 +69,55 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
     };
   }, [checkScroll]);
 
-  const scroll = (direction: 'left' | 'right') => {
+  // Scroll function with smooth behavior
+  const scrollToDirection = useCallback((direction: 'left' | 'right') => {
     const el = scrollRef.current;
     if (!el) return;
     const card = el.querySelector('[data-carousel-card]');
     if (!card) return;
     const scrollAmount = card.clientWidth + 24;
-    el.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
-      behavior: 'smooth',
-    });
+
+    if (direction === 'right') {
+      const isAtEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - 12;
+      if (isAtEnd) {
+        // Loop back to start smoothly
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    } else {
+      el.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    }
+  }, []);
+
+  // Smooth Auto-sliding timer
+  useEffect(() => {
+    // If reduced motion, hovered, interacting, or not enough products, do not autoplay
+    if (prefersReducedMotion || isHovered || isInteracting || !products || products.length <= 1) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      scrollToDirection('right');
+    }, AUTOPLAY_INTERVAL);
+
+    return () => clearInterval(timer);
+  }, [prefersReducedMotion, isHovered, isInteracting, products, scrollToDirection]);
+
+  // Handle manual dot navigation
+  const scrollToCardIndex = (idx: number) => {
+    const el = scrollRef.current;
+    const card = el?.querySelector('[data-carousel-card]');
+    if (!el || !card) return;
+    setIsInteracting(true);
+    el.scrollTo({ left: idx * (card.clientWidth + 24), behavior: 'smooth' });
+    setTimeout(() => setIsInteracting(false), 800);
+  };
+
+  const handleManualScroll = (direction: 'left' | 'right') => {
+    setIsInteracting(true);
+    scrollToDirection(direction);
+    setTimeout(() => setIsInteracting(false), 800);
   };
 
   if (!products || products.length === 0) {
@@ -102,13 +169,26 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
           </div>
         </div>
 
-        {/* Carousel Container */}
-        <div className="relative group/carousel">
+        {/* Carousel Container with Hover & Touch Pause Handlers */}
+        <div 
+          className="relative group/carousel"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onTouchStart={() => setIsInteracting(true)}
+          onTouchEnd={() => {
+            setTimeout(() => setIsInteracting(false), 2000);
+          }}
+          onFocus={() => setIsHovered(true)}
+          onBlur={() => setIsHovered(false)}
+          tabIndex={0}
+          role="region"
+          aria-label="Product Showcase Carousel"
+        >
 
           {/* Left Navigation Arrow */}
           <button
             type="button"
-            onClick={() => scroll('left')}
+            onClick={() => handleManualScroll('left')}
             disabled={!canScrollLeft}
             className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 sm:-translate-x-5 z-20 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center transition-all cursor-pointer ${
               canScrollLeft
@@ -123,7 +203,7 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
           {/* Right Navigation Arrow */}
           <button
             type="button"
-            onClick={() => scroll('right')}
+            onClick={() => handleManualScroll('right')}
             disabled={!canScrollRight}
             className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 sm:translate-x-5 z-20 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-lg flex items-center justify-center transition-all cursor-pointer ${
               canScrollRight
@@ -191,12 +271,7 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
               <button
                 key={idx}
                 type="button"
-                onClick={() => {
-                  const el = scrollRef.current;
-                  const card = el?.querySelector('[data-carousel-card]');
-                  if (!el || !card) return;
-                  el.scrollTo({ left: idx * (card.clientWidth + 24), behavior: 'smooth' });
-                }}
+                onClick={() => scrollToCardIndex(idx)}
                 className={`rounded-full transition-all cursor-pointer ${
                   idx === activeIdx
                     ? 'w-7 h-2 bg-blue-600'

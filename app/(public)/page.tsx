@@ -645,11 +645,11 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {mktRegions.map((region) => (
-              <div key={region} className="p-4 rounded-xl bg-slate-50 border border-slate-200/90 text-xs font-bold text-slate-800 flex flex-col items-center justify-center gap-2 hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 shadow-2xs">
-                <Globe2 className="w-5 h-5 text-blue-600" />
-                <span>{region}</span>
+              <div key={region} className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200/90 text-xs sm:text-sm font-bold text-slate-800 flex flex-col items-center justify-center gap-2.5 hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 shadow-2xs">
+                <Globe2 className="w-5 h-5 text-blue-600 shrink-0" />
+                <span className="text-center">{region}</span>
               </div>
             ))}
           </div>
