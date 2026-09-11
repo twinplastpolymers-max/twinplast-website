@@ -2,7 +2,9 @@
 
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Eye, EyeOff } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 function LoginForm() {
@@ -17,6 +19,7 @@ function LoginForm() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(initialErrorMsg);
 
@@ -66,16 +69,28 @@ function LoginForm() {
 
   return (
     <div className="max-w-md w-full space-y-8 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-8 rounded-xl shadow-sm animate-fade-in">
-      <div className="text-center">
-        <Link href="/" className="font-bold text-2xl text-blue-600 dark:text-blue-400">
-          Twinplast Polymers
+      <div className="text-center flex flex-col items-center">
+        <Link href="/" className="relative h-14 w-48 block focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 rounded">
+          <Image
+            src="/logo.png"
+            alt="Twinplast Polymers Logo"
+            fill
+            priority
+            sizes="200px"
+            className="object-contain object-center dark:hidden"
+          />
+          <Image
+            src="/logo-white.png"
+            alt="Twinplast Polymers Logo"
+            fill
+            priority
+            sizes="200px"
+            className="object-contain object-center hidden dark:block"
+          />
         </Link>
-        <h1 className="mt-6 text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="mt-4 text-xl font-bold tracking-tight text-slate-900 dark:text-white">
           Admin Console Portal
         </h1>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-          Sign in with your administrative account to manage content
-        </p>
       </div>
 
       <form className="mt-8 space-y-4" onSubmit={handleLogin} aria-label="Admin Sign In">
@@ -90,8 +105,8 @@ function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
-            className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-            placeholder="admin@twinplast.com"
+            className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus-visible:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+            placeholder="Enter email address"
           />
         </div>
 
@@ -99,15 +114,30 @@ function LoginForm() {
           <label htmlFor="password-input" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
             Password
           </label>
-          <input
-            id="password-input"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            disabled={isLoading}
-            className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-          />
+          <div className="relative mt-1">
+            <input
+              id="password-input"
+              type={showPassword ? 'text' : 'password'}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+              placeholder="Enter password"
+              className="block w-full rounded-lg border border-slate-200 bg-white pl-3.5 pr-10 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus-visible:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer focus:outline-none"
+            >
+              {showPassword ? (
+                <EyeOff className="w-4 h-4" />
+              ) : (
+                <Eye className="w-4 h-4" />
+              )}
+            </button>
+          </div>
         </div>
 
         {errorMsg && (
