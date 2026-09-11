@@ -23,14 +23,12 @@ export async function submitEnquiry(data: EnquiryInsert) {
     if (!data.email || !data.email.trim()) {
       return { success: false, error: 'Email address is required.' };
     }
-    if (!data.message || !data.message.trim()) {
-      return { success: false, error: 'Specifications / Enquiry message is required.' };
-    }
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email.trim())) {
       return { success: false, error: 'Please enter a valid email address.' };
     }
+
+    const enquiryMessage = data.message?.trim() || 'General enquiry / consultation request';
 
     // 2. Supabase DB Insertion
     const supabase = (await createClient()) as unknown as {
@@ -46,7 +44,7 @@ export async function submitEnquiry(data: EnquiryInsert) {
           phone: data.phone?.trim() || null,
           email: data.email.trim(),
           company: data.company?.trim() || null,
-          message: data.message.trim(),
+          message: enquiryMessage,
           status: 'new',
         },
       ]);
@@ -68,7 +66,7 @@ export async function submitEnquiry(data: EnquiryInsert) {
         const escapedEmail = escapeHtml(data.email);
         const escapedPhone = escapeHtml(data.phone);
         const escapedCompany = escapeHtml(data.company);
-        const escapedMessage = escapeHtml(data.message);
+        const escapedMessage = escapeHtml(enquiryMessage);
         
         // Format timestamp
         const formattedDate = new Date().toLocaleString('en-IN', {

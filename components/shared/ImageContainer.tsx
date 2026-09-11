@@ -41,11 +41,11 @@ export function ImageContainer({
 
   const containerClasses = unstyled
     ? `relative w-full overflow-hidden ${selectedAspect} ${className}`
-    : `relative w-full overflow-hidden rounded-xl border border-surface-border bg-slate-50/60 dark:bg-slate-900/30 transition-all duration-300 ${selectedAspect} ${className}`;
+    : `relative w-full overflow-hidden rounded-md bg-slate-50/60 dark:bg-slate-900/30 transition-all duration-300 ${selectedAspect} ${className}`;
 
   const imageClasses = unstyled
-    ? (fit === 'contain' ? "object-contain p-2 transition-transform duration-500 group-hover:scale-105" : "object-cover transition-transform duration-500 group-hover:scale-105")
-    : (fit === 'contain' ? "object-contain p-2.5 transition-transform duration-500 group-hover:scale-105" : "object-cover transition-transform duration-500 group-hover:scale-105");
+    ? (fit === 'contain' ? "object-contain transition-transform duration-500 group-hover:scale-105" : "object-cover transition-transform duration-500 group-hover:scale-105")
+    : (fit === 'contain' ? "object-contain transition-transform duration-500 group-hover:scale-105" : "object-cover transition-transform duration-500 group-hover:scale-105");
 
   return (
     <div className={containerClasses}>

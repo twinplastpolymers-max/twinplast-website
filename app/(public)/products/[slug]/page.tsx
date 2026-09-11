@@ -8,6 +8,7 @@ import { Product } from '@/types';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { getSiteUrl } from '@/lib/site';
+import { CtaBanner } from '@/components/shared/CtaBanner';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -131,27 +132,15 @@ export default async function ProductDetailPage({ params }: PageProps) {
   };
 
   return (
-    <div className="flex-1 py-12 px-4 sm:px-6 lg:px-8 bg-background">
+    <div className="flex-1 bg-background">
       <JsonLd data={[productSchema, breadcrumbSchema]} />
-      <div className="mx-auto max-w-5xl">
+      <div className="py-12 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
         {/* Breadcrumb Navigation */}
-        <nav className="mb-8" aria-label="Breadcrumb">
-          <ol className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted">
-            <li>
-              <Link href="/products" className="hover:text-accent transition-colors">
-                Products
-              </Link>
-            </li>
-            <li className="before:content-['/'] before:mr-2">
-              <span className="text-foreground">
-                {product.title}
-              </span>
-            </li>
-          </ol>
-        </nav>
+   
 
         {/* Product Spec Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start bg-surface border border-surface-border rounded-2xl p-6 sm:p-8 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start bg-surface sm:p-8 ">
           {/* Product Media - Left 5 cols */}
           <div className="md:col-span-5 w-full">
             <ImageContainer
@@ -215,21 +204,20 @@ export default async function ProductDetailPage({ params }: PageProps) {
             {/* Inquire Action Button */}
             <div className="pt-6 border-t border-secondary/50">
               <Link
-                href={`/contact?product=${product.slug}`}
+                href={`/contact?product=${encodeURIComponent(product.title)}`}
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent text-accent-foreground px-5 py-3.5 text-sm font-bold uppercase tracking-wider hover:bg-accent/90 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
-                <Mail className="w-4 h-4" />
-                <span>Request B2B Quote</span>
+                {/* <Mail className="w-4 h-4" /> */}
+                <span>Request Quote</span>
               </Link>
-              
-              <div className="mt-4 flex items-center gap-2 justify-center text-xs text-muted">
-                <HelpCircle className="w-4 h-4 text-muted/80" />
-                <span>Need assistance? Phone sales plant at +91 95853 88444</span>
-              </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+      {/* Bottom CTA Banner (Same content reused across all pages) */}
+      <CtaBanner />
     </div>
   );
 }

@@ -96,6 +96,9 @@ export interface WhyChoosePillar {
 export interface WhyChooseSectionContent {
   eyebrow?: string;
   heading: string;
+  description?: string;
+  image?: string | null;
+  image_url?: string | null;
   pillars: WhyChoosePillar[];
 }
 
@@ -105,10 +108,20 @@ export interface QualityCommitmentSectionContent {
   parameters: string[];
 }
 
+export interface MarketRegionItem {
+  id?: string;
+  name?: string;
+  label?: string;
+  image?: string;
+  image_url?: string;
+}
+
 export interface MarketsSectionContent {
   heading: string;
   content: string;
-  regions: string[];
+  background_image?: string | null;
+  background_image_url?: string | null;
+  regions: (string | MarketRegionItem)[];
 }
 
 export interface FinalCtaSectionContent {

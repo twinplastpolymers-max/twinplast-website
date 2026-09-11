@@ -4,7 +4,8 @@ import {
   Product,
   HomepageMedia,
   HomepageSection,
-  Industry
+  Industry,
+  MarketRegionItem
 } from '@/types';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { getSiteUrl } from '@/lib/site';
@@ -12,10 +13,12 @@ import { JsonLd } from '@/components/shared/JsonLd';
 
 import { HeroSection } from '@/components/home/HeroSection';
 import { AboutSection } from '@/components/home/AboutSection';
+import { StatisticsSection } from '@/components/home/StatisticsSection';
 import { ProductCarousel } from '@/components/home/ProductCarousel';
 import { IndustriesSection } from '@/components/home/IndustriesSection';
 import { MarketsSection } from '@/components/home/MarketsSection';
-import { FinalCtaSection } from '@/components/home/FinalCtaSection';
+import { WhyChooseSection } from '@/components/home/WhyChooseSection';
+import { CtaBanner } from '@/components/shared/CtaBanner';
 
 export const metadata: Metadata = {
   title: 'Twinplast Polymers | PP Sheet Manufacturer in Tamil Nadu',
@@ -119,7 +122,18 @@ export default async function HomePage() {
   const mktEyebrow = (mktContentData.eyebrow as string) || undefined;
   const mktHeading = (mktContentData.heading as string) || (mktContentData.title as string) || 'Markets We Serve';
   const mktBody = (mktContentData.content as string) || (mktContentData.subtitle as string) || undefined;
-  const mktRegions = (mktContentData.regions as string[]) || [];
+  const mktBgRaw = (mktContentData.background_image as string) || (mktContentData.background_image_url as string) || null;
+  const mktBgImageUrl = mktBgRaw ? getOptimizedImageUrl(mktBgRaw, { quality: 'best', upscale: true }) : null;
+  const mktRegions = (mktContentData.regions as (string | MarketRegionItem)[]) || [];
+
+  // 7. Why Choose Content
+  const whyContentData = getSec('why_choose');
+  const whyEyebrow = (whyContentData.eyebrow as string) || undefined;
+  const whyHeading = (whyContentData.heading as string) || (whyContentData.title as string) || undefined;
+  const whyDescription = (whyContentData.description as string) || (whyContentData.content as string) || undefined;
+  const whyImage = (whyContentData.image as string) || (whyContentData.image_url as string) || aboutSecondary2 || null;
+  const whyPillars = (whyContentData.pillars as Array<{ title: string; description: string }>) || 
+                     (whyContentData.reasons as Array<{ title: string; description: string }>) || [];
 
   // 7. Final CTA Content
   const ctaContentData = getSec('final_cta');
@@ -179,30 +193,15 @@ export default async function HomePage() {
       />
 
       {/* 3. STATISTICS SECTION (separate, full-width) */}
-      {statsItems && statsItems.length > 0 && (
-        <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8 bg-slate-50 border-t border-slate-100">
-          <div className="mx-auto max-w-7xl">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-              {statsItems.slice(0, 4).map((stat, idx) => (
-                <div key={idx} className="text-center">
-                  <p className="text-3xl sm:text-3xl  text-slate-900 tracking-tight">{stat.count}</p>
-                  <h3 className="text-sm font-semibold text-slate-800 mt-1.5">{stat.heading}</h3>
-                  {stat.description && (
-                    <p className="text-xs text-slate-500 mt-1 leading-relaxed max-w-[140px] mx-auto">{stat.description}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <StatisticsSection stats={statsItems} />
 
+    {/* 5. APPLICATIONS & SOLUTIONS */}
+      <IndustriesSection industries={industries} />
 
       {/* 4. PRODUCT SHOWCASE (Horizontal Carousel) */}
       <ProductCarousel products={products} />
 
-      {/* 5. INDUSTRIES & APPLICATIONS (Compact icon cards) */}
-      <IndustriesSection industries={industries} />
+  
 
 
 
@@ -213,19 +212,21 @@ export default async function HomePage() {
         eyebrow={mktEyebrow}
         heading={mktHeading}
         body={mktBody}
+        backgroundImage={mktBgImageUrl}
         regions={mktRegions}
       />
 
-      {/* 11. FINAL CTA */}
-      <FinalCtaSection
-        heading={ctaHeading}
-        subheadline={ctaSubheadline}
-        primaryLabel={ctaPrimaryLabel}
-        primaryUrl={ctaPrimaryUrl}
-        secondaryLabel={ctaSecondaryLabel}
-        secondaryUrl={ctaSecondaryUrl}
-        bgImage={ctaBgImage}
+      {/* 11. WHY CHOOSE US */}
+      <WhyChooseSection
+        eyebrow={whyEyebrow}
+        heading={whyHeading}
+        description={whyDescription}
+        pillars={whyPillars}
+        image={whyImage}
       />
+
+      {/* 12. CTA BANNER */}
+      <CtaBanner />
     </div>
   );
 }
