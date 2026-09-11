@@ -1,20 +1,21 @@
 'use client';
 
-import { 
-  Layers, 
-  RotateCw, 
-  Cpu, 
-  LayoutGrid, 
-  ThermometerSnowflake, 
-  Scissors, 
-  CheckCircle, 
-  PackageCheck, 
+import {
+  Layers,
+  RotateCw,
+  Cpu,
+  LayoutGrid,
+  ThermometerSnowflake,
+  Scissors,
+  CheckCircle,
+  PackageCheck,
   Truck,
   ArrowRight,
-  LucideIcon 
+  LucideIcon
 } from 'lucide-react';
 import Link from 'next/link';
 import { ManufacturingStep } from '@/types';
+import { SlideButton } from '@/components/shared/SlideButton';
 
 interface ManufacturingProcessSectionProps {
   steps: ManufacturingStep[];
@@ -40,7 +41,7 @@ export function ManufacturingProcessSection({ steps }: ManufacturingProcessSecti
   return (
     <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 border-t border-slate-200/80" aria-labelledby="process-heading">
       <div className="mx-auto max-w-7xl">
-        
+
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 lg:mb-16 gap-4">
           <div>
@@ -54,13 +55,7 @@ export function ManufacturingProcessSection({ steps }: ManufacturingProcessSecti
               A standardized process ensuring superior quality, consistency and performance in every sheet and product we manufacture.
             </p>
           </div>
-          <Link
-            href="/about"
-            className="inline-flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-5 py-2.5 text-xs sm:text-sm font-bold transition-all shadow-sm shadow-blue-600/20 shrink-0"
-          >
-            <span>Our Manufacturing</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          <SlideButton href="/about" label="Our Manufacturing" />
         </div>
 
         {/* Mobile: Clean Vertical Progression Timeline */}
@@ -119,7 +114,7 @@ export function ManufacturingProcessSection({ steps }: ManufacturingProcessSecti
                     <div className="w-12 h-12 rounded-full bg-blue-600 text-white text-sm font-extrabold font-mono flex items-center justify-center shadow-md ring-4 ring-slate-50 group-hover:bg-blue-700 group-hover:scale-105 transition-all duration-300 mb-3">
                       {numStr}
                     </div>
-                    
+
                     {/* Icon container */}
                     <div className="w-9 h-9 rounded-lg bg-white border border-slate-200/90 text-blue-600 flex items-center justify-center mb-2.5 shadow-2xs group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-colors">
                       <IconComponent className="w-4 h-4" />

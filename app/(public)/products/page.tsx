@@ -79,12 +79,12 @@ export default async function ProductsCatalogPage() {
                 key={prod.id}
                 className="flex flex-col bg-surface border border-surface-border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all group"
               >
-                <div className="p-3 bg-slate-50/80 dark:bg-slate-900/60 border-b border-surface-border">
+                <div className="w-full bg-slate-50/80 dark:bg-slate-900/60 border-b border-surface-border overflow-hidden">
                   <ImageContainer
                     src={prod.image_cloudinary_public_id}
                     alt={prod.title}
                     aspectRatio="tall"
-                    fit="contain"
+                    fit="cover"
                     unstyled
                   />
                 </div>

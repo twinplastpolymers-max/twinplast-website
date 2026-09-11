@@ -52,13 +52,18 @@ export interface HeroConfig {
 
 // Canonical Homepage CMS Section Content Types
 export interface HeroSectionContent {
+  background_image?: string | null;
+  background_image_url?: string | null;
+  subheading?: string;
+  heading?: string;
+  short_description?: string;
   eyebrow?: string;
-  headline: string;
-  subheadline: string;
-  primary_cta_label: string;
-  primary_cta_url: string;
-  secondary_cta_label: string;
-  secondary_cta_url: string;
+  headline?: string;
+  subheadline?: string;
+  primary_cta_label?: string;
+  primary_cta_url?: string;
+  secondary_cta_label?: string;
+  secondary_cta_url?: string;
   location?: string;
 }
 
@@ -80,7 +85,7 @@ export interface VisionMissionSectionContent {
     title: string;
     content: string;
   };
-  objectives: string[];
+  objectives?: string[];
 }
 
 export interface WhyChoosePillar {
@@ -113,5 +118,15 @@ export interface FinalCtaSectionContent {
   primary_cta_url: string;
   secondary_cta_label: string;
   secondary_cta_url: string;
+}
+
+export interface StatisticItem {
+  count: string;
+  heading: string;
+  description: string;
+}
+
+export interface StatisticsSectionContent {
+  stats: StatisticItem[];
 }
 
