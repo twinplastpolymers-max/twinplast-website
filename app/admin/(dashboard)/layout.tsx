@@ -1,8 +1,4 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { LayoutDashboard, ShoppingBag, Award, Building2, Layers, Mail, Settings, ExternalLink } from 'lucide-react';
-import { SignOutButton } from '@/components/admin/SignOutButton';
-import { HomepageSidebarGroup } from '@/components/admin/HomepageSidebarGroup';
+import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export default function AdminLayout({
@@ -10,85 +6,11 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const topLinks = [
-    { label: 'Dashboard',      href: '/admin',              icon: LayoutDashboard },
-    { label: 'Products',       href: '/admin/products',     icon: ShoppingBag },
-  ];
-
-  const bottomLinks = [
-    { label: 'Certifications', href: '/admin/certifications', icon: Award },
-    { label: 'Industries',     href: '/admin/industries',   icon: Building2 },
-    { label: 'Process',        href: '/admin/manufacturing', icon: Layers },
-    { label: 'Enquiries',      href: '/admin/enquiries',    icon: Mail },
-    { label: 'Settings',       href: '/admin/settings',     icon: Settings },
-  ];
-
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100">
       
       {/* Sidebar Navigation - Fixed on desktop (md+) */}
-      <aside className="hidden md:flex md:fixed md:inset-y-0 md:left-0 md:w-64 md:z-30 flex-col border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-        <div className="h-20 shrink-0 flex items-center justify-center px-4 border-b border-slate-200 dark:border-slate-800">
-          <Link
-            href="/admin"
-            className="relative h-16 w-48 flex items-center justify-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 rounded"
-            title="Twinplast Admin Dashboard"
-          >
-            <Image
-              src="/logo.png"
-              alt="Twinplast Polymers Logo"
-              fill
-              priority
-              sizes="220px"
-              className="object-contain object-center dark:hidden"
-            />
-            <Image
-              src="/logo-white.png"
-              alt="Twinplast Polymers Logo"
-              fill
-              priority
-              sizes="220px"
-              className="object-contain object-center hidden dark:block"
-            />
-          </Link>
-        </div>
-        
-        <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto no-scrollbar" aria-label="Admin Navigation">
-          {topLinks.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-900/60 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-            >
-              <item.icon className="w-4 h-4 text-slate-400" />
-              <span>{item.label}</span>
-            </Link>
-          ))}
-          <HomepageSidebarGroup />
-          {bottomLinks.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-900/60 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-            >
-              <item.icon className="w-4 h-4 text-slate-400" />
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </nav>
-
-        <div className="shrink-0 p-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
-          <Link
-            href="/"
-            target="_blank"
-            className="flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
-          >
-            <span>View Live Site</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </Link>
-          <SignOutButton />
-        </div>
-      </aside>
+      <AdminSidebar />
 
       {/* Main Content Workspace - Offset by fixed sidebar width on desktop */}
       <div className="flex-1 flex flex-col min-w-0 md:pl-64">

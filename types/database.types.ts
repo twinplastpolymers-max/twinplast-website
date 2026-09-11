@@ -12,30 +12,24 @@ export interface Database {
       certifications: {
         Row: {
           id: string
-          title: string
-          credential_type: 'iso' | 'plexconcil' | 'other'
-          certificate_number: string
-          issuing_organization: string
-          scope: string | null
-          issue_date: string | null
-          expiry_date: string | null
+          title: string | null
           image_url: string | null
           image_cloudinary_public_id: string | null
           display_order: number
           active: boolean
-          featured: boolean
+          featured?: boolean
           created_at: string
           updated_at: string
+          credential_type?: string | null
+          certificate_number?: string | null
+          issuing_organization?: string | null
+          scope?: string | null
+          issue_date?: string | null
+          expiry_date?: string | null
         }
         Insert: {
           id?: string
-          title: string
-          credential_type: 'iso' | 'plexconcil' | 'other'
-          certificate_number: string
-          issuing_organization: string
-          scope?: string | null
-          issue_date?: string | null
-          expiry_date?: string | null
+          title?: string | null
           image_url?: string | null
           image_cloudinary_public_id?: string | null
           display_order?: number
@@ -43,16 +37,16 @@ export interface Database {
           featured?: boolean
           created_at?: string
           updated_at?: string
+          credential_type?: string | null
+          certificate_number?: string | null
+          issuing_organization?: string | null
+          scope?: string | null
+          issue_date?: string | null
+          expiry_date?: string | null
         }
         Update: {
           id?: string
-          title?: string
-          credential_type?: 'iso' | 'plexconcil' | 'other'
-          certificate_number?: string
-          issuing_organization?: string
-          scope?: string | null
-          issue_date?: string | null
-          expiry_date?: string | null
+          title?: string | null
           image_url?: string | null
           image_cloudinary_public_id?: string | null
           display_order?: number
@@ -60,6 +54,12 @@ export interface Database {
           featured?: boolean
           created_at?: string
           updated_at?: string
+          credential_type?: string | null
+          certificate_number?: string | null
+          issuing_organization?: string | null
+          scope?: string | null
+          issue_date?: string | null
+          expiry_date?: string | null
         }
         Relationships: []
       }

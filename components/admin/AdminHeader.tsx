@@ -23,7 +23,7 @@ const routeLabels: Record<string, { title: string; category?: string }> = {
   '/admin': { title: 'Dashboard' },
   '/admin/products': { title: 'Products Catalog', category: 'Catalog' },
   '/admin/certifications': { title: 'Quality Certifications', category: 'Compliance' },
-  '/admin/industries': { title: 'Industries Served', category: 'Markets' },
+  '/admin/industries': { title: 'Applications & Solutions', category: 'Markets' },
   '/admin/manufacturing': { title: 'Manufacturing Process', category: 'Operations' },
   '/admin/enquiries': { title: 'Client Enquiries', category: 'Messages' },
   '/admin/settings': { title: 'Site Settings', category: 'Configuration' },
@@ -42,7 +42,7 @@ const mobileNavLinks = [
   { label: 'Dashboard',      href: '/admin',              icon: LayoutDashboard },
   { label: 'Products',       href: '/admin/products',     icon: ShoppingBag },
   { label: 'Certifications', href: '/admin/certifications', icon: Award },
-  { label: 'Industries',     href: '/admin/industries',   icon: Building2 },
+  { label: 'Applications',   href: '/admin/industries',   icon: Building2 },
   { label: 'Process',        href: '/admin/manufacturing', icon: Layers },
   { label: 'Enquiries',      href: '/admin/enquiries',    icon: Mail },
   { label: 'Settings',       href: '/admin/settings',     icon: Settings },
@@ -59,7 +59,7 @@ export function AdminHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 h-20 bg-white/95 dark:bg-slate-950/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 lg:px-8 transition-colors">
+      <header className="sticky top-0 z-20 h-20 bg-[#f0f6ff] text-slate-900 border-b border-blue-200/70 flex items-center justify-between px-4 sm:px-6 lg:px-8 transition-colors shadow-xs">
         
         {/* Left: Mobile Toggle & Page Breadcrumbs */}
         <div className="flex items-center gap-3">
@@ -67,14 +67,14 @@ export function AdminHeader() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 -ml-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800 transition-colors"
+            className="md:hidden p-2 -ml-2 rounded-lg text-slate-700 hover:text-blue-600 hover:bg-blue-100/70 transition-colors"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
           {/* Page Heading */}
-          <h1 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
             {currentRoute.title}
           </h1>
         </div>
@@ -86,24 +86,24 @@ export function AdminHeader() {
           <Link
             href="/"
             target="_blank"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-800 transition-colors shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-white border border-blue-200/80 hover:text-blue-700 hover:bg-blue-50 transition-colors shadow-xs"
             title="Open website in new tab"
           >
             <span className="hidden sm:inline">Live Site</span>
-            <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+            <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
           </Link>
 
           {/* Enquiries Quick Shortcut */}
           <Link
             href="/admin/enquiries"
-            className="p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800 transition-colors relative"
+            className="p-2 rounded-lg text-slate-600 hover:text-blue-600 hover:bg-blue-100/70 transition-colors relative"
             title="View Inquiries"
           >
             <Mail className="w-4 h-4" />
           </Link>
 
           {/* Vertical divider */}
-          <div className="h-5 w-[1px] bg-slate-200 dark:bg-slate-800 mx-1" />
+          <div className="h-5 w-[1px] bg-blue-200/70 mx-1" />
 
           {/* Admin User Profile Tag */}
           <div className="flex items-center gap-2.5 pl-1">
@@ -111,11 +111,11 @@ export function AdminHeader() {
               TP
             </div>
             <div className="hidden lg:block text-left leading-tight">
-              <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                 <span>Administrator</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" title="System Online" />
               </div>
-              <span className="text-[10px] text-slate-400 font-medium">Twinplast Console</span>
+              <span className="text-[10px] text-slate-500 font-medium">Twinplast Console</span>
             </div>
           </div>
         </div>
@@ -131,8 +131,8 @@ export function AdminHeader() {
           />
 
           {/* Slide-out Drawer */}
-          <div className="fixed inset-y-0 left-0 w-72 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 shadow-xl flex flex-col z-50">
-            <div className="h-20 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800">
+          <div className="fixed inset-y-0 left-0 w-72 bg-[#f0f6ff] text-slate-800 border-r border-blue-200/70 shadow-2xl flex flex-col z-50">
+            <div className="h-20 flex items-center justify-between px-6 border-b border-blue-200/70 bg-[#f0f6ff]">
               <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="relative h-14 w-40 block">
                 <Image
                   src="/logo.png"
@@ -140,41 +140,33 @@ export function AdminHeader() {
                   fill
                   priority
                   sizes="180px"
-                  className="object-contain object-left dark:hidden"
-                />
-                <Image
-                  src="/logo-white.png"
-                  alt="Twinplast Polymers Logo"
-                  fill
-                  priority
-                  sizes="180px"
-                  className="object-contain object-left hidden dark:block"
+                  className="object-contain object-left"
                 />
               </Link>
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-blue-100/70 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto no-scrollbar">
+            <nav className="flex-1 px-3 py-6 space-y-1.5 overflow-y-auto no-scrollbar">
               {mobileNavLinks.slice(0, 2).map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = pathname === item.href || (item.href !== '/admin' && pathname.startsWith(`${item.href}/`));
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                    className={`group flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                       isActive
-                        ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-900/60'
+                        ? 'bg-blue-600 text-white shadow-sm font-bold'
+                        : 'text-slate-700 hover:text-blue-700 hover:bg-blue-100/70'
                     }`}
                   >
-                    <item.icon className="w-4 h-4 text-slate-400" />
+                    <item.icon className={`w-4 h-4 transition-colors ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-blue-600'}`} />
                     <span>{item.label}</span>
                   </Link>
                 );
@@ -183,33 +175,33 @@ export function AdminHeader() {
               <HomepageSidebarGroup />
 
               {mobileNavLinks.slice(2).map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                    className={`group flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                       isActive
-                        ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30'
-                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-900/60'
+                        ? 'bg-blue-600 text-white shadow-sm font-bold'
+                        : 'text-slate-700 hover:text-blue-700 hover:bg-blue-100/70'
                     }`}
                   >
-                    <item.icon className="w-4 h-4 text-slate-400" />
+                    <item.icon className={`w-4 h-4 transition-colors ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-blue-600'}`} />
                     <span>{item.label}</span>
                   </Link>
                 );
               })}
             </nav>
 
-            <div className="p-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+            <div className="p-4 border-t border-blue-200/70 space-y-1.5 bg-blue-100/40">
               <Link
                 href="/"
                 target="_blank"
-                className="flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors"
+                className="flex items-center justify-between w-full px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-blue-700 hover:bg-blue-100/80 transition-colors"
               >
                 <span>View Live Site</span>
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
               </Link>
               <SignOutButton />
             </div>

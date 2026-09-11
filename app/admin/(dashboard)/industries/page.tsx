@@ -4,8 +4,8 @@ import { IndustriesManager } from '@/components/admin/IndustriesManager';
 import { Industry } from '@/types';
 
 export const metadata: Metadata = {
-  title: 'Industries Manager | Twinplast Admin',
-  description: 'Manage applications and target industries served.',
+  title: 'Applications & Solutions Manager | Twinplast Admin',
+  description: 'Manage applications and solutions cards.',
 };
 
 export default async function AdminIndustriesPage() {

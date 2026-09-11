@@ -1,8 +1,9 @@
-import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { ContactForm } from './contact-form';
+import type { Metadata } from 'next';
+import { createClient } from '@/lib/supabase/server';
 import { getSiteUrl } from '@/lib/site';
 import { JsonLd } from '@/components/shared/JsonLd';
+import { HomeContactSection } from '@/components/home/HomeContactSection';
 
 export const metadata: Metadata = {
   title: 'Contact Twinplast Polymers | Request a PP Sheet Quote',
@@ -18,7 +19,35 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactPage() {
+interface ContactPageProps {
+  searchParams?: Promise<{ product?: string }>;
+}
+
+export default async function ContactPage({ searchParams }: ContactPageProps) {
+  const resolvedParams = searchParams ? await searchParams : undefined;
+  const initialProduct = resolvedParams?.product || '';
+
+  let publicPhone = '+91 95853 88444';
+  let publicEmail = 'twinplastpolymers@gmail.com';
+  let publicAddress = 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan, Thoothukudi, Tamil Nadu - 628101';
+
+  try {
+    const supabase = await createClient();
+    const { data: settingRes } = await supabase.from('company_settings').select('*');
+    if (settingRes) {
+      const settings = settingRes as Array<{ key: string; value: unknown }>;
+      const pPhone = settings.find((s) => s.key === 'public_phone')?.value;
+      const pEmail = settings.find((s) => s.key === 'public_email')?.value;
+      const pAddr = settings.find((s) => s.key === 'public_address')?.value;
+
+      if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone;
+      if (typeof pEmail === 'string' && pEmail.trim()) publicEmail = pEmail;
+      if (typeof pAddr === 'string' && pAddr.trim()) publicAddress = pAddr;
+    }
+  } catch {
+    // Graceful fallback
+  }
+
   const localBusinessSchema = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
@@ -27,8 +56,8 @@ export default function ContactPage() {
     url: getSiteUrl('/contact'),
     logo: getSiteUrl('/logo.png'),
     description: 'Sales and customer support for PP sheet orders in Thoothukudi, Tamil Nadu.',
-    telephone: '+91 95853 88444',
-    email: 'twinplastpolymers@gmail.com',
+    telephone: publicPhone,
+    email: publicEmail,
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan',
@@ -43,22 +72,16 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="flex-1 py-16 px-4 sm:px-6 lg:px-8 bg-background">
+    <div className="flex-1 bg-white">
       <JsonLd data={localBusinessSchema} />
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-10 text-center sm:text-left">
-          <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-            Partner With Twinplast
-          </h1>
-          <p className="mt-2 text-base text-muted max-w-2xl">
-            Contact our factory sales team directly for custom order quotes, bulk requirements, or application advice.
-          </p>
-        </div>
-
-        <Suspense fallback={<div className="h-96 flex items-center justify-center text-muted">Loading B2B Form...</div>}>
-          <ContactForm />
-        </Suspense>
-      </div>
+      <Suspense fallback={null}>
+        <HomeContactSection
+          phone={publicPhone}
+          email={publicEmail}
+          address={publicAddress}
+          initialProduct={initialProduct}
+        />
+      </Suspense>
     </div>
   );
 }

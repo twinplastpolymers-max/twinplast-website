@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Menu, X, Shield, ChevronRight, Phone, Mail } from 'lucide-react';
 
 interface HeaderProps {
@@ -37,10 +38,18 @@ const YouTubeIcon = () => (
 
 export function Header({ publicPhone, publicEmail }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   const phone = publicPhone || '+91 95853 88444';
   const email = publicEmail || 'twinplastpolymers@gmail.com';
   const cleanPhone = phone.replace(/[^+\d]/g, '');
+
+  const isActive = (href: string) => {
+    if (href === '/') {
+      return pathname === '/';
+    }
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   const navItems = [
     { label: 'Home', href: '/' },
@@ -155,21 +164,28 @@ export function Header({ publicPhone, publicEmail }: HeaderProps) {
           {/* Desktop Right Side: Nav Links & CTA Button */}
           <div className="hidden lg:flex items-center gap-3 xl:gap-5">
             <nav className="flex items-center gap-0.5 xl:gap-1" aria-label="Main Navigation">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="relative text-sm font-semibold text-slate-600 hover:text-[#1a1464] transition-colors px-3 py-2 rounded-md group"
-                >
-                  {item.label}
-                  <span className="absolute bottom-1 left-3 right-3 h-0.5 bg-[#1a1464] scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left rounded-full" />
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`relative text-sm font-semibold transition-colors px-3 py-2 rounded-md ${
+                      active ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                    }`}
+                  >
+                    {item.label}
+                    {active && (
+                      <span className="absolute bottom-0.5 left-3 right-3 h-[2.5px] bg-[#1a1464] rounded-full" />
+                    )}
+                  </Link>
+                );
+              })}
             </nav>
 
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center rounded-lg bg-[#1a1464] hover:bg-[#13104f] text-white px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1464]"
+              className="inline-flex items-center justify-center bg-[#1a1464] hover:bg-[#13104f] text-white px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1464]"
             >
               Contact Us
             </Link>
@@ -179,7 +195,7 @@ export function Header({ publicPhone, publicEmail }: HeaderProps) {
           <div className="flex items-center gap-3 lg:hidden">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center rounded-lg bg-[#1a1464] hover:bg-[#13104f] text-white px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1464]"
+              className="inline-flex items-center justify-center rounded-sm bg-[#1a1464] hover:bg-[#13104f] text-white px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1464]"
             >
               Contact Us
             </Link>
@@ -205,25 +221,31 @@ export function Header({ publicPhone, publicEmail }: HeaderProps) {
             className="flex flex-col h-[calc(100vh-98px)] p-6 justify-between bg-white border-t border-slate-100"
             aria-label="Mobile Navigation"
           >
-            <div className="flex flex-col gap-2">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-between text-base font-bold text-slate-700 hover:text-[#1a1464] p-4 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-all"
-                >
-                  <span>{item.label}</span>
-                  <ChevronRight className="w-4 h-4 text-slate-400" />
-                </Link>
-              ))}
+            <div className="flex flex-col space-y-1">
+              {navItems.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`text-base py-3 transition-colors ${
+                      active
+                        ? 'font-bold text-[#1a1464]'
+                        : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
             </div>
 
             <div className="space-y-4 border-t border-slate-100 pt-6">
               <Link
                 href="/contact"
                 onClick={() => setIsOpen(false)}
-                className="flex w-full items-center justify-center rounded-xl bg-[#1a1464] hover:bg-[#13104f] text-white py-4 text-sm font-bold uppercase tracking-wider transition-colors"
+                className="flex w-full items-center justify-center rounded-sm bg-[#1a1464] hover:bg-[#13104f] text-white py-4 text-sm font-bold uppercase tracking-wider transition-colors"
               >
                 Contact Us
               </Link>
@@ -250,15 +272,6 @@ export function Header({ publicPhone, publicEmail }: HeaderProps) {
                   </a>
                 ))}
               </div>
-
-              <Link
-                href="/admin/login"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center justify-center gap-2 text-xs font-semibold text-slate-400 hover:text-slate-600 py-2 hover:underline transition-colors"
-              >
-                <Shield className="w-3.5 h-3.5" />
-                <span>Administrative Access</span>
-              </Link>
             </div>
           </nav>
         </div>

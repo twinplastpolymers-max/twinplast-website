@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Edit2, Trash2, Award, CheckCircle2, Loader2, Upload, X, Eye } from 'lucide-react';
+import { Plus, Edit2, Trash2, Award, CheckCircle2, Loader2, Upload, X, Eye, Image as ImageIcon } from 'lucide-react';
+import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { Certification } from '@/types';
-import { ImageContainer } from '@/components/shared/ImageContainer';
 import { useToast } from '@/components/ui/Toast';
 
 interface CertificationsManagerProps {
@@ -16,23 +16,14 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = createClient() as any;
 
-  const [certifications, setCertifications] = useState<Certification[]>(initialCertifications);
-  const [isEditing, setIsEditing] = useState(false);
+  const [certifications, setCertifications] = useState<Certification[]>(
+    initialCertifications.filter((c) => Boolean(c.image_url))
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCert, setEditingCert] = useState<Certification | null>(null);
 
-  // Form State
+  // Simplified Form State: Image + Optional Title Only
   const [title, setTitle] = useState('');
-  const [credentialType, setCredentialType] = useState<'iso' | 'plexconcil' | 'other'>('iso');
-  const [certNumber, setCertNumber] = useState('');
-  const [issuingOrg, setIssuingOrg] = useState('');
-  const [scope, setScope] = useState('');
-  const [issueDate, setIssueDate] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [displayOrder, setDisplayOrder] = useState(0);
-  const [active, setActive] = useState(true);
-  const [featured, setFeatured] = useState(true);
-
-  // Image Upload State
   const [imagePublicId, setImagePublicId] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [uploadState, setUploadState] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle');
@@ -43,42 +34,26 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
   const [isSaving, setIsSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
-  const openAddForm = () => {
+  const openAddModal = () => {
     setEditingCert(null);
     setTitle('');
-    setCredentialType('iso');
-    setCertNumber('');
-    setIssuingOrg('');
-    setScope('');
-    setIssueDate('');
-    setExpiryDate('');
-    setDisplayOrder(certifications.length + 1);
-    setActive(true);
-    setFeatured(true);
     setImagePublicId(null);
     setImageUrl(null);
     setUploadState('idle');
-    setIsEditing(true);
+    setUploadError('');
+    setIsModalOpen(true);
   };
 
-  const openEditForm = (cert: Certification) => {
+  const openEditModal = (cert: Certification) => {
     setEditingCert(cert);
-    setTitle(cert.title);
-    setCredentialType(cert.credential_type);
-    setCertNumber(cert.certificate_number);
-    setIssuingOrg(cert.issuing_organization);
-    setScope(cert.scope || '');
-    setIssueDate(cert.issue_date || '');
-    setExpiryDate(cert.expiry_date || '');
-    setDisplayOrder(cert.display_order);
-    setActive(cert.active);
-    setFeatured(cert.featured);
+    setTitle(cert.title || '');
     setImagePublicId(cert.image_cloudinary_public_id);
     setImageUrl(cert.image_url);
     setUploadState('idle');
-    setIsEditing(true);
+    setUploadError('');
+    setIsModalOpen(true);
   };
 
   // Secure Signed Cloudinary Upload
@@ -86,10 +61,10 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg', 'application/pdf'];
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
     if (!allowedTypes.includes(file.type)) {
       setUploadState('error');
-      const err = 'Invalid file format. Select JPG, PNG, WEBP, or PDF.';
+      const err = 'Please select a valid image file (JPG, PNG, or WEBP).';
       setUploadError(err);
       toast.error('Upload Error', err);
       return;
@@ -104,8 +79,14 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
       return;
     }
 
+    // Auto-fill title if empty
+    if (!title) {
+      const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+      setTitle(fileName);
+    }
+
     setUploadState('uploading');
-    setUploadProgress(10);
+    setUploadProgress(20);
     setUploadError('');
 
     try {
@@ -125,7 +106,7 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
       }
 
       const { signature } = await signRes.json();
-      setUploadProgress(40);
+      setUploadProgress(50);
 
       const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'twinplast';
       const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || '';
@@ -137,7 +118,7 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
       formData.append('signature', signature);
       formData.append('folder', folderPath);
 
-      setUploadProgress(70);
+      setUploadProgress(75);
 
       const cloudinaryRes = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
@@ -145,7 +126,7 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
       );
 
       if (!cloudinaryRes.ok) {
-        throw new Error('Cloudinary upload failed.');
+        throw new Error('Cloudinary image upload failed.');
       }
 
       const uploadResult = await cloudinaryRes.json();
@@ -154,10 +135,10 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
       setImagePublicId(uploadResult.public_id);
       setImageUrl(uploadResult.secure_url);
       setUploadState('success');
-      toast.success('Document uploaded successfully');
+      toast.success('Certificate image uploaded');
     } catch (err) {
       setUploadState('error');
-      const msg = err instanceof Error ? err.message : 'Upload failed.';
+      const msg = err instanceof Error ? err.message : 'Image upload failed.';
       setUploadError(msg);
       toast.error('Upload Failed', msg);
     }
@@ -167,30 +148,28 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
     e.preventDefault();
     setIsSaving(true);
 
-    if (!title || !certNumber || !issuingOrg) {
-      toast.error('Validation Error', 'Title, Certificate Number, and Issuing Organization are required.');
+    if (!imageUrl) {
+      toast.error('Validation Error', 'Please select and upload a certificate image.');
       setIsSaving(false);
       return;
     }
 
+    const certTitle = title.trim() || 'Certificate';
+
     const payload = {
-      title,
-      credential_type: credentialType,
-      certificate_number: certNumber,
-      issuing_organization: issuingOrg,
-      scope: scope || null,
-      issue_date: issueDate || null,
-      expiry_date: expiryDate || null,
-      display_order: displayOrder,
-      active,
-      featured,
-      image_cloudinary_public_id: imagePublicId,
+      title: certTitle,
       image_url: imageUrl,
+      image_cloudinary_public_id: imagePublicId,
+      active: editingCert ? editingCert.active : true,
+      display_order: editingCert ? editingCert.display_order : certifications.length + 1,
+      // Backward-compatible defaults for legacy DB constraints
+      credential_type: 'other',
+      certificate_number: '',
+      issuing_organization: '',
     };
 
     try {
       if (editingCert) {
-        // Update existing record
         const { data, error } = await supabase
           .from('certifications')
           .update(payload)
@@ -203,9 +182,8 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
         setCertifications((prev) =>
           prev.map((c) => (c.id === editingCert.id ? (data as Certification) : c))
         );
-        toast.success('Certification Updated', `"${title}" has been updated.`);
+        toast.success('Certificate Updated', `"${certTitle}" has been saved.`);
       } else {
-        // Insert new record
         const { data, error } = await supabase
           .from('certifications')
           .insert([payload])
@@ -215,12 +193,12 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
         if (error) throw error;
 
         setCertifications((prev) => [...prev, data as Certification]);
-        toast.success('Certification Added', `"${title}" has been added.`);
+        toast.success('Certificate Added', `"${certTitle}" has been added.`);
       }
 
-      setIsEditing(false);
+      setIsModalOpen(false);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to save certification.';
+      const msg = err instanceof Error ? err.message : 'Failed to save certificate.';
       toast.error('Database Error', msg);
     } finally {
       setIsSaving(false);
@@ -240,7 +218,7 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
       setCertifications((prev) =>
         prev.map((c) => (c.id === cert.id ? { ...c, active: newActive } : c))
       );
-      toast.success('Status Updated', `"${cert.title}" is now ${newActive ? 'active' : 'inactive'}.`);
+      toast.success('Status Updated', `"${cert.title || 'Certificate'}" is now ${newActive ? 'active' : 'inactive'}.`);
     } catch {
       toast.error('Error', 'Failed to update active status.');
     }
@@ -249,13 +227,17 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
   const handleDelete = async (id: string) => {
     setDeletingId(id);
     try {
-      const { error } = await supabase.from('certifications').delete().eq('id', id);
+      const { error } = await supabase
+        .from('certifications')
+        .delete()
+        .eq('id', id);
+
       if (error) throw error;
 
       setCertifications((prev) => prev.filter((c) => c.id !== id));
-      toast.success('Deleted', 'Certification record deleted successfully.');
+      toast.success('Certificate Removed', 'The certificate has been deleted.');
     } catch {
-      toast.error('Error', 'Failed to delete certification.');
+      toast.error('Delete Failed', 'Could not delete certificate.');
     } finally {
       setDeletingId(null);
       setConfirmDeleteId(null);
@@ -263,378 +245,307 @@ export function CertificationsManager({ initialCertifications }: CertificationsM
   };
 
   return (
-    <div className="space-y-6 max-w-5xl animate-fade-in">
+    <div className="space-y-6 max-w-7xl mx-auto pb-10">
       
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* ── Section Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-slate-950 p-6 sm:p-8 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <Award className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-            <span>Certifications &amp; Trust Credentials</span>
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 text-xs font-normal mb-2">
+            <Award className="w-3.5 h-3.5" />
+            <span>Quality Compliance</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-normal tracking-tight text-slate-900 dark:text-white">
+            Certifications & Trust Credentials
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Manage verified company certifications (ISO 9001:2015, PLEXCONCIL, etc.) displayed across the website.
+          <p className="mt-1.5 text-sm font-normal text-slate-500 dark:text-slate-400 max-w-2xl">
+            Upload and manage verified company certificate images displayed on the website.
           </p>
         </div>
 
-        {!isEditing && (
-          <button
-            onClick={openAddForm}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors cursor-pointer self-start sm:self-auto"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Certification</span>
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={openAddModal}
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm cursor-pointer shrink-0"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Upload Certificate</span>
+        </button>
       </div>
 
-      {/* Form Area */}
-      {isEditing && (
-        <form onSubmit={handleSaveCert} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm space-y-6 animate-fade-in">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
-              {editingCert ? 'Edit Certification' : 'New Certification'}
-            </h2>
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+      {/* ── Certificates Gallery Grid ── */}
+      {certifications.length === 0 ? (
+        <div className="text-center py-16 px-4 bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs">
+          <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3">
+            <ImageIcon className="w-6 h-6" />
+          </div>
+          <p className="text-base font-medium text-slate-800 dark:text-slate-200">
+            No certificates uploaded yet
+          </p>
+          <p className="text-xs font-normal text-slate-400 mt-1 max-w-md mx-auto">
+            Click the button below to upload an image of your ISO, PLEXCONCIL, or quality certificates.
+          </p>
+          <button
+            type="button"
+            onClick={openAddModal}
+            className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Upload Certificate</span>
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {certifications.map((cert) => (
+            <div
+              key={cert.id}
+              className="group bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between"
             >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="cert-title" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Title *
-              </label>
-              <input
-                id="cert-title"
-                type="text"
-                required
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. ISO 9001:2015 Quality Management System"
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="cred-type" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Credential Type *
-              </label>
-              <select
-                id="cred-type"
-                value={credentialType}
-                onChange={(e) => setCredentialType(e.target.value as 'iso' | 'plexconcil' | 'other')}
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-              >
-                <option value="iso">ISO Certification</option>
-                <option value="plexconcil">PLEXCONCIL Registration</option>
-                <option value="other">Industry / Government Credential</option>
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="cert-num" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Certificate / Registration Number *
-              </label>
-              <input
-                id="cert-num"
-                type="text"
-                required
-                value={certNumber}
-                onChange={(e) => setCertNumber(e.target.value)}
-                placeholder="e.g. 26UQLO14"
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white font-mono"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="issuing-org" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Issuing Organization *
-              </label>
-              <input
-                id="issuing-org"
-                type="text"
-                required
-                value={issuingOrg}
-                onChange={(e) => setIssuingOrg(e.target.value)}
-                placeholder="e.g. Certification body shown on certificate: AQC"
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="issue-date" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Issue Date
-              </label>
-              <input
-                id="issue-date"
-                type="date"
-                value={issueDate}
-                onChange={(e) => setIssueDate(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="expiry-date" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Expiry / Renewal Date
-              </label>
-              <input
-                id="expiry-date"
-                type="date"
-                value={expiryDate}
-                onChange={(e) => setExpiryDate(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="cert-scope" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-              Scope / Description
-            </label>
-            <textarea
-              id="cert-scope"
-              rows={2}
-              value={scope}
-              onChange={(e) => setScope(e.target.value)}
-              placeholder="e.g. Manufacturing of PP Corrugated Sheet and Box"
-              className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white resize-y"
-            />
-          </div>
-
-          {/* Certificate Image Document Upload */}
-          <div className="space-y-3">
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-              Certificate Document / Image
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
-              <div className="sm:col-span-4 border border-slate-200 dark:border-slate-800 p-2 rounded-xl bg-slate-50 dark:bg-slate-900/40">
-                <ImageContainer src={imagePublicId} alt={title || 'Certificate Preview'} aspectRatio="video" />
-              </div>
-              <div className="sm:col-span-8 space-y-2">
-                <div className="relative border border-dashed border-slate-300 dark:border-slate-800 hover:border-slate-400 rounded-xl p-4 text-center">
-                  <input
-                    type="file"
-                    accept="image/*,application/pdf"
-                    onChange={handleImageUpload}
-                    disabled={uploadState === 'uploading'}
-                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full disabled:cursor-not-allowed"
-                  />
-                  <div className="flex flex-col items-center">
-                    <Upload className="w-5 h-5 text-slate-400 mb-1" />
-                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-                      {imagePublicId ? 'Change Certificate Image' : 'Upload Certificate Image'}
-                    </span>
-                    <span className="text-[10px] text-slate-400">JPG, PNG, WEBP (Max 10MB)</span>
+              {/* Image Preview Container */}
+              <div className="relative aspect-4/3 bg-slate-100 dark:bg-slate-900 overflow-hidden border-b border-slate-100 dark:border-slate-900">
+                {cert.image_url ? (
+                  <div className="relative w-full h-full cursor-pointer" onClick={() => setPreviewImageUrl(cert.image_url)}>
+                    <Image
+                      src={cert.image_url}
+                      alt={cert.title || 'Certificate'}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-contain p-2 group-hover:scale-105 transition-transform duration-200"
+                    />
+                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <span className="p-2 rounded-full bg-white/90 text-slate-800 shadow-sm">
+                        <Eye className="w-4 h-4" />
+                      </span>
+                    </div>
                   </div>
-                </div>
-                {uploadState === 'uploading' && (
-                  <div className="text-xs text-blue-600 flex items-center gap-2">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" /> Uploading document ({uploadProgress}%)...
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-1 p-4">
+                    <Award className="w-8 h-8 text-slate-300" />
+                    <span className="text-[11px] font-normal">No image attached</span>
                   </div>
                 )}
-                {uploadState === 'error' && uploadError && (
-                  <div className="text-xs text-red-600 font-medium">
-                    {uploadError}
-                  </div>
-                )}
-                {imagePublicId && (
+
+                {/* Status Pill on thumbnail */}
+                <div className="absolute top-2.5 right-2.5">
                   <button
                     type="button"
-                    onClick={() => { setImagePublicId(null); setImageUrl(null); }}
-                    className="text-xs text-red-600 hover:underline flex items-center gap-1"
-                  >
-                    <X className="w-3.5 h-3.5" /> Remove Image
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-            <div>
-              <label htmlFor="display-order" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Display Order
-              </label>
-              <input
-                id="display-order"
-                type="number"
-                value={displayOrder}
-                onChange={(e) => setDisplayOrder(parseInt(e.target.value) || 0)}
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-              />
-            </div>
-
-            <div className="flex items-center gap-4 pt-6">
-              <label className="flex items-center gap-2 text-sm font-semibold cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={active}
-                  onChange={(e) => setActive(e.target.checked)}
-                  className="rounded text-blue-600 focus:ring-blue-500 border-slate-300"
-                />
-                <span>Active</span>
-              </label>
-
-              <label className="flex items-center gap-2 text-sm font-semibold cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={featured}
-                  onChange={(e) => setFeatured(e.target.checked)}
-                  className="rounded text-blue-600 focus:ring-blue-500 border-slate-300"
-                />
-                <span>Featured</span>
-              </label>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-100 rounded-lg dark:text-slate-400 dark:hover:bg-slate-900"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSaving || uploadState === 'uploading'}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:bg-blue-400 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors cursor-pointer"
-            >
-              {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
-              <span>{isSaving ? 'Saving...' : 'Save Certification'}</span>
-            </button>
-          </div>
-        </form>
-      )}
-
-      {/* Certifications Table / Card View */}
-      <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
-        {certifications.length === 0 ? (
-          <div className="p-8 text-center text-slate-500 dark:text-slate-400 text-sm">
-            No certifications found. Click &quot;Add Certification&quot; to create one.
-          </div>
-        ) : (
-          <div className="divide-y divide-slate-100 dark:divide-slate-850">
-            {certifications.map((cert) => (
-              <div key={cert.id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/60 dark:hover:bg-slate-900/40 transition-colors">
-                <div className="flex items-start gap-4 flex-1">
-                  <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
-                    <Award className="w-5 h-5" />
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                        {cert.title}
-                      </h3>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
-                        {cert.credential_type}
-                      </span>
-                      {cert.active ? (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
-                          Active
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-500">
-                          Inactive
-                        </span>
-                      )}
-                    </div>
-
-                    <p className="text-xs text-slate-600 dark:text-slate-400 font-mono">
-                      No: {cert.certificate_number} &bull; {cert.issuing_organization}
-                    </p>
-
-                    {cert.scope && (
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
-                        Scope: {cert.scope}
-                      </p>
-                    )}
-
-                    <div className="text-[11px] text-slate-400 flex gap-4 pt-0.5">
-                      <span>Issued: {cert.issue_date || 'N/A'}</span>
-                      <span>Expires: {cert.expiry_date || 'N/A'}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-2 self-end sm:self-center">
-                  {cert.image_url && (
-                    <button
-                      onClick={() => setPreviewImage(cert.image_url)}
-                      className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors"
-                      title="Preview Certificate"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
-                  )}
-
-                  <button
                     onClick={() => handleToggleActive(cert)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-normal tracking-wide transition-colors ${
                       cert.active
-                        ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800 dark:text-slate-300'
-                        : 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80 dark:bg-emerald-950/60 dark:text-emerald-300'
+                        : 'bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400'
                     }`}
                   >
-                    {cert.active ? 'Deactivate' : 'Activate'}
+                    {cert.active ? 'Active' : 'Hidden'}
                   </button>
+                </div>
+              </div>
 
+              {/* Card Footer Details */}
+              <div className="p-4">
+                <h3 className="text-sm font-normal text-slate-900 dark:text-white truncate" title={cert.title || 'Certificate'}>
+                  {cert.title || 'Certificate Image'}
+                </h3>
+
+                {/* Actions */}
+                <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-900 flex items-center justify-between">
                   <button
-                    onClick={() => openEditForm(cert)}
-                    className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors"
-                    title="Edit"
+                    type="button"
+                    onClick={() => openEditModal(cert)}
+                    className="inline-flex items-center gap-1 text-xs font-normal text-slate-600 hover:text-blue-600 transition-colors p-1"
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="w-3.5 h-3.5" />
+                    <span>Edit</span>
                   </button>
 
                   {confirmDeleteId === cert.id ? (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1.5">
                       <button
+                        type="button"
                         onClick={() => handleDelete(cert.id)}
                         disabled={deletingId === cert.id}
-                        className="px-2.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider"
+                        className="px-2 py-0.5 rounded text-[11px] font-normal bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
                       >
-                        {deletingId === cert.id ? 'Deleting...' : 'Confirm'}
+                        {deletingId === cert.id ? '...' : 'Confirm'}
                       </button>
                       <button
+                        type="button"
                         onClick={() => setConfirmDeleteId(null)}
-                        className="p-1.5 text-slate-400 hover:text-slate-600"
+                        className="text-slate-400 hover:text-slate-600 p-0.5"
                       >
-                        <X className="w-4 h-4" />
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   ) : (
                     <button
+                      type="button"
                       onClick={() => setConfirmDeleteId(cert.id)}
-                      className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
-                      title="Delete"
+                      className="p-1 text-slate-400 hover:text-red-600 transition-colors"
+                      title="Delete certificate"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
 
-      {/* Image Preview Lightbox */}
-      {previewImage && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4" onClick={() => setPreviewImage(null)}>
-          <div className="relative max-w-3xl w-full bg-white dark:bg-slate-900 rounded-2xl overflow-hidden p-2" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setPreviewImage(null)} className="absolute top-4 right-4 z-10 p-2 rounded-full bg-slate-900/80 text-white hover:bg-black">
+      {/* ── Simplified Image Upload Modal (Image + Title Only) ── */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-fade-in">
+          <div className="w-full max-w-lg bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl p-6 sm:p-8 space-y-6">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-900">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                  <Upload className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-base font-normal text-slate-900 dark:text-white">
+                    {editingCert ? 'Edit Certificate' : 'Upload Certificate Image'}
+                  </h2>
+                  <p className="text-xs font-normal text-slate-400">
+                    Upload image document
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSaveCert} className="space-y-5">
+              
+              {/* Image Upload Box */}
+              <div>
+                <label className="block text-xs font-normal text-slate-700 dark:text-slate-300 mb-2">
+                  Certificate Document Image <span className="text-red-500">*</span>
+                </label>
+
+                {imageUrl ? (
+                  <div className="relative aspect-16/10 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-2">
+                    <Image
+                      src={imageUrl}
+                      alt="Certificate Preview"
+                      fill
+                      className="object-contain"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImageUrl(null);
+                        setImagePublicId(null);
+                        setUploadState('idle');
+                      }}
+                      className="absolute top-2 right-2 p-1.5 rounded-full bg-slate-900/80 text-white hover:bg-slate-900"
+                      title="Remove and replace image"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="relative flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-blue-400 rounded-xl bg-slate-50/50 dark:bg-slate-900/30 transition-colors">
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/jpg"
+                      onChange={handleImageUpload}
+                      disabled={uploadState === 'uploading'}
+                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                    />
+
+                    {uploadState === 'uploading' ? (
+                      <div className="flex flex-col items-center gap-2 text-blue-600">
+                        <Loader2 className="w-7 h-7 animate-spin" />
+                        <span className="text-xs font-normal">Uploading image... {uploadProgress}%</span>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-2">
+                          <Upload className="w-5 h-5" />
+                        </div>
+                        <p className="text-xs font-normal text-slate-700 dark:text-slate-300">
+                          Click to select or drag & drop certificate image
+                        </p>
+                        <p className="text-[11px] font-normal text-slate-400 mt-0.5">
+                          Supports JPG, PNG, WEBP (Max 10MB)
+                        </p>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {uploadError && (
+                  <p className="text-xs font-normal text-red-500 mt-1.5">{uploadError}</p>
+                )}
+              </div>
+
+              {/* Title / Label Input */}
+              <div>
+                <label className="block text-xs font-normal text-slate-700 dark:text-slate-300 mb-1.5">
+                  Certificate Name / Label <span className="text-slate-400">(Optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="e.g. ISO 9001:2015 Quality Certificate"
+                  className="w-full px-3.5 py-2.5 text-xs font-normal rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                />
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-900">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 text-xs font-normal rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 hover:bg-slate-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving || uploadState === 'uploading' || !imageUrl}
+                  className="inline-flex items-center gap-2 px-5 py-2 text-xs font-normal text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors disabled:opacity-50 cursor-pointer"
+                >
+                  {isSaving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  <span>{editingCert ? 'Save Changes' : 'Add Certificate'}</span>
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Full Image Preview Modal ── */}
+      {previewImageUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs animate-fade-in"
+          onClick={() => setPreviewImageUrl(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] w-full h-[80vh] bg-white dark:bg-slate-900 rounded-2xl overflow-hidden p-4">
+            <button
+              type="button"
+              onClick={() => setPreviewImageUrl(null)}
+              className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/60 text-white hover:bg-black"
+            >
               <X className="w-5 h-5" />
             </button>
-            <div className="relative w-full h-[70vh]">
-              <ImageContainer src={previewImage} alt="Certificate Document Preview" aspectRatio="video" unstyled />
+            <div className="relative w-full h-full">
+              <Image
+                src={previewImageUrl}
+                alt="Full Certificate Preview"
+                fill
+                className="object-contain"
+              />
             </div>
           </div>
         </div>
