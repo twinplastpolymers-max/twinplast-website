@@ -9,6 +9,7 @@ export interface AboutSectionProps {
   mainImage?: string | null;
   secondaryImage1?: string | null;
   secondaryImage2?: string | null;
+  showButton?: boolean;
 }
 
 export function AboutSection({
@@ -18,9 +19,10 @@ export function AboutSection({
   mainImage = null,
   secondaryImage1 = null,
   secondaryImage2 = null,
+  showButton = true,
 }: AboutSectionProps) {
   return (
-    <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white" aria-labelledby="about-heading">
+    <section className="py-14 sm:py-10 px-4 sm:px-6 lg:px-8 bg-white" aria-labelledby="about-heading">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
@@ -39,9 +41,11 @@ export function AboutSection({
                 {description}
               </p>
             )}
-            <div>
-              <SlideButton href="/about" label="Know More About Us" />
-            </div>
+            {showButton && (
+              <div>
+                <SlideButton href="/about" label="Know More About Us" />
+              </div>
+            )}
           </div>
 
           {/* Right side: 3 Images */}
