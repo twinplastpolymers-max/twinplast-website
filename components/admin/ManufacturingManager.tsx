@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Layers, CheckCircle2, Loader2, X } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { ManufacturingStep } from '@/types';
@@ -32,6 +32,17 @@ export function ManufacturingManager({ initialSteps }: ManufacturingManagerProps
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
+  // Close modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isEditing) {
+        setIsEditing(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isEditing]);
+
   const openAddForm = () => {
     setEditingStep(null);
     const maxStep = steps.reduce((max, s) => Math.max(max, s.step_number), 0);
@@ -41,17 +52,19 @@ export function ManufacturingManager({ initialSteps }: ManufacturingManagerProps
     setIconName('Layers');
     setDisplayOrder(maxStep + 1);
     setActive(true);
+    setIsSaving(false);
     setIsEditing(true);
   };
 
   const openEditForm = (st: ManufacturingStep) => {
     setEditingStep(st);
     setStepNumber(st.step_number);
-    setTitle(st.title);
-    setDescription(st.description);
+    setTitle(st.title || '');
+    setDescription(st.description || '');
     setIconName(st.icon_name || 'Layers');
-    setDisplayOrder(st.display_order);
-    setActive(st.active);
+    setDisplayOrder(st.display_order ?? st.step_number);
+    setActive(st.active ?? true);
+    setIsSaving(false);
     setIsEditing(true);
   };
 
@@ -172,148 +185,172 @@ export function ManufacturingManager({ initialSteps }: ManufacturingManagerProps
           </p>
         </div>
 
-        {!isEditing && (
-          <button
-            onClick={openAddForm}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors cursor-pointer self-start sm:self-auto"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Process Stage</span>
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={openAddForm}
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors cursor-pointer self-start sm:self-auto"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Add Process Stage</span>
+        </button>
       </div>
 
-      {/* Form Area */}
+      {/* Edit / Add Stage Modal Dialog */}
       {isEditing && (
-        <form onSubmit={handleSaveStep} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm space-y-6 animate-fade-in">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
-              {editingStep ? `Edit Process Stage ${editingStep.step_number}` : 'New Process Stage'}
-            </h2>
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label htmlFor="step-num" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Stage Number (1-9) *
-              </label>
-              <input
-                id="step-num"
-                type="number"
-                required
-                min={1}
-                max={20}
-                value={stepNumber}
-                onChange={(e) => setStepNumber(parseInt(e.target.value) || 1)}
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white font-mono"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="step-title" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Stage Title *
-              </label>
-              <input
-                id="step-title"
-                type="text"
-                required
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Extrusion"
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="step-icon" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Icon Identifier Name
-              </label>
-              <select
-                id="step-icon"
-                value={iconName}
-                onChange={(e) => setIconName(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-xs animate-fade-in"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsEditing(false);
+          }}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="w-full max-w-2xl bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                  {editingStep ? <Edit2 className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                    {editingStep ? `Edit Process Stage ${editingStep.step_number}` : 'New Process Stage'}
+                  </h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {editingStep ? `Updating stage: ${editingStep.title}` : 'Add a new verified manufacturing stage'}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                title="Close (Esc)"
               >
-                <option value="Layers">Layers (Raw Material)</option>
-                <option value="RotateCw">RotateCw (Mixing)</option>
-                <option value="Cpu">Cpu (Extrusion)</option>
-                <option value="LayoutGrid">LayoutGrid (Sheet Formation)</option>
-                <option value="ThermometerSnowflake">ThermometerSnowflake (Cooling)</option>
-                <option value="Scissors">Scissors (Cutting)</option>
-                <option value="CheckCircle">CheckCircle (Quality Inspection)</option>
-                <option value="PackageCheck">PackageCheck (Packing)</option>
-                <option value="Truck">Truck (Dispatch)</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor="step-desc" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-              Stage Description *
-            </label>
-            <textarea
-              id="step-desc"
-              rows={3}
-              required
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g. Extruding molten polypropylene material through die."
-              className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white resize-y"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-            <div>
-              <label htmlFor="step-order" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Display Order
-              </label>
-              <input
-                id="step-order"
-                type="number"
-                value={displayOrder}
-                onChange={(e) => setDisplayOrder(parseInt(e.target.value) || 0)}
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-              />
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            <div className="flex items-center pt-6">
-              <label className="flex items-center gap-2 text-sm font-semibold cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={active}
-                  onChange={(e) => setActive(e.target.checked)}
-                  className="rounded text-blue-600 focus:ring-blue-500 border-slate-300"
+            {/* Modal Form Body */}
+            <form onSubmit={handleSaveStep} className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label htmlFor="step-num" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    Stage Number (1-9) *
+                  </label>
+                  <input
+                    id="step-num"
+                    type="number"
+                    required
+                    min={1}
+                    max={20}
+                    value={stepNumber}
+                    onChange={(e) => setStepNumber(parseInt(e.target.value) || 1)}
+                    className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="step-title" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    Stage Title *
+                  </label>
+                  <input
+                    id="step-title"
+                    type="text"
+                    required
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="e.g. Extrusion"
+                    className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="step-icon" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    Icon Identifier Name
+                  </label>
+                  <select
+                    id="step-icon"
+                    value={iconName}
+                    onChange={(e) => setIconName(e.target.value)}
+                    className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                  >
+                    <option value="Layers">Layers (Raw Material)</option>
+                    <option value="RotateCw">RotateCw (Mixing)</option>
+                    <option value="Cpu">Cpu (Extrusion)</option>
+                    <option value="LayoutGrid">LayoutGrid (Sheet Formation)</option>
+                    <option value="ThermometerSnowflake">ThermometerSnowflake (Cooling)</option>
+                    <option value="Scissors">Scissors (Cutting)</option>
+                    <option value="CheckCircle">CheckCircle (Quality Inspection)</option>
+                    <option value="PackageCheck">PackageCheck (Packing)</option>
+                    <option value="Truck">Truck (Dispatch)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="step-desc" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  Stage Description *
+                </label>
+                <textarea
+                  id="step-desc"
+                  rows={3}
+                  required
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="e.g. Extruding molten polypropylene material through die."
+                  className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white resize-y"
                 />
-                <span>Active</span>
-              </label>
-            </div>
-          </div>
+              </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-100 rounded-lg dark:text-slate-400 dark:hover:bg-slate-900"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:bg-blue-400 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors cursor-pointer"
-            >
-              {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
-              <span>{isSaving ? 'Saving...' : 'Save Stage'}</span>
-            </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div>
+                  <label htmlFor="step-order" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    Display Order
+                  </label>
+                  <input
+                    id="step-order"
+                    type="number"
+                    value={displayOrder}
+                    onChange={(e) => setDisplayOrder(parseInt(e.target.value) || 0)}
+                    className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                  />
+                </div>
+
+                <div className="flex items-center pt-6">
+                  <label className="flex items-center gap-2 text-sm font-semibold cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={active}
+                      onChange={(e) => setActive(e.target.checked)}
+                      className="rounded text-blue-600 focus:ring-blue-500 border-slate-300"
+                    />
+                    <span>Active</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-100 rounded-lg dark:text-slate-400 dark:hover:bg-slate-900 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:bg-blue-400 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors cursor-pointer"
+                >
+                  {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                  <span>{isSaving ? 'Saving...' : 'Save Stage'}</span>
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       )}
 
       {/* Manufacturing Steps List View */}
@@ -327,8 +364,10 @@ export function ManufacturingManager({ initialSteps }: ManufacturingManagerProps
             {steps.map((st) => (
               <div key={st.id} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/60 dark:hover:bg-slate-900/40 transition-colors">
                 <div className="flex items-start gap-4 flex-1">
-                  <div className="w-9 h-9 rounded-xl bg-blue-600 text-white font-bold text-sm flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
-                    {st.step_number}
+                  {/* Step Number Badge */}
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900 text-blue-600 dark:text-blue-400 font-bold flex flex-col items-center justify-center shrink-0">
+                    <span className="text-[10px] text-slate-400 font-medium">STEP</span>
+                    <span className="text-base leading-none">{st.step_number}</span>
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -354,8 +393,9 @@ export function ManufacturingManager({ initialSteps }: ManufacturingManagerProps
 
                 <div className="flex items-center gap-2 self-end sm:self-center">
                   <button
+                    type="button"
                     onClick={() => handleToggleActive(st)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
                       st.active
                         ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800 dark:text-slate-300'
                         : 'bg-emerald-600 hover:bg-emerald-500 text-white'
@@ -365,9 +405,11 @@ export function ManufacturingManager({ initialSteps }: ManufacturingManagerProps
                   </button>
 
                   <button
+                    type="button"
                     onClick={() => openEditForm(st)}
-                    className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors"
+                    className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                     title="Edit Stage"
+                    aria-label={`Edit ${st.title}`}
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -375,24 +417,29 @@ export function ManufacturingManager({ initialSteps }: ManufacturingManagerProps
                   {confirmDeleteId === st.id ? (
                     <div className="flex items-center gap-1">
                       <button
+                        type="button"
                         onClick={() => handleDelete(st.id)}
                         disabled={deletingId === st.id}
-                        className="px-2.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider"
+                        className="px-2.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider cursor-pointer"
                       >
                         {deletingId === st.id ? 'Deleting...' : 'Confirm'}
                       </button>
                       <button
+                        type="button"
                         onClick={() => setConfirmDeleteId(null)}
-                        className="p-1.5 text-slate-400 hover:text-slate-600"
+                        className="p-1.5 text-slate-400 hover:text-slate-600 cursor-pointer"
+                        title="Cancel delete"
                       >
                         <X className="w-4 h-4" />
                       </button>
                     </div>
                   ) : (
                     <button
+                      type="button"
                       onClick={() => setConfirmDeleteId(st.id)}
-                      className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+                      className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
                       title="Delete Stage"
+                      aria-label={`Delete ${st.title}`}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
