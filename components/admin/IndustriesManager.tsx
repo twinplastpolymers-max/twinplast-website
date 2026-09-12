@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Layers, CheckCircle2, Loader2, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { Industry } from '@/types';
@@ -36,6 +36,17 @@ export function IndustriesManager({ initialIndustries }: IndustriesManagerProps)
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
+  // Close modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isEditing) {
+        setIsEditing(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isEditing]);
+
   const openAddForm = () => {
     setEditingIndustry(null);
     setTitle('');
@@ -45,18 +56,20 @@ export function IndustriesManager({ initialIndustries }: IndustriesManagerProps)
     setImagePublicId(null);
     setImageUrl(null);
     setUploadState('idle');
+    setIsSaving(false);
     setIsEditing(true);
   };
 
   const openEditForm = (ind: Industry) => {
     setEditingIndustry(ind);
-    setTitle(ind.title);
-    setDescription(ind.description);
-    setDisplayOrder(ind.display_order);
-    setActive(ind.active);
-    setImagePublicId(ind.image_cloudinary_public_id);
-    setImageUrl(ind.image_url);
+    setTitle(ind.title || '');
+    setDescription(ind.description || '');
+    setDisplayOrder(ind.display_order ?? 0);
+    setActive(ind.active ?? true);
+    setImagePublicId(ind.image_cloudinary_public_id || null);
+    setImageUrl(ind.image_url || null);
     setUploadState('idle');
+    setIsSaving(false);
     setIsEditing(true);
   };
 
@@ -215,147 +228,171 @@ export function IndustriesManager({ initialIndustries }: IndustriesManagerProps)
           </p>
         </div>
 
-        {!isEditing && (
-          <button
-            onClick={openAddForm}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors cursor-pointer self-start sm:self-auto"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Application</span>
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={openAddForm}
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors cursor-pointer self-start sm:self-auto"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Add Application</span>
+        </button>
       </div>
 
-      {/* Form Area */}
+      {/* Edit / Add Application Modal Dialog */}
       {isEditing && (
-        <form onSubmit={handleSaveIndustry} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm space-y-6 animate-fade-in">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
-              {editingIndustry ? 'Edit Application / Solution' : 'New Application / Solution'}
-            </h2>
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-
-          <div>
-            <label htmlFor="ind-title" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-              Application Name / Title *
-            </label>
-            <input
-              id="ind-title"
-              type="text"
-              required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Beverage Industry Bottle Layer Pads"
-              className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-            />
-          </div>
-
-          {/* Application Image Upload */}
-          <div className="space-y-3">
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-              Card Image
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
-              <div className="sm:col-span-4 border border-slate-200 dark:border-slate-800 p-2 rounded-xl bg-slate-50 dark:bg-slate-900/40">
-                <ImageContainer src={imagePublicId || imageUrl} alt={title || 'Application Preview'} aspectRatio="video" fit="cover" />
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-xs animate-fade-in"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsEditing(false);
+          }}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="w-full max-w-2xl bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                  {editingIndustry ? <Edit2 className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                    {editingIndustry ? 'Edit Application / Solution' : 'New Application / Solution'}
+                  </h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    {editingIndustry ? `Editing: ${editingIndustry.title}` : 'Add a new application card to public website'}
+                  </p>
+                </div>
               </div>
-              <div className="sm:col-span-8 space-y-2">
-                <div className="relative border border-dashed border-slate-300 dark:border-slate-800 hover:border-slate-400 rounded-xl p-4 text-center">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    disabled={uploadState === 'uploading'}
-                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full disabled:cursor-not-allowed"
-                  />
-                  <div className="flex flex-col items-center">
-                    <Upload className="w-5 h-5 text-slate-400 mb-1" />
-                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-                      {imagePublicId ? 'Change Image' : 'Upload Image'}
-                    </span>
-                    <span className="text-[10px] text-slate-400">JPG, PNG, WEBP (Max 5MB)</span>
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                title="Close (Esc)"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Form Body */}
+            <form onSubmit={handleSaveIndustry} className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div>
+                <label htmlFor="ind-title" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  Application Name / Title *
+                </label>
+                <input
+                  id="ind-title"
+                  type="text"
+                  required
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="e.g. Beverage Industry Bottle Layer Pads"
+                  className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                />
+              </div>
+
+              {/* Application Image Upload */}
+              <div className="space-y-3">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  Card Image
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+                  <div className="sm:col-span-5 border border-slate-200 dark:border-slate-800 p-2 rounded-xl bg-slate-50 dark:bg-slate-900/40">
+                    <ImageContainer src={imagePublicId || imageUrl} alt={title || 'Application Preview'} aspectRatio="video" fit="cover" />
+                  </div>
+                  <div className="sm:col-span-7 space-y-2">
+                    <div className="relative border border-dashed border-slate-300 dark:border-slate-800 hover:border-slate-400 rounded-xl p-4 text-center cursor-pointer">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={uploadState === 'uploading'}
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full disabled:cursor-not-allowed"
+                      />
+                      <div className="flex flex-col items-center">
+                        <Upload className="w-5 h-5 text-slate-400 mb-1" />
+                        <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                          {imagePublicId || imageUrl ? 'Change Image' : 'Upload Image'}
+                        </span>
+                        <span className="text-[10px] text-slate-400">JPG, PNG, WEBP (Max 5MB)</span>
+                      </div>
+                    </div>
+                    {(imagePublicId || imageUrl) && (
+                      <button
+                        type="button"
+                        onClick={() => { setImagePublicId(null); setImageUrl(null); }}
+                        className="text-xs text-red-600 hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" /> Remove Image
+                      </button>
+                    )}
                   </div>
                 </div>
-                {(imagePublicId || imageUrl) && (
-                  <button
-                    type="button"
-                    onClick={() => { setImagePublicId(null); setImageUrl(null); }}
-                    className="text-xs text-red-600 hover:underline flex items-center gap-1 cursor-pointer"
-                  >
-                    <X className="w-3.5 h-3.5" /> Remove Image
-                  </button>
-                )}
               </div>
-            </div>
-          </div>
 
-          <div>
-            <label htmlFor="ind-desc" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-              Description *
-            </label>
-            <textarea
-              id="ind-desc"
-              rows={3}
-              required
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g. Polypropylene layer pad sheets used as separators in product packaging."
-              className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white resize-y"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-            <div>
-              <label htmlFor="ind-display-order" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Display Order
-              </label>
-              <input
-                id="ind-display-order"
-                type="number"
-                value={displayOrder}
-                onChange={(e) => setDisplayOrder(parseInt(e.target.value) || 0)}
-                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-              />
-            </div>
-
-            <div className="flex items-center pt-6">
-              <label className="flex items-center gap-2 text-sm font-semibold cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={active}
-                  onChange={(e) => setActive(e.target.checked)}
-                  className="rounded text-blue-600 focus:ring-blue-500 border-slate-300"
+              <div>
+                <label htmlFor="ind-desc" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  Description *
+                </label>
+                <textarea
+                  id="ind-desc"
+                  rows={3}
+                  required
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="e.g. Polypropylene layer pad sheets used as separators in product packaging."
+                  className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white resize-y"
                 />
-                <span>Active</span>
-              </label>
-            </div>
-          </div>
+              </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <button
-              type="button"
-              onClick={() => setIsEditing(false)}
-              className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-100 rounded-lg dark:text-slate-400 dark:hover:bg-slate-900 cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSaving || uploadState === 'uploading'}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:bg-blue-400 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors cursor-pointer"
-            >
-              {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
-              <span>{isSaving ? 'Saving...' : 'Save Application / Solution'}</span>
-            </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <div>
+                  <label htmlFor="ind-display-order" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                    Display Order
+                  </label>
+                  <input
+                    id="ind-display-order"
+                    type="number"
+                    value={displayOrder}
+                    onChange={(e) => setDisplayOrder(parseInt(e.target.value) || 0)}
+                    className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                  />
+                </div>
+
+                <div className="flex items-center pt-6">
+                  <label className="flex items-center gap-2 text-sm font-semibold cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={active}
+                      onChange={(e) => setActive(e.target.checked)}
+                      className="rounded text-blue-600 focus:ring-blue-500 border-slate-300"
+                    />
+                    <span>Active</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-100 rounded-lg dark:text-slate-400 dark:hover:bg-slate-900 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving || uploadState === 'uploading'}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-500 disabled:bg-blue-400 px-5 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-colors cursor-pointer"
+                >
+                  {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                  <span>{isSaving ? 'Saving...' : 'Save Application / Solution'}</span>
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       )}
 
       {/* Applications List View */}
@@ -411,6 +448,7 @@ export function IndustriesManager({ initialIndustries }: IndustriesManagerProps)
 
                 <div className="flex items-center gap-2 self-end sm:self-center">
                   <button
+                    type="button"
                     onClick={() => handleToggleActive(ind)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer ${
                       ind.active
@@ -422,9 +460,11 @@ export function IndustriesManager({ initialIndustries }: IndustriesManagerProps)
                   </button>
 
                   <button
+                    type="button"
                     onClick={() => openEditForm(ind)}
                     className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                     title="Edit"
+                    aria-label={`Edit ${ind.title}`}
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -432,6 +472,7 @@ export function IndustriesManager({ initialIndustries }: IndustriesManagerProps)
                   {confirmDeleteId === ind.id ? (
                     <div className="flex items-center gap-1">
                       <button
+                        type="button"
                         onClick={() => handleDelete(ind.id)}
                         disabled={deletingId === ind.id}
                         className="px-2.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-wider cursor-pointer"
@@ -439,17 +480,21 @@ export function IndustriesManager({ initialIndustries }: IndustriesManagerProps)
                         {deletingId === ind.id ? 'Deleting...' : 'Confirm'}
                       </button>
                       <button
+                        type="button"
                         onClick={() => setConfirmDeleteId(null)}
                         className="p-1.5 text-slate-400 hover:text-slate-600 cursor-pointer"
+                        title="Cancel delete"
                       >
                         <X className="w-4 h-4" />
                       </button>
                     </div>
                   ) : (
                     <button
+                      type="button"
                       onClick={() => setConfirmDeleteId(ind.id)}
                       className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
                       title="Delete"
+                      aria-label={`Delete ${ind.title}`}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
