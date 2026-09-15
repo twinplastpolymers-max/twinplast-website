@@ -5,7 +5,7 @@ import { Enquiry } from '@/types';
 
 export const metadata: Metadata = {
   title: 'Client Enquiries | Twinplast Admin',
-  description: 'View and process incoming B2B business inquiries.',
+  description: 'View and process incoming business inquiries.',
 };
 
 export default async function AdminEnquiriesPage() {

@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: "%s | Twinplast Polymers",
   },
   description:
-    "Twinplast Polymers Private Limited is a specialized B2B manufacturer of PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection, and Box sheets located in Thoothukudi, Tamil Nadu, India. Established in 2021.",
+    "Twinplast Polymers Private Limited is a specialized manufacturer of PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection, and Box sheets located in Thoothukudi, Tamil Nadu, India. Established in 2021.",
   alternates: {
     canonical: getSiteUrl("/"),
   },

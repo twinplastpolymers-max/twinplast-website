@@ -4,12 +4,34 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Shield, ChevronRight, Phone, Mail } from 'lucide-react';
+import { Menu, X, Shield, ChevronRight, ChevronDown, Phone, Mail } from 'lucide-react';
 
 interface HeaderProps {
   publicPhone?: string;
+  secondaryPhone?: string;
   publicEmail?: string;
+  products?: Array<{ title: string; slug: string }>;
+  solutions?: Array<{ id: string; title: string }>;
 }
+
+const DEFAULT_PRODUCTS = [
+  { title: 'PP Corrugated Sheet', slug: 'pp-corrugated-sheets' },
+  { title: 'PP Layer Pad Sheet', slug: 'pp-layer-pad-sheets' },
+  { title: 'PP Sunpack Sheet', slug: 'pp-sunpack-sheets' },
+  { title: 'PP Floor Protection Sheet', slug: 'pp-floor-protection-sheets' },
+  { title: 'PP Corrugated Box', slug: 'pp-box-sheets' },
+  { title: 'Customized PP Products', slug: 'customized-pp-products' },
+];
+
+const DEFAULT_SOLUTIONS = [
+  { id: '1', title: 'Construction' },
+  { id: '2', title: 'Packaging' },
+  { id: '3', title: 'Beverage Industry' },
+  { id: '4', title: 'Advertising & Printing' },
+  { id: '5', title: 'Industrial' },
+  { id: '6', title: 'Automobile' },
+  { id: '7', title: 'Agriculture' },
+];
 
 // Social media SVG icons (inline, no extra library needed)
 const FacebookIcon = () => (
@@ -36,13 +58,23 @@ const YouTubeIcon = () => (
   </svg>
 );
 
-export function Header({ publicPhone, publicEmail }: HeaderProps) {
+export function Header({ publicPhone, secondaryPhone, publicEmail, products, solutions }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [hoveredNav, setHoveredNav] = useState<'products' | 'solutions' | null>(null);
+  const [mobileExpanded, setMobileExpanded] = useState<{ products: boolean; solutions: boolean }>({
+    products: false,
+    solutions: false,
+  });
   const pathname = usePathname();
 
   const phone = publicPhone || '+91 95853 88444';
+  const secPhone = secondaryPhone || (phone === '+91 95853 88444' ? '+91 96458 32154' : '+91 95853 88444');
   const email = publicEmail || 'twinplastpolymers@gmail.com';
   const cleanPhone = phone.replace(/[^+\d]/g, '');
+  const cleanSecPhone = secPhone.replace(/[^+\d]/g, '');
+
+  const productList = products && products.length > 0 ? products : DEFAULT_PRODUCTS;
+  const solutionList = solutions && solutions.length > 0 ? solutions : DEFAULT_SOLUTIONS;
 
   const isActive = (href: string) => {
     if (href === '/') {
@@ -50,14 +82,6 @@ export function Header({ publicPhone, publicEmail }: HeaderProps) {
     }
     return pathname === href || pathname.startsWith(`${href}/`);
   };
-
-  const navItems = [
-    { label: 'Home', href: '/' },
-    { label: 'About Us', href: '/about' },
-    { label: 'Products', href: '/products' },
-    { label: 'Solutions', href: '/solutions' },
-    { label: 'Contact', href: '/contact' },
-  ];
 
   const socialLinks = [
     {
@@ -93,22 +117,37 @@ export function Header({ publicPhone, publicEmail }: HeaderProps) {
       <div className="w-full bg-[#1a1464] text-white">
         <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
-          {/* Left: contact info */}
-          <div className="flex items-center gap-5 text-[11px] font-medium text-white/90">
+          {/* Left: contact info (Displays Primary Phone first, Secondary Phone second) */}
+          <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 text-[11px] font-medium text-white/90 overflow-x-auto no-scrollbar">
             <a
               href={`mailto:${email}`}
-              className="flex items-center gap-1.5 hover:text-white transition-colors"
+              className="hidden lg:flex items-center gap-1.5 hover:text-white transition-colors shrink-0"
             >
               <Mail className="w-3 h-3 shrink-0 opacity-80" />
-              <span className="hidden sm:inline">{email}</span>
+              <span>{email}</span>
             </a>
+
+            {/* Primary Phone (Marked in Admin - Displayed First) */}
             <a
               href={`tel:${cleanPhone}`}
-              className="flex items-center gap-1.5 hover:text-white transition-colors"
+              className="flex items-center gap-1.5 hover:text-white transition-colors shrink-0"
+              title="Primary Contact"
             >
-              <Phone className="w-3 h-3 shrink-0 opacity-80" />
+              <Phone className="w-3 h-3 shrink-0 opacity-80 text-blue-300" />
               <span>{phone}</span>
             </a>
+
+            {/* Secondary Phone (Displayed Second) */}
+            {secPhone && (
+              <a
+                href={`tel:${cleanSecPhone}`}
+                className="flex items-center gap-1.5 hover:text-white transition-colors shrink-0 opacity-90 hover:opacity-100"
+                title="Secondary Contact"
+              >
+                <Phone className="w-3 h-3 shrink-0 opacity-80" />
+                <span>{secPhone}</span>
+              </a>
+            )}
           </div>
 
           {/* Right: social icons */}
@@ -131,31 +170,31 @@ export function Header({ publicPhone, publicEmail }: HeaderProps) {
 
       {/* ── Main Navbar ── */}
       <div className="w-full bg-white border-b border-slate-100">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex py-3 sm:py-3.5 min-h-[80px] sm:min-h-[88px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
           {/* Brand Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 rounded-md py-1 shrink-0"
+            className="flex items-center gap-1 sm:gap-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 rounded-md py-1 shrink-0"
             aria-label="Twinplast Polymers Home"
           >
-            <div className="relative h-9 w-9 sm:h-10 sm:w-10 shrink-0 flex items-center justify-center">
+            <div className="relative h-11 w-11 sm:h-14 sm:w-14 shrink-0 flex items-center justify-center">
               <Image
                 src="/twinplast logo icon.png"
                 alt="Twinplast Polymers Logo Icon"
                 fill
                 priority
-                sizes="40px"
+                sizes="(max-width: 640px) 44px, 56px"
                 className="object-contain"
               />
             </div>
-            <div className="relative h-7 w-36 sm:h-8 sm:w-44 shrink-0 flex items-center">
+            <div className="relative h-8 w-40 sm:h-11 sm:w-56 shrink-0 flex items-center">
               <Image
                 src="/twinplast logo text-black.png"
                 alt="Twinplast Polymers"
                 fill
                 priority
-                sizes="(max-width: 640px) 144px, 176px"
+                sizes="(max-width: 640px) 160px, 224px"
                 className="object-contain object-left"
               />
             </div>
@@ -164,41 +203,154 @@ export function Header({ publicPhone, publicEmail }: HeaderProps) {
           {/* Desktop Right Side: Nav Links & CTA Button */}
           <div className="hidden lg:flex items-center gap-3 xl:gap-5">
             <nav className="flex items-center gap-0.5 xl:gap-1" aria-label="Main Navigation">
-              {navItems.map((item) => {
-                const active = isActive(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`relative text-sm font-semibold transition-colors px-3 py-2 rounded-md ${
-                      active ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
-                    }`}
-                  >
-                    {item.label}
-                    {active && (
-                      <span className="absolute bottom-0.5 left-3 right-3 h-[2.5px] bg-[#1a1464] rounded-full" />
-                    )}
-                  </Link>
-                );
-              })}
+              {/* Home */}
+              <Link
+                href="/"
+                className={`relative text-sm font-semibold transition-colors px-3 py-2 rounded-md ${
+                  isActive('/') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                }`}
+              >
+                Home
+                {isActive('/') && (
+                  <span className="absolute bottom-0.5 left-3 right-3 h-[2.5px] bg-[#1a1464] rounded-full" />
+                )}
+              </Link>
+
+              {/* About Us */}
+              <Link
+                href="/about"
+                className={`relative text-sm font-semibold transition-colors px-3 py-2 rounded-md ${
+                  isActive('/about') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                }`}
+              >
+                About Us
+                {isActive('/about') && (
+                  <span className="absolute bottom-0.5 left-3 right-3 h-[2.5px] bg-[#1a1464] rounded-full" />
+                )}
+              </Link>
+
+              {/* Products Dropdown */}
+              <div
+                className="relative group"
+                onMouseEnter={() => setHoveredNav('products')}
+                onMouseLeave={() => setHoveredNav(null)}
+              >
+                <Link
+                  href="/products"
+                  className={`relative inline-flex items-center gap-1 text-sm font-semibold transition-colors px-3 py-2 rounded-md ${
+                    isActive('/products') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                  }`}
+                >
+                  <span>Products</span>
+                  <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-[#1a1464] transition-transform duration-200 group-hover:rotate-180" />
+                  {isActive('/products') && (
+                    <span className="absolute bottom-0.5 left-3 right-3 h-[2.5px] bg-[#1a1464] rounded-full" />
+                  )}
+                </Link>
+
+                <div
+                  className={`absolute left-0 top-full pt-2 w-72 transition-all duration-200 ${
+                    hoveredNav === 'products'
+                      ? 'opacity-100 visible translate-y-0 pointer-events-auto'
+                      : 'opacity-0 invisible -translate-y-2 pointer-events-none'
+                  }`}
+                >
+                  <div className="bg-white rounded-xl shadow-xl border border-slate-100 p-2 space-y-0.5 ring-1 ring-black/5">
+                    <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 mb-1">
+                      PP Sheet Catalog
+                    </div>
+                    {productList.map((prod) => (
+                      <Link
+                        key={prod.slug}
+                        href={`/products/${prod.slug}`}
+                        onClick={() => setHoveredNav(null)}
+                        className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:text-[#1a1464] hover:bg-blue-50/70 transition-all group/item"
+                      >
+                        <span>{prod.title}</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover/item:text-[#1a1464] group-hover/item:translate-x-0.5 transition-all" />
+                      </Link>
+                    ))}
+                    <div className="pt-1 mt-1 border-t border-slate-100">
+                      <Link
+                        href="/products"
+                        onClick={() => setHoveredNav(null)}
+                        className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold text-[#1a1464] hover:bg-blue-50/90 transition-colors"
+                      >
+                        <span>View All Products</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Solutions Dropdown */}
+              <div
+                className="relative group"
+                onMouseEnter={() => setHoveredNav('solutions')}
+                onMouseLeave={() => setHoveredNav(null)}
+              >
+                <Link
+                  href="/solutions"
+                  className={`relative inline-flex items-center gap-1 text-sm font-semibold transition-colors px-3 py-2 rounded-md ${
+                    isActive('/solutions') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                  }`}
+                >
+                  <span>Solutions</span>
+                  <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-[#1a1464] transition-transform duration-200 group-hover:rotate-180" />
+                  {isActive('/solutions') && (
+                    <span className="absolute bottom-0.5 left-3 right-3 h-[2.5px] bg-[#1a1464] rounded-full" />
+                  )}
+                </Link>
+
+                <div
+                  className={`absolute left-0 top-full pt-2 w-72 transition-all duration-200 ${
+                    hoveredNav === 'solutions'
+                      ? 'opacity-100 visible translate-y-0 pointer-events-auto'
+                      : 'opacity-0 invisible -translate-y-2 pointer-events-none'
+                  }`}
+                >
+                  <div className="bg-white rounded-xl shadow-xl border border-slate-100 p-2 space-y-0.5 ring-1 ring-black/5">
+                    <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 mb-1">
+                      Industry Applications
+                    </div>
+                    {solutionList.map((sol) => (
+                      <Link
+                        key={sol.id || sol.title}
+                        href={`/contact?product=${encodeURIComponent(sol.title)}`}
+                        onClick={() => setHoveredNav(null)}
+                        className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:text-[#1a1464] hover:bg-blue-50/70 transition-all group/item"
+                      >
+                        <span>{sol.title}</span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover/item:text-[#1a1464] group-hover/item:translate-x-0.5 transition-all" />
+                      </Link>
+                    ))}
+                    <div className="pt-1 mt-1 border-t border-slate-100">
+                      <Link
+                        href="/solutions"
+                        onClick={() => setHoveredNav(null)}
+                        className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold text-[#1a1464] hover:bg-blue-50/90 transition-colors"
+                      >
+                        <span>View All Solutions</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </nav>
 
             <Link
               href="/contact"
               className="inline-flex items-center justify-center bg-[#1a1464] hover:bg-[#13104f] text-white px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1464]"
             >
-              Contact Us
+              Request for Sample
             </Link>
           </div>
 
           {/* Mobile controls */}
-          <div className="flex items-center gap-3 lg:hidden">
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center rounded-sm bg-[#1a1464] hover:bg-[#13104f] text-white px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1464]"
-            >
-              Contact Us
-            </Link>
+          <div className="flex items-center lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
@@ -215,47 +367,144 @@ export function Header({ publicPhone, publicEmail }: HeaderProps) {
 
       {/* Mobile Menu Drawer */}
       {isOpen && (
-        <div className="fixed inset-0 top-[calc(36px+62px)] z-40 bg-white lg:hidden animate-fade-in">
+        <div className="fixed inset-0 top-[calc(36px+62px)] z-40 bg-white lg:hidden animate-fade-in overflow-y-auto">
           <nav
             id="mobile-navigation"
-            className="flex flex-col h-[calc(100vh-98px)] p-6 justify-between bg-white border-t border-slate-100"
+            className="flex flex-col min-h-[calc(100vh-98px)] p-6 justify-between bg-white border-t border-slate-100"
             aria-label="Mobile Navigation"
           >
-            <div className="flex flex-col space-y-1">
-              {navItems.map((item) => {
-                const active = isActive(item.href);
-                return (
+            <div className="flex flex-col space-y-2">
+              <Link
+                href="/"
+                onClick={() => setIsOpen(false)}
+                className={`text-base py-2 transition-colors ${
+                  isActive('/') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                }`}
+              >
+                Home
+              </Link>
+
+              <Link
+                href="/about"
+                onClick={() => setIsOpen(false)}
+                className={`text-base py-2 transition-colors ${
+                  isActive('/about') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                }`}
+              >
+                About Us
+              </Link>
+
+              {/* Products Accordion */}
+              <div className="py-1 border-y border-slate-50">
+                <div className="flex items-center justify-between py-2">
                   <Link
-                    key={item.href}
-                    href={item.href}
+                    href="/products"
                     onClick={() => setIsOpen(false)}
-                    className={`text-base py-3 transition-colors ${
-                      active
-                        ? 'font-bold text-[#1a1464]'
-                        : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                    className={`text-base transition-colors ${
+                      isActive('/products') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
                     }`}
                   >
-                    <span>{item.label}</span>
+                    Products
                   </Link>
-                );
-              })}
+                  <button
+                    type="button"
+                    onClick={() => setMobileExpanded(prev => ({ ...prev, products: !prev.products }))}
+                    className="p-1 text-slate-500 hover:text-[#1a1464]"
+                    aria-label="Toggle Products Submenu"
+                  >
+                    <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${mobileExpanded.products ? 'rotate-180' : ''}`} />
+                  </button>
+                </div>
+
+                {mobileExpanded.products && (
+                  <div className="pl-4 pb-2 space-y-2 border-l-2 border-blue-100 ml-1 mt-1">
+                    {productList.map((prod) => (
+                      <Link
+                        key={prod.slug}
+                        href={`/products/${prod.slug}`}
+                        onClick={() => setIsOpen(false)}
+                        className="block text-xs font-medium text-slate-600 hover:text-[#1a1464] py-1"
+                      >
+                        {prod.title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Solutions Accordion */}
+              <div className="py-1 border-b border-slate-50">
+                <div className="flex items-center justify-between py-2">
+                  <Link
+                    href="/solutions"
+                    onClick={() => setIsOpen(false)}
+                    className={`text-base transition-colors ${
+                      isActive('/solutions') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                    }`}
+                  >
+                    Solutions
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setMobileExpanded(prev => ({ ...prev, solutions: !prev.solutions }))}
+                    className="p-1 text-slate-500 hover:text-[#1a1464]"
+                    aria-label="Toggle Solutions Submenu"
+                  >
+                    <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${mobileExpanded.solutions ? 'rotate-180' : ''}`} />
+                  </button>
+                </div>
+
+                {mobileExpanded.solutions && (
+                  <div className="pl-4 pb-2 space-y-2 border-l-2 border-blue-100 ml-1 mt-1">
+                    {solutionList.map((sol) => (
+                      <Link
+                        key={sol.id || sol.title}
+                        href={`/contact?product=${encodeURIComponent(sol.title)}`}
+                        onClick={() => setIsOpen(false)}
+                        className="block text-xs font-medium text-slate-600 hover:text-[#1a1464] py-1"
+                      >
+                        {sol.title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="space-y-4 border-t border-slate-100 pt-6">
+            <div className="space-y-4 border-t border-slate-100 pt-6 mt-6">
               <Link
                 href="/contact"
                 onClick={() => setIsOpen(false)}
                 className="flex w-full items-center justify-center rounded-sm bg-[#1a1464] hover:bg-[#13104f] text-white py-4 text-sm font-bold uppercase tracking-wider transition-colors"
               >
-                Contact Us
+                Request for Sample
               </Link>
 
-              <a
-                href={`mailto:${email}`}
-                className="block text-center text-xs font-semibold text-slate-500 hover:text-[#1a1464]"
-              >
-                {email}
-              </a>
+              <div className="flex flex-col items-center gap-1.5 pt-1">
+                <a
+                  href={`tel:${cleanPhone}`}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-[#1a1464]"
+                >
+                  <Phone className="w-3 h-3 text-[#1a1464]" />
+                  <span>{phone}</span>
+                </a>
+                {secPhone && (
+                  <a
+                    href={`tel:${cleanSecPhone}`}
+                    className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#1a1464]"
+                  >
+                    <Phone className="w-3 h-3 text-slate-400" />
+                    <span>{secPhone}</span>
+                  </a>
+                )}
+                <a
+                  href={`mailto:${email}`}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#1a1464] pt-0.5"
+                >
+                  <Mail className="w-3 h-3 text-slate-400" />
+                  <span>{email}</span>
+                </a>
+              </div>
 
               {/* Social links in mobile menu */}
               <div className="flex items-center justify-center gap-3 pt-1">

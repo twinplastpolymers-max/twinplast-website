@@ -46,11 +46,6 @@ export function FinalCtaSection({
 
       <div className="relative z-20 mx-auto max-w-7xl flex flex-col lg:flex-row items-center justify-between gap-8 sm:gap-10">
         <div className="text-center lg:text-left space-y-2.5 max-w-2xl">
-          {eyebrow && (
-            <span className="text-xs font-bold uppercase tracking-widest text-blue-400 block">
-              {eyebrow}
-            </span>
-          )}
           <h2 id="cta-heading" className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
             {heading}
           </h2>

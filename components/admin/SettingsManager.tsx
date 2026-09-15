@@ -67,6 +67,9 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
   const resolvedPrimaryPhone =
     primaryPhoneChoice === 'p1' ? '+91 95853 88444' : primaryPhoneChoice === 'p2' ? '+91 96458 32154' : customPhone;
 
+  const resolvedSecondaryPhone =
+    primaryPhoneChoice === 'p1' ? '+91 96458 32154' : primaryPhoneChoice === 'p2' ? '+91 95853 88444' : alternatePhone;
+
   const resolvedPrimaryEmail =
     primaryEmailChoice === 'e1' ? 'twinplastpolymers@gmail.com' : primaryEmailChoice === 'e2' ? 'info@twinplastpolymers.com' : customEmail;
 
@@ -82,7 +85,8 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
       { key: 'public_email', value: resolvedPrimaryEmail },
       { key: 'primary_phone', value: resolvedPrimaryPhone },
       { key: 'primary_email', value: resolvedPrimaryEmail },
-      { key: 'alternate_phone', value: alternatePhone },
+      { key: 'secondary_phone', value: resolvedSecondaryPhone },
+      { key: 'alternate_phone', value: resolvedSecondaryPhone },
       { key: 'official_email', value: officialEmail },
       { key: 'alternate_email', value: alternateEmail },
       { key: 'public_address', value: publicAddress },
@@ -260,8 +264,13 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
               />
             )}
 
-            <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold pt-1">
-              Active Public Primary Phone: <span className="font-mono font-bold">{resolvedPrimaryPhone}</span>
+            <div className="space-y-1 text-[11px] font-semibold pt-1">
+              <div className="text-emerald-700 dark:text-emerald-400">
+                Active Public Primary Phone: <span className="font-mono font-bold">{resolvedPrimaryPhone}</span> (Displays First)
+              </div>
+              <div className="text-slate-600 dark:text-slate-400">
+                Active Public Secondary Phone: <span className="font-mono font-bold">{resolvedSecondaryPhone}</span> (Displays Second)
+              </div>
             </div>
           </div>
 

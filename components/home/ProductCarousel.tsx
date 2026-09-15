@@ -40,9 +40,6 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
         {/* Section Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-blue-600 block mb-2">
-              OUR PRODUCT LINE
-            </span>
             <div className="flex items-center justify-between gap-3">
               <h2 id="products-heading" className="text-2xl sm:text-3xl lg:text-4xl text-slate-900 tracking-tight">
                 Our Product Range

@@ -29,11 +29,6 @@ export function VisionMissionSection({
 
         {/* Section header (Centered matching reference layout) */}
         <div className="max-w-2xl mx-auto text-center mb-10 sm:mb-14 space-y-2">
-          {eyebrow && (
-            <span className="text-xs font-bold uppercase tracking-widest text-blue-600 block">
-              {eyebrow}
-            </span>
-          )}
           <h2 className="text-3xl sm:text-4xl text-slate-900 tracking-tight">
             {title}
           </h2>

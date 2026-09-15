@@ -70,7 +70,7 @@ export function Footer({ publicPhone, publicEmail, publicAddress, products }: Fo
               />
             </Link>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Specialized B2B manufacturer of polypropylene fluted sheets. Established in 2021 in Thoothukudi, Tamil Nadu.
+              Specialized manufacturer of polypropylene fluted sheets. Established in 2021 in Thoothukudi, Tamil Nadu.
             </p>
           </div>
 
@@ -202,7 +202,7 @@ export function Footer({ publicPhone, publicEmail, publicAddress, products }: Fo
                 />
               </Link>
               <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
-                Twinplast Polymers Private Limited is a specialized B2B manufacturer of polypropylene fluted sheets. Established in 2021 in Thoothukudi, Tamil Nadu, we engineer durable packaging, separations, and flooring protection products.
+                Twinplast Polymers Private Limited is a specialized manufacturer of polypropylene fluted sheets. Established in 2021 in Thoothukudi, Tamil Nadu, we engineer durable packaging, separations, and flooring protection products.
               </p>
             </div>
 

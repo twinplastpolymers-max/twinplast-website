@@ -7,13 +7,13 @@ import { HomeContactSection } from '@/components/home/HomeContactSection';
 
 export const metadata: Metadata = {
   title: 'Contact Twinplast Polymers | Request a PP Sheet Quote',
-  description: 'Contact Twinplast Polymers in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and B2B quotations.',
+  description: 'Contact Twinplast Polymers in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
   alternates: {
     canonical: getSiteUrl('/contact'),
   },
   openGraph: {
     title: 'Contact Twinplast Polymers | Request a PP Sheet Quote',
-    description: 'Contact Twinplast Polymers in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and B2B quotations.',
+    description: 'Contact Twinplast Polymers in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
     url: getSiteUrl('/contact'),
     type: 'website',
   },
@@ -30,10 +30,24 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
   let publicPhone = '+91 95853 88444';
   let publicEmail = 'twinplastpolymers@gmail.com';
   let publicAddress = 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan, Thoothukudi, Tamil Nadu - 628101';
+  let products: string[] = [];
+  let solutions: string[] = [];
 
   try {
     const supabase = await createClient();
-    const { data: settingRes } = await supabase.from('company_settings').select('*');
+    const [{ data: settingRes }, { data: productRes }, { data: industryRes }] = await Promise.all([
+      supabase.from('company_settings').select('*'),
+      supabase.from('products').select('title').eq('active', true).order('display_order', { ascending: true }),
+      supabase.from('industries').select('title').eq('active', true).order('display_order', { ascending: true }),
+    ]);
+
+    if (productRes) {
+      products = (productRes as Array<{ title: string }>).map((p) => p.title);
+    }
+    if (industryRes) {
+      solutions = (industryRes as Array<{ title: string }>).map((i) => i.title);
+    }
+
     if (settingRes) {
       const settings = settingRes as Array<{ key: string; value: unknown }>;
       const pPhone = settings.find((s) => s.key === 'public_phone')?.value;
@@ -80,6 +94,8 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           email={publicEmail}
           address={publicAddress}
           initialProduct={initialProduct}
+          products={products}
+          solutions={solutions}
         />
       </Suspense>
     </div>

@@ -43,9 +43,6 @@ export function ManufacturingProcessSection({ steps }: ManufacturingProcessSecti
 
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-5 lg:mb-5">
-          <span className="text-xs font-bold uppercase tracking-widest text-blue-600 block mb-2">
-            FROM RAW MATERIAL TO RELIABLE PRODUCTS
-          </span>
           <h2 id="process-heading" className="text-2xl sm:text-3xl lg:text-4xl text-slate-900 tracking-tight">
             Nine Stage Manufacturing Process
           </h2>
