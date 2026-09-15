@@ -10,13 +10,36 @@ export interface HomeContactSectionProps {
   email?: string;
   address?: string;
   initialProduct?: string;
+  products?: string[];
+  solutions?: string[];
 }
+
+const DEFAULT_PRODUCTS = [
+  'PP Corrugated Sheet',
+  'PP Layer Pad Sheet',
+  'PP Sunpack Sheet',
+  'PP Floor Protection Sheet',
+  'PP Corrugated Box',
+  'Customized PP Products',
+];
+
+const DEFAULT_SOLUTIONS = [
+  'Construction',
+  'Packaging',
+  'Beverage Industry',
+  'Advertising & Printing',
+  'Industrial',
+  'Automobile',
+  'Agriculture',
+];
 
 export function HomeContactSection({
   phone = '+91 95853 88444',
   email = 'twinplastpolymers@gmail.com',
   address = 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan, Thoothukudi, Tamil Nadu - 628101',
   initialProduct = '',
+  products,
+  solutions,
 }: HomeContactSectionProps) {
   const searchParams = useSearchParams();
   const rawProduct = searchParams.get('product') || initialProduct || '';
@@ -33,6 +56,11 @@ export function HomeContactSection({
   };
 
   const selectedProduct = formatProductName(rawProduct);
+
+  const productOptions = products && products.length > 0 ? products : DEFAULT_PRODUCTS;
+  const solutionOptions = solutions && solutions.length > 0 ? solutions : DEFAULT_SOLUTIONS;
+  const allOptions = [...productOptions, ...solutionOptions];
+  const customSelectedOption = selectedProduct && !allOptions.includes(selectedProduct) ? selectedProduct : null;
 
   const [formData, setFormData] = useState({
     customer_name: '',
@@ -98,14 +126,11 @@ export function HomeContactSection({
           {/* Left Side: Company Details */}
           <div className="lg:col-span-5 space-y-8">
             <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-blue-600 block mb-2">
-               CONNECT WITH US
-              </span>
               <h2 id="home-contact-heading" className="text-2xl sm:text-3xl lg:text-4xl tracking-tight text-slate-900 leading-tight">
               Let’s Build the Right Solution
               </h2>
               <p className="mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed">
-                Connect with our factory team directly for product inquiries, custom PP sheet specifications, and B2B orders.
+                Connect with our factory team directly for product inquiries, custom PP sheet specifications, and orders.
               </p>
             </div>
 
@@ -233,13 +258,53 @@ export function HomeContactSection({
                 </div>
 
                 <div>
-                  <input
-                    type="text"
+                  <select
                     value={formData.product}
-                    onChange={(e) => setFormData({ ...formData, product: e.target.value })}
-                    placeholder="Selected Product / Requirement"
-                    className="w-full bg-transparent border-b border-slate-300 py-3 text-sm text-slate-900 placeholder:text-slate-400 rounded-none focus:outline-none focus:border-blue-600 transition-colors"
-                  />
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setFormData((prev) => ({
+                        ...prev,
+                        product: val,
+                        message:
+                          val && !prev.message
+                            ? `I would like to request a quote for ${val}. Please share specifications, pricing, and MOQ details.`
+                            : prev.message,
+                      }));
+                    }}
+                    className={`w-full bg-transparent border-b border-slate-300 py-3 text-sm rounded-none focus:outline-none focus:border-blue-600 transition-colors cursor-pointer ${
+                      formData.product ? 'text-slate-900 font-medium' : 'text-slate-400'
+                    }`}
+                  >
+                    <option value="" disabled className="text-slate-400">
+                      Select Product / Requirement *
+                    </option>
+
+                    {customSelectedOption && (
+                      <option value={customSelectedOption} className="text-slate-900 bg-white py-1">
+                        {customSelectedOption}
+                      </option>
+                    )}
+
+                    <optgroup label="Products Catalog">
+                      {productOptions.map((p) => (
+                        <option key={p} value={p} className="text-slate-900 bg-white py-1">
+                          {p}
+                        </option>
+                      ))}
+                    </optgroup>
+
+                    <optgroup label="Industry Solutions">
+                      {solutionOptions.map((s) => (
+                        <option key={s} value={s} className="text-slate-900 bg-white py-1">
+                          {s}
+                        </option>
+                      ))}
+                    </optgroup>
+
+                    <option value="General Enquiry / Custom Order" className="text-slate-900 bg-white py-1">
+                      General Enquiry / Custom Order
+                    </option>
+                  </select>
                 </div>
 
                 <div>

@@ -56,16 +56,6 @@ export function MarketsSection({
         
         {/* Header Content */}
         <div className="max-w-3xl mx-auto mb-5 sm:mb-7">
-          {eyebrow ? (
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 block mb-2">
-              {eyebrow}
-            </span>
-          ) : (
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-400 block mb-2">
-              SUPPLYING WORLDWIDE
-            </span>
-          )}
-        
           {heading && (
             <h2 id="markets-heading" className="text-2xl sm:text-4xl text-white tracking-tight leading-tight">
               {heading}

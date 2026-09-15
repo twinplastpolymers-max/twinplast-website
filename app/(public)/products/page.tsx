@@ -10,13 +10,13 @@ import { CtaBanner } from '@/components/shared/CtaBanner';
 
 export const metadata: Metadata = {
   title: 'PP Sheets | Corrugated, Sunpack & More | Twinplast Polymers',
-  description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets from Twinplast Polymers for B2B industrial and packaging applications.',
+  description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets from Twinplast Polymers for industrial and packaging applications.',
   alternates: {
     canonical: getSiteUrl('/products'),
   },
   openGraph: {
     title: 'PP Sheets | Corrugated, Sunpack & More | Twinplast Polymers',
-    description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets from Twinplast Polymers for B2B industrial and packaging applications.',
+    description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets from Twinplast Polymers for industrial and packaging applications.',
     url: getSiteUrl('/products'),
     type: 'website',
   },
@@ -49,9 +49,6 @@ export default async function ProductsCatalogPage() {
         <div className="mx-auto max-w-7xl">
           {/* Section Header */}
           <div className="mb-12 text-center sm:text-left space-y-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-accent">
-              Industrial Sheets Manufacturer
-            </span>
             <h1 className="text-2xl sm:text-3xl tracking-tight text-foreground ">
               Polypropylene (PP) Sheet Catalog
             </h1>

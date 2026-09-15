@@ -43,9 +43,6 @@ export default async function SolutionsPage() {
         <div className="mx-auto max-w-7xl">
           {/* Section Header */}
           <div className="mb-12 text-center sm:text-left space-y-2">
-            <span className="text-xs font-bold uppercase tracking-widest text-blue-600 block">
-              VERSATILE POLYMER APPLICATIONS
-            </span>
             <h1 className="text-2xl sm:text-3xl  tracking-tight text-foreground">
               Industry Applications & Solutions
             </h1>
@@ -64,7 +61,8 @@ export default async function SolutionsPage() {
               {industries.map((ind) => (
                 <div
                   key={ind.id}
-                  className="flex flex-col bg-surface border border-surface-border rounded-sm overflow-hidden shadow-xs hover:shadow-md transition-all group"
+                  id={ind.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
+                  className="flex flex-col bg-surface border border-surface-border rounded-sm overflow-hidden shadow-xs hover:shadow-md transition-all group scroll-mt-28"
                 >
                   <div className="w-full bg-slate-50 border-b border-surface-border overflow-hidden h-36 sm:h-72 lg:h-80 relative">
                     <ImageContainer

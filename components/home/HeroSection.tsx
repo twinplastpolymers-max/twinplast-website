@@ -47,12 +47,6 @@ export function HeroSection({
       {/* Content */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full relative z-10 py-10 sm:py-16">
         <div className="max-w-xl text-left space-y-2.5 sm:space-y-3">
-          {subheading && (
-            <span className="inline-block text-xs font-semibold uppercase tracking-wider text-blue-400">
-              {subheading}
-            </span>
-          )}
-
           <h1 id="hero-heading" className="text-2xl xs:text-3xl sm:text-4xl lg:text-[40px] xl:text-[44px] font-semibold tracking-tight leading-tight text-white">
             {heading}
           </h1>

@@ -137,7 +137,7 @@ export default async function AdminDashboardPage() {
             Admin Dashboard
           </h1>
           <p className="mt-1.5 text-sm font-normal text-slate-500 dark:text-slate-400 max-w-2xl">
-            Real-time management overview of your polypropylene fluted sheet catalog, incoming B2B client enquiries, and live website CMS modules.
+            Real-time management overview of your polypropylene fluted sheet catalog, incoming client enquiries, and live website CMS modules.
           </p>
         </div>
 

@@ -38,11 +38,6 @@ export function WhyChooseSection({
 
         {/* Common Section Header on Top */}
         <div className="mb-8 sm:mb-12">
-          {eyebrow && (
-            <span className="text-xs font-bold uppercase tracking-widest text-blue-600 block mb-2">
-              {eyebrow}
-            </span>
-          )}
           <h2 id="why-heading" className="text-2xl sm:text-3xl lg:text-4xl tracking-tight text-slate-900 leading-tight">
             {heading || 'Why Choose Us'}
           </h2>

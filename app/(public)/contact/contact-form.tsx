@@ -54,7 +54,7 @@ export function ContactForm() {
       {/* Contact Form - Left 7 columns */}
       <div className="lg:col-span-7 bg-surface border border-surface-border rounded-2xl p-6 sm:p-8 shadow-sm">
         <h2 className="text-xl font-bold tracking-tight text-foreground mb-1">
-          B2B Enquiry Form
+          Enquiry Form
         </h2>
         <p className="text-xs text-muted mb-6 uppercase tracking-wider font-semibold">
           Fields marked with * are required
@@ -166,7 +166,7 @@ export function ContactForm() {
               className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-accent hover:bg-accent/90 disabled:bg-accent/50 text-accent-foreground px-5 py-3.5 text-sm font-bold uppercase tracking-wider transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent cursor-pointer"
             >
               <Send className="w-4 h-4" />
-              <span>{status === 'submitting' ? 'Logging Enquiry...' : 'Submit B2B Request'}</span>
+              <span>{status === 'submitting' ? 'Logging Enquiry...' : 'Submit Request'}</span>
             </button>
           </form>
         )}

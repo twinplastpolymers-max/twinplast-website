@@ -177,7 +177,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div className="bg-secondary/20 p-3 rounded-lg border border-secondary/40">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">GSM Weight Range</span>
-                  <span className="font-semibold text-foreground mt-0.5 block">Customised to B2B Specs</span>
+                  <span className="font-semibold text-foreground mt-0.5 block">Customised Specs</span>
                   <span className="text-xs text-muted block mt-1">Extruded according to client target load capacity.</span>
                 </div>
 

@@ -90,13 +90,13 @@ export async function submitEnquiry(data: EnquiryInsert) {
             email: data.email.trim(),
             name: data.customer_name.trim(),
           },
-          subject: `New B2B Enquiry from ${data.customer_name.trim()}`,
+          subject: `New Enquiry from ${data.customer_name.trim()}`,
           htmlContent: `
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>New B2B Enquiry</title>
+    <title>New Enquiry</title>
     <style>
       body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; background-color: #f8fafc; padding: 24px 12px; }
       .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 32px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); }
@@ -112,7 +112,7 @@ export async function submitEnquiry(data: EnquiryInsert) {
   </head>
   <body>
     <div class="container">
-      <h2>New B2B Website Enquiry</h2>
+      <h2>New Website Enquiry</h2>
       <div class="grid">
         <div class="field">
           <div class="label">Customer Name</div>
