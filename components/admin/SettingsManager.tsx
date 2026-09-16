@@ -27,7 +27,7 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
 
   // General Company Settings
   const [companyName, setCompanyName] = useState<string>(getSettingVal('company_name', 'Twinplast Polymers Pvt. Ltd.') as string);
-  const [publicAddress, setPublicAddress] = useState<string>(getSettingVal('public_address', 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan, Thoothukudi, Tamil Nadu, 628101') as string);
+  const [publicAddress, setPublicAddress] = useState<string>(getSettingVal('public_address', 'South Silukkanpatti, Tuticorin, Tamilnadu, India') as string);
   
   // Explicit Primary Contact Designation
   // Default values check existing public_phone / primary_phone / public_email / primary_email

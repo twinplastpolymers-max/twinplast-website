@@ -18,7 +18,7 @@ export function Footer({ publicPhone, publicEmail, publicAddress, products }: Fo
 
   const phone = publicPhone || '+91 95853 88444';
   const email = publicEmail || 'twinplastpolymers@gmail.com';
-  const address = publicAddress || 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan, Thoothukudi, Tamil Nadu • 628101';
+  const address = publicAddress || 'South Silukkanpatti, Tuticorin, Tamilnadu, India';
   const cleanPhone = phone.replace(/[^+\d]/g, '');
 
   const toggleSection = (key: string) => {

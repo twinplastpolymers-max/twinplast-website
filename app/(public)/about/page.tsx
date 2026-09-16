@@ -15,13 +15,13 @@ import { CtaBanner } from '@/components/shared/CtaBanner';
 
 export const metadata: Metadata = {
   title: 'About Twinplast Polymers | PP Sheet Manufacturer',
-  description: 'Learn about Twinplast Polymers Pvt. Ltd., a specialized Polypropylene (PP) Corrugated Sheets and PP-based products manufacturer in Tuticorin, Tamil Nadu, India.',
+  description: 'Learn about Twinplast Polymers Pvt. Ltd., a specialized Polypropylene (PP) Corrugated Sheets and PP-based products manufacturer in South Silukkanpatti, Tuticorin, Tamilnadu, India.',
   alternates: {
     canonical: getSiteUrl('/about'),
   },
   openGraph: {
     title: 'About Twinplast Polymers | PP Sheet Manufacturer',
-    description: 'Learn about Twinplast Polymers Pvt. Ltd., a specialized Polypropylene (PP) Corrugated Sheets and PP-based products manufacturer in Tuticorin, Tamil Nadu, India.',
+    description: 'Learn about Twinplast Polymers Pvt. Ltd., a specialized Polypropylene (PP) Corrugated Sheets and PP-based products manufacturer in South Silukkanpatti, Tuticorin, Tamilnadu, India.',
     url: getSiteUrl('/about'),
     type: 'website',
   },
@@ -165,7 +165,7 @@ export default async function AboutPage() {
     name: 'Twinplast Polymers Pvt. Ltd.',
     url: getSiteUrl('/about'),
     logo: getSiteUrl('/logo.png'),
-    description: 'Polypropylene (PP) sheet manufacturing facility operating in Tuticorin, Tamil Nadu, India.',
+    description: 'Polypropylene (PP) sheet manufacturing facility operating in South Silukkanpatti, Tuticorin, Tamilnadu, India.',
     telephone: '+91 96458 32154',
     email: 'info@twinplastpolymers.com',
     address: {

@@ -208,9 +208,8 @@ export function ContactForm() {
             <div className="text-sm text-muted leading-relaxed">
               <span className="text-[10px] font-bold uppercase tracking-widest text-muted block mb-0.5">Physical Address</span>
               <strong className="text-foreground font-semibold block">Twinplast Polymers Pvt. Ltd.</strong>
-              <p>SF.NO.1/2A1, South Sillukanpatti Village,</p>
-              <p>Milavittan, Thoothukudi,</p>
-              <p>Tamil Nadu, India &bull; 628101</p>
+              <p>South Silukkanpatti, Tuticorin,</p>
+              <p>Tamilnadu, India</p>
             </div>
           </div>
         </div>

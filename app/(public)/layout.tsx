@@ -11,7 +11,7 @@ export default async function PublicLayout({
   let publicPhone = '+91 95853 88444';
   let secondaryPhone = '+91 96458 32154';
   let publicEmail = 'twinplastpolymers@gmail.com';
-  let publicAddress = 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan, Thoothukudi, Tamil Nadu • 628101';
+  let publicAddress = 'South Silukkanpatti, Tuticorin, Tamilnadu, India';
 
   let products: Array<{ title: string; slug: string }> = [];
   let solutions: Array<{ id: string; title: string }> = [];
