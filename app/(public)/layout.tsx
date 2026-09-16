@@ -3,6 +3,9 @@ import { Footer } from '@/components/shared/Footer';
 import { FloatingContactButton } from '@/components/shared/FloatingContactButton';
 import { createClient } from '@/lib/supabase/server';
 
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
+
 export default async function PublicLayout({
   children,
 }: {
@@ -36,7 +39,7 @@ export default async function PublicLayout({
     if (settingRes) {
       const settings = settingRes as Array<{ key: string; value: unknown }>;
       const pPhone = settings.find((s) => s.key === 'primary_phone' || s.key === 'public_phone')?.value;
-      const waPhone = settings.find((s) => s.key === 'whatsapp_number')?.value;
+      const waPhone = settings.find((s) => s.key === 'whatsapp_number' || s.key === 'whatsapp')?.value;
       const sPhone = settings.find((s) => s.key === 'secondary_phone' || s.key === 'alternate_phone')?.value;
       const pEmail = settings.find((s) => s.key === 'official_email' || s.key === 'primary_email' || s.key === 'public_email')?.value;
       const pAddr = settings.find((s) => s.key === 'public_address')?.value;
