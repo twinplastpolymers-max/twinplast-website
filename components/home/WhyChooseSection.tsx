@@ -37,14 +37,20 @@ export function WhyChooseSection({
       <div className="mx-auto max-w-7xl">
 
         {/* Common Section Header on Top */}
-        <div className="mb-8 sm:mb-12">
-          <h2 id="why-heading" className="text-2xl sm:text-3xl lg:text-4xl tracking-tight text-slate-900 leading-tight">
-            {heading || 'Why Choose Us'}
-          </h2>
-          <p className="mt-2 text-xs sm:text-sm text-slate-500 max-w-2xl leading-relaxed">
-            {description || 'Discover why businesses trust Twinplast for durable, customized, and high-performance PP sheet solutions.'}
-          </p>
-        </div>
+        {(heading || description) && (
+          <div className="mb-8 sm:mb-12">
+            {heading && (
+              <h2 id="why-heading" className="text-2xl sm:text-3xl lg:text-4xl tracking-tight text-slate-900 leading-tight">
+                {heading}
+              </h2>
+            )}
+            {description && (
+              <p className="mt-2 text-xs sm:text-sm text-slate-500 max-w-2xl leading-relaxed">
+                {description}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Grid: Left Column Image, Right Column Accordion */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-8 items-start">
@@ -54,7 +60,7 @@ export function WhyChooseSection({
             {resolvedImage ? (
               <Image
                 src={resolvedImage}
-                alt={heading || 'Why Choose Twinplast Polymers'}
+                alt={heading || 'Why Choose Us'}
                 fill
                 unoptimized
                 sizes="(max-width: 1024px) 100vw, 50vw"

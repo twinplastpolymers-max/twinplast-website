@@ -54,13 +54,43 @@ export async function submitEnquiry(data: EnquiryInsert) {
     }
 
     // 3. Brevo Transactional Email Sending
-    // Retrieve API key securely on the server
     const brevoApiKey = process.env.BREVO_API_KEY;
 
     if (!brevoApiKey) {
       console.error('Server Configuration Error: BREVO_API_KEY environment variable is not defined.');
     } else {
       try {
+        // Retrieve recipient notification email from company settings or env
+        let destinationEmail = process.env.NOTIFICATION_EMAIL || '';
+        let senderEmail = process.env.SENDER_EMAIL || 'info@twinplastpolymers.com';
+
+        try {
+          const rawSupabase = (await createClient()) as unknown as {
+            from: (table: string) => {
+              select: (cols: string) => Promise<{ data: Array<{ key: string; value: unknown }> | null }>
+            }
+          };
+          const { data: sRes } = await rawSupabase.from('company_settings').select('*');
+          if (sRes) {
+            const pEmail = sRes.find((s) => s.key === 'primary_email' || s.key === 'public_email')?.value;
+            const nEmail = sRes.find((s) => s.key === 'notification_email')?.value;
+            if (typeof nEmail === 'string' && nEmail.trim()) {
+              destinationEmail = nEmail.trim();
+            } else if (typeof pEmail === 'string' && pEmail.trim()) {
+              destinationEmail = pEmail.trim();
+            }
+            if (typeof pEmail === 'string' && pEmail.trim()) {
+              senderEmail = pEmail.trim();
+            }
+          }
+        } catch {
+          // Fallback to env or default
+        }
+
+        if (!destinationEmail) {
+          destinationEmail = 'info@twinplastpolymers.com';
+        }
+
         // Sanitize all customer-controlled inputs before htmlContent interpolation
         const escapedName = escapeHtml(data.customer_name);
         const escapedEmail = escapeHtml(data.email);
@@ -77,13 +107,13 @@ export async function submitEnquiry(data: EnquiryInsert) {
 
         const brevoPayload = {
           sender: {
-            name: 'Twinplast Polymers',
-            email: 'twinplastpolymers@gmail.com',
+            name: 'Twinplast Polymers Website',
+            email: senderEmail,
           },
           to: [
             {
-              email: 'muhammedjaseemkc277@gmail.com',
-              name: 'Twinplast Polymers Info',
+              email: destinationEmail,
+              name: 'Twinplast Polymers Sales',
             },
           ],
           replyTo: {

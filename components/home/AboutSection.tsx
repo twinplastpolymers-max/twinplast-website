@@ -13,14 +13,16 @@ export interface AboutSectionProps {
 }
 
 export function AboutSection({
-  eyebrow = 'ABOUT US',
-  heading = 'Welcome to Twinplast Polymers',
+  eyebrow,
+  heading,
   description,
   mainImage = null,
   secondaryImage1 = null,
   secondaryImage2 = null,
   showButton = true,
 }: AboutSectionProps) {
+  if (!heading && !description && !mainImage) return null;
+
   return (
     <section className="py-14 sm:py-10 px-4 sm:px-6 lg:px-8 bg-white" aria-labelledby="about-heading">
       <div className="mx-auto max-w-7xl">
@@ -28,9 +30,11 @@ export function AboutSection({
           
           {/* Left side: Eyebrow + Heading + Description */}
           <div className="lg:col-span-6 space-y-5">
-            <h2 id="about-heading" className="text-2xl sm:text-3xl tracking-tight text-slate-900 leading-tight">
-              Welcome to <span className="text-blue-600">Twinplast Polymers</span>
-            </h2>
+            {heading && (
+              <h2 id="about-heading" className="text-2xl sm:text-3xl tracking-tight text-slate-900 leading-tight">
+                {heading}
+              </h2>
+            )}
             {description && (
               <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
                 {description}

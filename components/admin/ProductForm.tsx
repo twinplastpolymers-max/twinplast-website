@@ -156,7 +156,7 @@ export function ProductForm({ product }: ProductFormProps) {
     setSubmitError('');
     setSuccessMsg('');
 
-    if (!title || !slug || !category || !description) {
+    if (!title || !slug || !description) {
       const err = 'Please complete all required fields.';
       setSubmitError(err);
       toast.error('Validation Error', err);
@@ -168,7 +168,7 @@ export function ProductForm({ product }: ProductFormProps) {
       const payload = {
         title,
         slug,
-        category,
+        category: category || 'Polymer Sheet',
         description,
         display_order: displayOrder,
         featured,
@@ -299,20 +299,7 @@ export function ProductForm({ product }: ProductFormProps) {
             />
           </div>
 
-          <div>
-            <label htmlFor="category-input" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-              Category *
-            </label>
-            <input
-              id="category-input"
-              type="text"
-              required
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              placeholder="e.g. Sunpack, Corrugated, Hollow"
-              className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-            />
-          </div>
+
 
           <div>
             <label htmlFor="description-input" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">

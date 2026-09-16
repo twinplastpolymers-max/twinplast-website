@@ -14,29 +14,10 @@ export interface HomeContactSectionProps {
   solutions?: string[];
 }
 
-const DEFAULT_PRODUCTS = [
-  'PP Corrugated Sheet',
-  'PP Layer Pad Sheet',
-  'PP Sunpack Sheet',
-  'PP Floor Protection Sheet',
-  'PP Corrugated Box',
-  'Customized PP Products',
-];
-
-const DEFAULT_SOLUTIONS = [
-  'Construction',
-  'Packaging',
-  'Beverage Industry',
-  'Advertising & Printing',
-  'Industrial',
-  'Automobile',
-  'Agriculture',
-];
-
 export function HomeContactSection({
-  phone = '+91 95853 88444',
-  email = 'twinplastpolymers@gmail.com',
-  address = 'South Silukkanpatti, Tuticorin, Tamilnadu, India',
+  phone,
+  email,
+  address,
   initialProduct = '',
   products,
   solutions,
@@ -57,8 +38,8 @@ export function HomeContactSection({
 
   const selectedProduct = formatProductName(rawProduct);
 
-  const productOptions = products && products.length > 0 ? products : DEFAULT_PRODUCTS;
-  const solutionOptions = solutions && solutions.length > 0 ? solutions : DEFAULT_SOLUTIONS;
+  const productOptions = products || [];
+  const solutionOptions = solutions || [];
   const allOptions = [...productOptions, ...solutionOptions];
   const customSelectedOption = selectedProduct && !allOptions.includes(selectedProduct) ? selectedProduct : null;
 
@@ -68,66 +49,57 @@ export function HomeContactSection({
     phone: '',
     company: '',
     product: selectedProduct,
-    message: selectedProduct
-      ? `I would like to request a quote for ${selectedProduct}. Please share specifications, pricing, and MOQ details.`
-      : '',
+    solution: '',
+    message: '',
   });
-
-  useEffect(() => {
-    if (selectedProduct) {
-      setFormData((prev) => ({
-        ...prev,
-        product: prev.product || selectedProduct,
-        message: prev.message || `I would like to request a quote for ${selectedProduct}. Please share specifications, pricing, and MOQ details.`,
-      }));
-    }
-  }, [selectedProduct]);
 
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (selectedProduct) {
+      setFormData((prev) => ({ ...prev, product: selectedProduct }));
+    }
+  }, [selectedProduct]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('submitting');
     setErrorMessage('');
 
-    const userMessage = formData.message.trim();
-    const fullMessage = formData.product?.trim()
-      ? `[Product Requirement: ${formData.product.trim()}]${userMessage ? `\n\n${userMessage}` : ''}`
-      : userMessage || 'General enquiry / consultation request';
-
     try {
-      const response = await submitEnquiry({
-        customer_name: formData.customer_name,
-        email: formData.email,
-        phone: formData.phone || undefined,
-        company: formData.company || undefined,
-        message: fullMessage,
-      });
-
-      if (response.success) {
+      const res = await submitEnquiry(formData);
+      if (res.success) {
         setStatus('success');
-        setFormData({ customer_name: '', email: '', phone: '', company: '', product: '', message: '' });
+        setFormData({
+          customer_name: '',
+          email: '',
+          phone: '',
+          company: '',
+          product: '',
+          solution: '',
+          message: '',
+        });
       } else {
         setStatus('error');
-        setErrorMessage(response.error || 'Failed to submit enquiry.');
+        setErrorMessage(res.error || 'Failed to submit enquiry.');
       }
-    } catch (err) {
+    } catch {
       setStatus('error');
-      setErrorMessage(err instanceof Error ? err.message : 'An error occurred during submission.');
+      setErrorMessage('An unexpected error occurred.');
     }
   };
 
   return (
-    <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white border-t border-slate-200" aria-labelledby="home-contact-heading">
+    <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white" aria-labelledby="contact-heading">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
 
-          {/* Left Side: Company Details */}
+          {/* Left Side: Contact Information (No Box, Pure Content) */}
           <div className="lg:col-span-5 space-y-8">
             <div>
-              <h2 id="home-contact-heading" className="text-2xl sm:text-3xl lg:text-4xl tracking-tight text-slate-900 leading-tight">
-              Let’s Build the Right Solution
+              <h2 id="contact-heading" className="text-2xl sm:text-3xl lg:text-4xl text-slate-900 tracking-tight leading-tight">
+                Let’s Build the Right Solution
               </h2>
               <p className="mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed">
                 Connect with our factory team directly for product inquiries, custom PP sheet specifications, and orders.
@@ -135,47 +107,53 @@ export function HomeContactSection({
             </div>
 
             <div className="space-y-6 pt-2">
-              <div className="flex items-start gap-4">
-                <div className="w-9 h-9 flex items-center justify-center shrink-0 bg-blue-50 text-blue-600">
-                  <Phone className="w-4 h-4" />
+              {phone && (
+                <div className="flex items-start gap-4">
+                  <div className="w-9 h-9 flex items-center justify-center shrink-0 bg-blue-50 text-blue-600">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                      Phone
+                    </span>
+                    <a href={`tel:${phone.replace(/\s+/g, '')}`} className="text-sm font-medium text-slate-800 hover:text-blue-600 transition-colors block mt-0.5">
+                      {phone}
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Phone
-                  </span>
-                  <a href={`tel:${phone.replace(/\s+/g, '')}`} className="text-sm font-medium text-slate-800 hover:text-blue-600 transition-colors block mt-0.5">
-                    {phone}
-                  </a>
-                </div>
-              </div>
+              )}
 
-              <div className="flex items-start gap-4">
-                <div className="w-9 h-9 flex items-center justify-center shrink-0 bg-blue-50 text-blue-600">
-                  <Mail className="w-4 h-4" />
+              {email && (
+                <div className="flex items-start gap-4">
+                  <div className="w-9 h-9 flex items-center justify-center shrink-0 bg-blue-50 text-blue-600">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                      Email
+                    </span>
+                    <a href={`mailto:${email}`} className="text-sm font-medium text-slate-800 hover:text-blue-600 transition-colors block mt-0.5">
+                      {email}
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Email
-                  </span>
-                  <a href={`mailto:${email}`} className="text-sm font-medium text-slate-800 hover:text-blue-600 transition-colors block mt-0.5">
-                    {email}
-                  </a>
-                </div>
-              </div>
+              )}
 
-              <div className="flex items-start gap-4">
-                <div className="w-9 h-9 flex items-center justify-center shrink-0 bg-blue-50 text-blue-600">
-                  <MapPin className="w-4 h-4" />
+              {address && (
+                <div className="flex items-start gap-4">
+                  <div className="w-9 h-9 flex items-center justify-center shrink-0 bg-blue-50 text-blue-600">
+                    <MapPin className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                      Factory Address
+                    </span>
+                    <p className="text-sm font-medium text-slate-800 leading-relaxed mt-0.5">
+                      {address}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Factory Address
-                  </span>
-                  <p className="text-sm font-medium text-slate-800 leading-relaxed mt-0.5">
-                    {address}
-                  </p>
-                </div>
-              </div>
+              )}
             </div>
           </div>
 

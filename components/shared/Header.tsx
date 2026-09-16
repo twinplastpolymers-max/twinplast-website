@@ -4,34 +4,16 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Shield, ChevronRight, ChevronDown, Phone, Mail } from 'lucide-react';
+import { Menu, X, Shield, ChevronRight, ChevronDown, Phone, Mail, MessageCircle } from 'lucide-react';
 
 interface HeaderProps {
   publicPhone?: string;
   secondaryPhone?: string;
+  whatsappNumber?: string;
   publicEmail?: string;
   products?: Array<{ title: string; slug: string }>;
   solutions?: Array<{ id: string; title: string }>;
 }
-
-const DEFAULT_PRODUCTS = [
-  { title: 'PP Corrugated Sheet', slug: 'pp-corrugated-sheets' },
-  { title: 'PP Layer Pad Sheet', slug: 'pp-layer-pad-sheets' },
-  { title: 'PP Sunpack Sheet', slug: 'pp-sunpack-sheets' },
-  { title: 'PP Floor Protection Sheet', slug: 'pp-floor-protection-sheets' },
-  { title: 'PP Corrugated Box', slug: 'pp-box-sheets' },
-  { title: 'Customized PP Products', slug: 'customized-pp-products' },
-];
-
-const DEFAULT_SOLUTIONS = [
-  { id: '1', title: 'Construction' },
-  { id: '2', title: 'Packaging' },
-  { id: '3', title: 'Beverage Industry' },
-  { id: '4', title: 'Advertising & Printing' },
-  { id: '5', title: 'Industrial' },
-  { id: '6', title: 'Automobile' },
-  { id: '7', title: 'Agriculture' },
-];
 
 // Social media SVG icons (inline, no extra library needed)
 const FacebookIcon = () => (
@@ -58,7 +40,7 @@ const YouTubeIcon = () => (
   </svg>
 );
 
-export function Header({ publicPhone, secondaryPhone, publicEmail, products, solutions }: HeaderProps) {
+export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmail, products, solutions }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredNav, setHoveredNav] = useState<'products' | 'solutions' | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<{ products: boolean; solutions: boolean }>({
@@ -67,14 +49,14 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
   });
   const pathname = usePathname();
 
-  const phone = publicPhone || '+91 95853 88444';
-  const secPhone = secondaryPhone || (phone === '+91 95853 88444' ? '+91 96458 32154' : '+91 95853 88444');
-  const email = publicEmail || 'twinplastpolymers@gmail.com';
-  const cleanPhone = phone.replace(/[^+\d]/g, '');
-  const cleanSecPhone = secPhone.replace(/[^+\d]/g, '');
+  const phone = publicPhone?.trim() || '';
+  const waNumber = (whatsappNumber && whatsappNumber.trim()) ? whatsappNumber.trim() : (secondaryPhone?.trim() || '');
+  const email = publicEmail?.trim() || '';
+  const cleanPhone = phone ? phone.replace(/[^+\d]/g, '') : '';
+  const cleanWaNumber = waNumber ? waNumber.replace(/[^+\d]/g, '').replace('+', '') : '';
 
-  const productList = products && products.length > 0 ? products : DEFAULT_PRODUCTS;
-  const solutionList = solutions && solutions.length > 0 ? solutions : DEFAULT_SOLUTIONS;
+  const productList = products || [];
+  const solutionList = solutions || [];
 
   const isActive = (href: string) => {
     if (href === '/') {
@@ -96,12 +78,16 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
       icon: <InstagramIcon />,
       hoverColor: 'hover:bg-[#E1306C]',
     },
-    {
-      label: 'WhatsApp',
-      href: `https://wa.me/${cleanPhone}`,
-      icon: <WhatsAppIcon />,
-      hoverColor: 'hover:bg-[#25D366]',
-    },
+    ...(cleanWaNumber
+      ? [
+          {
+            label: 'WhatsApp',
+            href: `https://wa.me/${cleanWaNumber}`,
+            icon: <WhatsAppIcon />,
+            hoverColor: 'hover:bg-[#25D366]',
+          },
+        ]
+      : []),
     {
       label: 'YouTube',
       href: 'https://youtube.com',
@@ -117,35 +103,39 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
       <div className="w-full bg-[#1a1464] text-white">
         <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
-          {/* Left: contact info (Displays Primary Phone first, Secondary Phone second) */}
+          {/* Left: contact info (Phone 1st, WhatsApp 2nd, Email 3rd) */}
           <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 text-[11px] font-medium text-white/90 overflow-x-auto no-scrollbar">
-            <a
-              href={`mailto:${email}`}
-              className="hidden lg:flex items-center gap-1.5 hover:text-white transition-colors shrink-0"
-            >
-              <Mail className="w-3 h-3 shrink-0 opacity-80" />
-              <span>{email}</span>
-            </a>
-
-            {/* Primary Phone (Marked in Admin - Displayed First) */}
-            <a
-              href={`tel:${cleanPhone}`}
-              className="flex items-center gap-1.5 hover:text-white transition-colors shrink-0"
-              title="Primary Contact"
-            >
-              <Phone className="w-3 h-3 shrink-0 opacity-80 text-blue-300" />
-              <span>{phone}</span>
-            </a>
-
-            {/* Secondary Phone (Displayed Second) */}
-            {secPhone && (
+            {email && (
               <a
-                href={`tel:${cleanSecPhone}`}
-                className="flex items-center gap-1.5 hover:text-white transition-colors shrink-0 opacity-90 hover:opacity-100"
-                title="Secondary Contact"
+                href={`mailto:${email}`}
+                className="hidden lg:flex items-center gap-1.5 hover:text-white transition-colors shrink-0"
               >
-                <Phone className="w-3 h-3 shrink-0 opacity-80" />
-                <span>{secPhone}</span>
+                <Mail className="w-3 h-3 shrink-0 opacity-80" />
+                <span>{email}</span>
+              </a>
+            )}
+
+            {phone && (
+              <a
+                href={`tel:${cleanPhone}`}
+                className="flex items-center gap-1.5 hover:text-white transition-colors shrink-0"
+                title="Phone Number (1st Place)"
+              >
+                <Phone className="w-3 h-3 shrink-0 opacity-80 text-blue-300" />
+                <span>{phone}</span>
+              </a>
+            )}
+
+            {waNumber && (
+              <a
+                href={`https://wa.me/${cleanWaNumber}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 hover:text-white transition-colors shrink-0 opacity-90 hover:opacity-100"
+                title="WhatsApp (2nd Place)"
+              >
+                <WhatsAppIcon />
+                <span>{waNumber}</span>
               </a>
             )}
           </div>
@@ -175,28 +165,34 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
           {/* Brand Logo */}
           <Link
             href="/"
-            className="flex items-center gap-1 sm:gap-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 rounded-md py-1 shrink-0"
+            className="flex flex-col items-start focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 rounded-md py-1 shrink-0 group"
             aria-label="Twinplast Polymers Home"
           >
-            <div className="relative h-11 w-11 sm:h-14 sm:w-14 shrink-0 flex items-center justify-center">
-              <Image
-                src="/twinplast logo icon.png"
-                alt="Twinplast Polymers Logo Icon"
-                fill
-                priority
-                sizes="(max-width: 640px) 44px, 56px"
-                className="object-contain"
-              />
+            <div className="flex items-center gap-1 sm:gap-0">
+              <div className="relative h-11 w-11 sm:h-14 sm:w-14 shrink-0 flex items-center justify-center">
+                <Image
+                  src="/twinplast logo icon.png"
+                  alt="Twinplast Polymers Logo Icon"
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 44px, 56px"
+                  className="object-contain"
+                />
+              </div>
+              <div className="relative h-8 w-40 sm:h-11 sm:w-56 shrink-0 flex items-center">
+                <Image
+                  src="/twinplast logo text-black.png"
+                  alt="Twinplast Polymers"
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 160px, 224px"
+                  className="object-contain object-left"
+                />
+              </div>
             </div>
-            <div className="relative h-8 w-40 sm:h-11 sm:w-56 shrink-0 flex items-center">
-              <Image
-                src="/twinplast logo text-black.png"
-                alt="Twinplast Polymers"
-                fill
-                priority
-                sizes="(max-width: 640px) 160px, 224px"
-                className="object-contain object-left"
-              />
+            <div className="w-full flex items-center justify-center gap-1 -mt-0.5 text-[9px] sm:text-[10px] font-extrabold tracking-wider uppercase text-[#1a1464]">
+              <Shield className="w-3 h-3 text-[#1a1464] shrink-0" />
+              <span>ISO 9001:2015 Certified Company</span>
             </div>
           </Link>
 
@@ -206,9 +202,8 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
               {/* Home */}
               <Link
                 href="/"
-                className={`relative text-sm font-semibold transition-colors px-3 py-2 rounded-md ${
-                  isActive('/') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
-                }`}
+                className={`relative text-sm font-semibold transition-colors px-3 py-2 rounded-md ${isActive('/') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                  }`}
               >
                 Home
                 {isActive('/') && (
@@ -219,9 +214,8 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
               {/* About Us */}
               <Link
                 href="/about"
-                className={`relative text-sm font-semibold transition-colors px-3 py-2 rounded-md ${
-                  isActive('/about') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
-                }`}
+                className={`relative text-sm font-semibold transition-colors px-3 py-2 rounded-md ${isActive('/about') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                  }`}
               >
                 About Us
                 {isActive('/about') && (
@@ -237,9 +231,8 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
               >
                 <Link
                   href="/products"
-                  className={`relative inline-flex items-center gap-1 text-sm font-semibold transition-colors px-3 py-2 rounded-md ${
-                    isActive('/products') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
-                  }`}
+                  className={`relative inline-flex items-center gap-1 text-sm font-semibold transition-colors px-3 py-2 rounded-md ${isActive('/products') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                    }`}
                 >
                   <span>Products</span>
                   <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-[#1a1464] transition-transform duration-200 group-hover:rotate-180" />
@@ -249,11 +242,10 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
                 </Link>
 
                 <div
-                  className={`absolute left-0 top-full pt-2 w-72 transition-all duration-200 ${
-                    hoveredNav === 'products'
+                  className={`absolute left-0 top-full pt-2 w-72 transition-all duration-200 ${hoveredNav === 'products'
                       ? 'opacity-100 visible translate-y-0 pointer-events-auto'
                       : 'opacity-0 invisible -translate-y-2 pointer-events-none'
-                  }`}
+                    }`}
                 >
                   <div className="bg-white rounded-xl shadow-xl border border-slate-100 p-2 space-y-0.5 ring-1 ring-black/5">
                     <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 mb-1">
@@ -292,9 +284,8 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
               >
                 <Link
                   href="/solutions"
-                  className={`relative inline-flex items-center gap-1 text-sm font-semibold transition-colors px-3 py-2 rounded-md ${
-                    isActive('/solutions') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
-                  }`}
+                  className={`relative inline-flex items-center gap-1 text-sm font-semibold transition-colors px-3 py-2 rounded-md ${isActive('/solutions') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                    }`}
                 >
                   <span>Solutions</span>
                   <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-[#1a1464] transition-transform duration-200 group-hover:rotate-180" />
@@ -304,11 +295,10 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
                 </Link>
 
                 <div
-                  className={`absolute left-0 top-full pt-2 w-72 transition-all duration-200 ${
-                    hoveredNav === 'solutions'
+                  className={`absolute left-0 top-full pt-2 w-72 transition-all duration-200 ${hoveredNav === 'solutions'
                       ? 'opacity-100 visible translate-y-0 pointer-events-auto'
                       : 'opacity-0 invisible -translate-y-2 pointer-events-none'
-                  }`}
+                    }`}
                 >
                   <div className="bg-white rounded-xl shadow-xl border border-slate-100 p-2 space-y-0.5 ring-1 ring-black/5">
                     <div className="px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 mb-1">
@@ -317,7 +307,7 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
                     {solutionList.map((sol) => (
                       <Link
                         key={sol.id || sol.title}
-                        href={`/contact?product=${encodeURIComponent(sol.title)}`}
+                        href={`/solutions/${sol.id}`}
                         onClick={() => setHoveredNav(null)}
                         className="flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium text-slate-700 hover:text-[#1a1464] hover:bg-blue-50/70 transition-all group/item"
                       >
@@ -341,12 +331,20 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
 
             </nav>
 
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center bg-[#1a1464] hover:bg-[#13104f] text-white px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1464]"
-            >
-              Request for Sample
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center border border-[#1a1464] text-[#1a1464] hover:bg-[#1a1464] hover:text-white px-4 py-2.5 text-[12px] xl:text-[13px] font-bold uppercase tracking-wider transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1464]"
+              >
+                Contact Us
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center bg-[#1a1464] hover:bg-[#13104f] text-white px-4 py-2.5 text-[12px] xl:text-[13px] font-bold uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1464]"
+              >
+                Request for Sample
+              </Link>
+            </div>
           </div>
 
           {/* Mobile controls */}
@@ -377,9 +375,8 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
               <Link
                 href="/"
                 onClick={() => setIsOpen(false)}
-                className={`text-base py-2 transition-colors ${
-                  isActive('/') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
-                }`}
+                className={`text-base py-2 transition-colors ${isActive('/') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                  }`}
               >
                 Home
               </Link>
@@ -387,9 +384,8 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
               <Link
                 href="/about"
                 onClick={() => setIsOpen(false)}
-                className={`text-base py-2 transition-colors ${
-                  isActive('/about') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
-                }`}
+                className={`text-base py-2 transition-colors ${isActive('/about') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                  }`}
               >
                 About Us
               </Link>
@@ -400,9 +396,8 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
                   <Link
                     href="/products"
                     onClick={() => setIsOpen(false)}
-                    className={`text-base transition-colors ${
-                      isActive('/products') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
-                    }`}
+                    className={`text-base transition-colors ${isActive('/products') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                      }`}
                   >
                     Products
                   </Link>
@@ -438,9 +433,8 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
                   <Link
                     href="/solutions"
                     onClick={() => setIsOpen(false)}
-                    className={`text-base transition-colors ${
-                      isActive('/solutions') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
-                    }`}
+                    className={`text-base transition-colors ${isActive('/solutions') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                      }`}
                   >
                     Solutions
                   </Link>
@@ -459,7 +453,7 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
                     {solutionList.map((sol) => (
                       <Link
                         key={sol.id || sol.title}
-                        href={`/contact?product=${encodeURIComponent(sol.title)}`}
+                        href={`/solutions/${sol.id}`}
                         onClick={() => setIsOpen(false)}
                         className="block text-xs font-medium text-slate-600 hover:text-[#1a1464] py-1"
                       >
@@ -471,39 +465,54 @@ export function Header({ publicPhone, secondaryPhone, publicEmail, products, sol
               </div>
             </div>
 
-            <div className="space-y-4 border-t border-slate-100 pt-6 mt-6">
-              <Link
-                href="/contact"
-                onClick={() => setIsOpen(false)}
-                className="flex w-full items-center justify-center rounded-sm bg-[#1a1464] hover:bg-[#13104f] text-white py-4 text-sm font-bold uppercase tracking-wider transition-colors"
-              >
-                Request for Sample
-              </Link>
+            <div className="space-y-3 border-t border-slate-100 pt-6 mt-6">
+              <div className="flex flex-col gap-2">
+                <Link
+                  href="/contact"
+                  onClick={() => setIsOpen(false)}
+                  className="flex w-full items-center justify-center rounded-sm border border-[#1a1464] text-[#1a1464] hover:bg-slate-50 py-3 text-xs font-bold uppercase tracking-wider transition-colors"
+                >
+                  Contact Us
+                </Link>
+                <Link
+                  href="/contact"
+                  onClick={() => setIsOpen(false)}
+                  className="flex w-full items-center justify-center rounded-sm bg-[#1a1464] hover:bg-[#13104f] text-white py-3 text-xs font-bold uppercase tracking-wider transition-colors"
+                >
+                  Request for Sample
+                </Link>
+              </div>
 
               <div className="flex flex-col items-center gap-1.5 pt-1">
-                <a
-                  href={`tel:${cleanPhone}`}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-[#1a1464]"
-                >
-                  <Phone className="w-3 h-3 text-[#1a1464]" />
-                  <span>{phone}</span>
-                </a>
-                {secPhone && (
+                {phone && (
                   <a
-                    href={`tel:${cleanSecPhone}`}
-                    className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#1a1464]"
+                    href={`tel:${cleanPhone}`}
+                    className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-[#1a1464]"
                   >
-                    <Phone className="w-3 h-3 text-slate-400" />
-                    <span>{secPhone}</span>
+                    <Phone className="w-3 h-3 text-[#1a1464]" />
+                    <span>{phone}</span>
                   </a>
                 )}
-                <a
-                  href={`mailto:${email}`}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#1a1464] pt-0.5"
-                >
-                  <Mail className="w-3 h-3 text-slate-400" />
-                  <span>{email}</span>
-                </a>
+                {whatsappNumber && (
+                  <a
+                    href={`https://wa.me/${whatsappNumber.replace(/[^+\d]/g, '').replace('+', '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 hover:text-emerald-800"
+                  >
+                    <MessageCircle className="w-3 h-3 text-emerald-600" />
+                    <span>WhatsApp: {whatsappNumber}</span>
+                  </a>
+                )}
+                {email && (
+                  <a
+                    href={`mailto:${email}`}
+                    className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-[#1a1464] pt-0.5"
+                  >
+                    <Mail className="w-3 h-3 text-slate-400" />
+                    <span>{email}</span>
+                  </a>
+                )}
               </div>
 
               {/* Social links in mobile menu */}

@@ -43,9 +43,9 @@ export default async function HomePage() {
   let aboutSecondary2: string | null = null;
   let ctaBgImage: string | null = null;
 
-  let publicPhone = '+91 95853 88444';
-  let publicEmail = 'twinplastpolymers@gmail.com';
-  let publicAddress = 'South Silukkanpatti, Tuticorin, Tamilnadu, India';
+  let publicPhone = '';
+  let publicEmail = '';
+  let publicAddress = '';
 
   let secData: HomepageSection[] = [];
 
@@ -85,9 +85,9 @@ export default async function HomePage() {
       const pEmail = settings.find((s) => s.key === 'public_email')?.value;
       const pAddr = settings.find((s) => s.key === 'public_address')?.value;
 
-      if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone;
-      if (typeof pEmail === 'string' && pEmail.trim()) publicEmail = pEmail;
-      if (typeof pAddr === 'string' && pAddr.trim()) publicAddress = pAddr;
+      if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone.trim();
+      if (typeof pEmail === 'string' && pEmail.trim()) publicEmail = pEmail.trim();
+      if (typeof pAddr === 'string' && pAddr.trim()) publicAddress = pAddr.trim();
     }
   } catch {
     // Graceful fallback to empty state
@@ -102,7 +102,7 @@ export default async function HomePage() {
   // 1. Hero Content
   const heroContent = getSec('hero');
   const heroSubheading = (heroContent.subheading as string) || (heroContent.eyebrow as string) || (heroContent.badge_text as string) || undefined;
-  const heroHeading = (heroContent.heading as string) || (heroContent.headline as string) || 'Polypropylene Sheets & PP Product Manufacturer';
+  const heroHeading = (heroContent.heading as string) || (heroContent.headline as string) || undefined;
   const heroShortDescription = (heroContent.short_description as string) || (heroContent.subheadline as string) || undefined;
   const heroBgRaw = (heroContent.background_image as string) || (heroContent.background_image_url as string) || heroImage || null;
   const heroBgImageUrl = heroBgRaw ? getOptimizedImageUrl(heroBgRaw, { quality: 'best', upscale: true }) : null;
@@ -119,7 +119,7 @@ export default async function HomePage() {
   // 6. Markets Content
   const mktContentData = getSec('markets');
   const mktEyebrow = (mktContentData.eyebrow as string) || undefined;
-  const mktHeading = (mktContentData.heading as string) || (mktContentData.title as string) || 'Markets We Serve';
+  const mktHeading = (mktContentData.heading as string) || (mktContentData.title as string) || undefined;
   const mktBody = (mktContentData.content as string) || (mktContentData.subtitle as string) || undefined;
   const mktBgRaw = (mktContentData.background_image as string) || (mktContentData.background_image_url as string) || null;
   const mktBgImageUrl = mktBgRaw ? getOptimizedImageUrl(mktBgRaw, { quality: 'best', upscale: true }) : null;
@@ -138,9 +138,9 @@ export default async function HomePage() {
   const ctaContentData = getSec('final_cta');
   const ctaHeading = (ctaContentData.heading as string) || (ctaContentData.headline as string) || undefined;
   const ctaSubheadline = (ctaContentData.subheadline as string) || undefined;
-  const ctaPrimaryLabel = (ctaContentData.primary_cta_label as string) || (ctaContentData.button_text as string) || 'Contact Us';
+  const ctaPrimaryLabel = (ctaContentData.primary_cta_label as string) || (ctaContentData.button_text as string) || undefined;
   const ctaPrimaryUrl = (ctaContentData.primary_cta_url as string) || '/contact';
-  const ctaSecondaryLabel = (ctaContentData.secondary_cta_label as string) || 'Request a Quote';
+  const ctaSecondaryLabel = (ctaContentData.secondary_cta_label as string) || undefined;
   const ctaSecondaryUrl = (ctaContentData.secondary_cta_url as string) || '/contact';
 
   // 8. Statistics Content (No mock data fallback)

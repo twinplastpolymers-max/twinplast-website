@@ -39,12 +39,12 @@ export default async function AboutPage() {
   let aboutDescription: string | undefined = undefined;
 
   let whyEyebrow: string | undefined = undefined;
-  let whyHeading = 'Why Choose Us';
+  let whyHeading: string | undefined = undefined;
   let whyDescription: string | undefined = undefined;
   let pillars: Array<{ title: string; description: string }> = [];
 
   let mktEyebrow: string | undefined = undefined;
-  let mktHeading = 'Markets We Serve';
+  let mktHeading: string | undefined = undefined;
   let mktBody: string | undefined = undefined;
   let mktBgImageUrl: string | null = null;
   let mktRegions: (string | MarketRegionItem)[] = [];
@@ -116,7 +116,7 @@ export default async function AboutPage() {
       if (mktSec) {
         const mktContent = (mktSec.content as Record<string, unknown>) || {};
         mktEyebrow = (mktContent.eyebrow as string) || undefined;
-        mktHeading = (mktContent.heading as string) || (mktContent.title as string) || 'Markets We Serve';
+        mktHeading = (mktContent.heading as string) || (mktContent.title as string) || undefined;
         mktBody = (mktContent.content as string) || (mktContent.subtitle as string) || undefined;
         const mktBgRaw = (mktContent.background_image as string) || (mktContent.background_image_url as string) || null;
         mktBgImageUrl = mktBgRaw ? getOptimizedImageUrl(mktBgRaw, { quality: 'best', upscale: true }) : null;
@@ -127,7 +127,7 @@ export default async function AboutPage() {
       if (whySec) {
         const whyContent = (whySec.content as Record<string, unknown>) || {};
         whyEyebrow = (whyContent.eyebrow as string) || undefined;
-        whyHeading = (whyContent.heading as string) || (whyContent.title as string) || 'Why Choose Us';
+        whyHeading = (whyContent.heading as string) || (whyContent.title as string) || undefined;
         whyDescription = (whyContent.description as string) || undefined;
         pillars = (whyContent.pillars as Array<{ title: string; description: string }>) || 
                   (whyContent.reasons as Array<{ title: string; description: string }>) || [];
@@ -195,9 +195,6 @@ export default async function AboutPage() {
         secondaryImage2={aboutSecondary2}
         showButton={false}
       />
-
-            {/* 7. Certification */}
-      <CertificationSection certifications={certifications} />
 
       {/* 2. Statistics Section */}
       <StatisticsSection stats={statsItems} />
