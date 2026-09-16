@@ -62,12 +62,15 @@ export default async function ProductsCatalogPage() {
             <div className="rounded-2xl border border-surface-border bg-slate-50 dark:bg-slate-900/50 p-8 sm:p-12 text-center max-w-2xl mx-auto my-12 space-y-4">
               <h3 className="text-lg font-bold text-foreground">Catalog Updating</h3>
               <p className="text-sm text-muted leading-relaxed max-w-md mx-auto">
-                We are currently indexing our manufacturing inventory records. To inquire about PP Corrugated, Sunpack, Hollow, Layer Pad, or Floor Protection sheets, contact our Thoothukudi sales department directly.
+                We are currently updating our product catalog. To inquire about PP Corrugated, Sunpack, Hollow, Layer Pad, or Floor Protection sheets, contact our sales department directly.
               </p>
-              <div className="pt-4 border-t border-surface-border flex flex-col sm:flex-row justify-center items-center gap-4 text-xs text-muted">
-                <div>Phone: <span className="font-bold text-foreground">+91 95853 88444</span></div>
-                <div className="hidden sm:block text-slate-300">|</div>
-                <div>Email: <span className="font-bold text-foreground">twinplastpolymers@gmail.com</span></div>
+              <div className="pt-4 border-t border-surface-border flex justify-center items-center">
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors"
+                >
+                  Contact Sales Department
+                </Link>
               </div>
             </div>
           ) : (
@@ -88,9 +91,6 @@ export default async function ProductsCatalogPage() {
                     />
                   </div>
                   <div className="p-3 sm:p-5 flex flex-col flex-1">
-                    <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-accent mb-0.5 sm:mb-1 block truncate">
-                      {prod.category}
-                    </span>
                     <h2 className="text-xs sm:text-lg font-bold text-foreground group-hover:text-accent transition-colors leading-snug line-clamp-2">
                       {prod.title}
                     </h2>

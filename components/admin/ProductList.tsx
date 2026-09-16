@@ -19,16 +19,12 @@ export function ProductList({ initialProducts }: ProductListProps) {
   
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
   
   // Modal / Confirm state
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [mutatingId, setMutatingId] = useState<string | null>(null);
-
-  // Extract unique categories dynamically
-  const categories = ['All', ...Array.from(new Set(products.map((p) => p.category)))];
 
   // Client-side quick status toggle (Active / Featured)
   const handleToggleActive = async (id: string, currentVal: boolean) => {
@@ -111,16 +107,13 @@ export function ProductList({ initialProducts }: ProductListProps) {
 
   // Filter & Search Logic
   const filteredProducts = products.filter((p) => {
-    const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          p.category.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesCategory = categoryFilter === 'All' || p.category === categoryFilter;
+    const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesStatus = statusFilter === 'All' || 
                           (statusFilter === 'Active' && p.active) || 
                           (statusFilter === 'Inactive' && !p.active);
 
-    return matchesSearch && matchesCategory && matchesStatus;
+    return matchesSearch && matchesStatus;
   });
 
   return (
@@ -154,27 +147,11 @@ export function ProductList({ initialProducts }: ProductListProps) {
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search products by title or category..."
+            placeholder="Search products by title..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-9 pr-4 py-2 border border-slate-200 bg-white rounded-lg text-sm focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
           />
-        </div>
-
-        {/* Category Filter */}
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-slate-400" />
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="border border-slate-200 bg-white rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                Category: {cat}
-              </option>
-            ))}
-          </select>
         </div>
 
         {/* Status Filter */}
@@ -198,7 +175,6 @@ export function ProductList({ initialProducts }: ProductListProps) {
             <thead className="bg-slate-50 border-b border-slate-200 dark:bg-slate-900 dark:border-slate-800 text-xs font-semibold text-slate-500 uppercase tracking-wider">
               <tr>
                 <th className="px-6 py-4">Title</th>
-                <th className="px-6 py-4">Category</th>
                 <th className="px-6 py-4 text-center">Featured</th>
                 <th className="px-6 py-4 text-center">Status</th>
                 <th className="px-6 py-4 text-center">Display Order</th>
@@ -209,7 +185,6 @@ export function ProductList({ initialProducts }: ProductListProps) {
               {filteredProducts.map((p) => (
                 <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/50 transition-colors">
                   <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">{p.title}</td>
-                  <td className="px-6 py-4 text-slate-500 dark:text-slate-400 font-semibold">{p.category}</td>
                   
                   {/* Featured toggle */}
                   <td className="px-6 py-4 text-center">
@@ -282,7 +257,6 @@ export function ProductList({ initialProducts }: ProductListProps) {
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="font-bold text-slate-900 dark:text-white leading-snug">{p.title}</h3>
-                  <span className="text-xs text-muted block mt-0.5">{p.category}</span>
                 </div>
                 
                 <div className="flex gap-2">

@@ -8,10 +8,11 @@ export default async function PublicLayout({
 }: {
   children: React.ReactNode;
 }) {
-  let publicPhone = '+91 95853 88444';
-  let secondaryPhone = '+91 96458 32154';
-  let publicEmail = 'twinplastpolymers@gmail.com';
-  let publicAddress = 'South Silukkanpatti, Tuticorin, Tamilnadu, India';
+  let publicPhone = '';
+  let whatsappNumber = '';
+  let secondaryPhone = '';
+  let publicEmail = '';
+  let publicAddress = '';
 
   let products: Array<{ title: string; slug: string }> = [];
   let solutions: Array<{ id: string; title: string }> = [];
@@ -34,22 +35,20 @@ export default async function PublicLayout({
 
     if (settingRes) {
       const settings = settingRes as Array<{ key: string; value: unknown }>;
-      const pPhone = settings.find((s) => s.key === 'public_phone' || s.key === 'primary_phone')?.value;
+      const pPhone = settings.find((s) => s.key === 'primary_phone' || s.key === 'public_phone')?.value;
+      const waPhone = settings.find((s) => s.key === 'whatsapp_number')?.value;
       const sPhone = settings.find((s) => s.key === 'secondary_phone' || s.key === 'alternate_phone')?.value;
-      const pEmail = settings.find((s) => s.key === 'public_email' || s.key === 'primary_email')?.value;
+      const pEmail = settings.find((s) => s.key === 'official_email' || s.key === 'primary_email' || s.key === 'public_email')?.value;
       const pAddr = settings.find((s) => s.key === 'public_address')?.value;
 
-      if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone;
-      if (typeof sPhone === 'string' && sPhone.trim()) {
-        secondaryPhone = sPhone;
-      } else {
-        secondaryPhone = publicPhone === '+91 95853 88444' ? '+91 96458 32154' : '+91 95853 88444';
-      }
-      if (typeof pEmail === 'string' && pEmail.trim()) publicEmail = pEmail;
-      if (typeof pAddr === 'string' && pAddr.trim()) publicAddress = pAddr;
+      if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone.trim();
+      if (typeof waPhone === 'string' && waPhone.trim()) whatsappNumber = waPhone.trim();
+      if (typeof sPhone === 'string' && sPhone.trim()) secondaryPhone = sPhone.trim();
+      if (typeof pEmail === 'string' && pEmail.trim()) publicEmail = pEmail.trim();
+      if (typeof pAddr === 'string' && pAddr.trim()) publicAddress = pAddr.trim();
     }
   } catch {
-    // Fallback to verified default values
+    // Keep empty state if settings fetch fails
   }
 
   return (
@@ -57,6 +56,7 @@ export default async function PublicLayout({
       <Header
         publicPhone={publicPhone}
         secondaryPhone={secondaryPhone}
+        whatsappNumber={whatsappNumber}
         publicEmail={publicEmail}
         products={products}
         solutions={solutions}
@@ -64,11 +64,12 @@ export default async function PublicLayout({
       <main className="flex flex-1 flex-col">{children}</main>
       <Footer
         publicPhone={publicPhone}
+        whatsappNumber={whatsappNumber}
         publicEmail={publicEmail}
         publicAddress={publicAddress}
         products={products}
       />
-      <FloatingContactButton phone={publicPhone} />
+      <FloatingContactButton phone={publicPhone} whatsappNumber={whatsappNumber} />
     </div>
   );
 }

@@ -29,7 +29,6 @@ export function HeroSection({ initialSection, initialHeroImage }: Props) {
 
   const [bgImage, setBgImage] = useState<string>((data.background_image as string) || initialHeroImage?.publicId || '');
   const [bgImageUrl, setBgImageUrl] = useState<string>((data.background_image_url as string) || initialHeroImage?.url || '');
-  const [subheading, setSubheading] = useState<string>((data.subheading as string) || (data.eyebrow as string) || 'DURABLE · VERSATILE · RELIABLE');
   const [heading, setHeading] = useState<string>((data.heading as string) || (data.headline as string) || 'Polypropylene Sheets & PP Product Manufacturer');
   const [shortDescription, setShortDescription] = useState<string>((data.short_description as string) || (data.subheadline as string) || 'High-quality polypropylene sheets and PP products engineered for diverse industrial applications.');
 
@@ -94,8 +93,8 @@ export function HeroSection({ initialSection, initialHeroImage }: Props) {
       const payload: HeroSectionContent = {
         background_image: bgImage || null,
         background_image_url: bgImageUrl || null,
-        subheading, heading, short_description: shortDescription,
-        eyebrow: subheading, headline: heading, subheadline: shortDescription,
+        heading, short_description: shortDescription,
+        headline: heading, subheadline: shortDescription,
         primary_cta_label: 'Enquire Now', primary_cta_url: '/contact',
         secondary_cta_label: 'Explore Products', secondary_cta_url: '/products',
       };
@@ -123,7 +122,7 @@ export function HeroSection({ initialSection, initialHeroImage }: Props) {
       <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
         <h2 className="text-base font-bold text-slate-900 dark:text-white">Hero Section Settings</h2>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Upload background image, set subheading, heading, and short description.
+          Upload background image, set heading, and short description.
         </p>
       </div>
 
@@ -185,12 +184,6 @@ export function HeroSection({ initialSection, initialHeroImage }: Props) {
             </p>
           )}
         </div>
-      </div>
-
-      <div>
-        <label htmlFor="hero-subheading" className={LABEL}>Subheading</label>
-        <input id="hero-subheading" type="text" value={subheading} onChange={(e) => setSubheading(e.target.value)}
-          placeholder="e.g. DURABLE · VERSATILE · RELIABLE" className={INPUT} />
       </div>
 
       <div>

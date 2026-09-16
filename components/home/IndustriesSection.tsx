@@ -22,6 +22,7 @@ export function IndustriesSection({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const checkScroll = useCallback(() => {
     const el = scrollContainerRef.current;
@@ -43,6 +44,28 @@ export function IndustriesSection({
       window.removeEventListener('resize', checkScroll);
     };
   }, [checkScroll, industries]);
+
+  // Auto-slide effect for solutions carousel
+  useEffect(() => {
+    if (isHovered || !industries || industries.length <= 1) return;
+
+    const interval = setInterval(() => {
+      const el = scrollContainerRef.current;
+      if (!el) return;
+
+      const firstCard = el.firstElementChild as HTMLElement | null;
+      const cardWidth = firstCard ? firstCard.offsetWidth + 20 : 320;
+      const isAtEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 15;
+
+      if (isAtEnd) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, [isHovered, industries]);
 
   const handleScroll = (direction: 'prev' | 'next') => {
     const el = scrollContainerRef.current;
@@ -100,6 +123,8 @@ export function IndustriesSection({
         {/* Applications Cards Carousel (4 cards per view on desktop, 2 on tablet, 1 on mobile) */}
         <div
           ref={scrollContainerRef}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           className="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 pt-1 px-1 -mx-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
           {industries.map((ind) => (

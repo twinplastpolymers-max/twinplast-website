@@ -153,10 +153,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           {/* Specifications Panel - Right 7 cols */}
           <div className="md:col-span-7 flex flex-col gap-6">
             <div>
-              <span className="inline-flex items-center gap-1 rounded bg-secondary px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-secondary-foreground">
-                {product.category}
-              </span>
-              <h1 className="text-3xl font-extrabold tracking-tight text-foreground mt-2">
+              <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
                 {product.title}
               </h1>
             </div>
@@ -175,28 +172,24 @@ export default async function ProductDetailPage({ params }: PageProps) {
               </h2>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div className="bg-secondary/20 p-3 rounded-lg border border-secondary/40">
+                <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">GSM Weight Range</span>
-                  <span className="font-semibold text-foreground mt-0.5 block">Customised Specs</span>
-                  <span className="text-xs text-muted block mt-1">Extruded according to client target load capacity.</span>
+                  <span className="font-semibold text-foreground text-sm mt-1 block">200GSM to 1500 GSM</span>
                 </div>
 
-                <div className="bg-secondary/20 p-3 rounded-lg border border-secondary/40">
+                <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">Available Thickness</span>
-                  <span className="font-semibold text-foreground mt-0.5 block">Custom thickness on request</span>
-                  <span className="text-xs text-muted block mt-1">Calibrated dynamically during the extrusion process.</span>
+                  <span className="font-semibold text-foreground text-sm mt-1 block">2mm to 10 mm</span>
                 </div>
 
-                <div className="bg-secondary/20 p-3 rounded-lg border border-secondary/40">
+                <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">Dimensions</span>
-                  <span className="font-semibold text-foreground mt-0.5 block">Custom cut-to-size</span>
-                  <span className="text-xs text-muted block mt-1">Standard layouts or specific length cuts available.</span>
+                  <span className="font-semibold text-foreground text-sm mt-1 block">Max Width: 2 meter</span>
                 </div>
 
-                <div className="bg-secondary/20 p-3 rounded-lg border border-secondary/40">
+                <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">Color Choices</span>
-                  <span className="font-semibold text-foreground mt-0.5 block">Multiple options available</span>
-                  <span className="text-xs text-muted block mt-1">Color pigments matching your brand guidelines.</span>
+                  <span className="font-semibold text-foreground text-sm mt-1 block">Blue, White, Yellow, green, black, Red, Multiple Choices Etc.</span>
                 </div>
               </div>
             </div>

@@ -5,6 +5,7 @@ import { Phone, MessageCircle, X } from 'lucide-react';
 
 interface FloatingContactButtonProps {
   phone?: string;
+  whatsappNumber?: string;
 }
 
 const WhatsAppIcon = () => (
@@ -18,12 +19,15 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-export function FloatingContactButton({ phone = '+91 95853 88444' }: FloatingContactButtonProps) {
+export function FloatingContactButton({ phone, whatsappNumber }: FloatingContactButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const cleanPhone = phone.replace(/[^+\d]/g, '');
-  const waNumber = cleanPhone.replace('+', '');
+  if (!phone && !whatsappNumber) return null;
+
+  const cleanPhone = phone ? phone.replace(/[^+\d]/g, '') : '';
+  const targetWhatsapp = (whatsappNumber && whatsappNumber.trim()) ? whatsappNumber : phone || '';
+  const waNumber = targetWhatsapp.replace(/[^+\d]/g, '').replace('+', '');
 
   // Close when clicking outside
   useEffect(() => {

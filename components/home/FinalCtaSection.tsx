@@ -16,15 +16,17 @@ export interface FinalCtaSectionProps {
 }
 
 export function FinalCtaSection({
-  eyebrow = 'B2B ENQUIRY PATHWAY',
-  heading = "Let's Build A Stronger Tomorrow",
-  subheadline = 'Get in touch with our team for product inquiries, custom solutions, or bulk orders. We are here to assist.',
+  eyebrow,
+  heading,
+  subheadline,
   primaryLabel = 'Contact Us',
   primaryUrl = '/contact',
   secondaryLabel = 'Request a Quote',
   secondaryUrl = '/contact',
   bgImage = null,
 }: FinalCtaSectionProps) {
+  if (!heading) return null;
+
   return (
     <section className="relative overflow-hidden py-18 sm:py-22 px-4 sm:px-6 lg:px-8 border-t border-slate-900" aria-labelledby="cta-heading">
       <div className="absolute inset-0 z-0">

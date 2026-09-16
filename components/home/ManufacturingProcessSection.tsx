@@ -19,19 +19,6 @@ const STEP_COLORS = [
   { border: '#1a1464', bg: '#1a1464' }, // 09 - Signature Deep Navy
 ];
 
-// Fallback descriptions matching Twinplast manufacturing process
-const STEP_DEFAULT_DESCRIPTIONS: Record<number, string> = {
-  1: 'Virgin polymer granules & additives selected for optimal sheet performance.',
-  2: 'Precise batch blending with UV stabilizers, antioxidants and color masterbatches.',
-  3: 'High-temperature melt extrusion through precision-calibrated die heads.',
-  4: 'Continuous hollow fluted structure forming with uniform wall calibration.',
-  5: 'Multi-zone controlled cooling to eliminate thermal stress and surface warpage.',
-  6: 'High-speed automated inline trimming to exact customer dimensions.',
-  7: 'Rigorous QA inspection for GSM, thickness, flute integrity and flatness.',
-  8: 'Corner-guarded protective strapping and palletizing for safe transport.',
-  9: 'Coordinated logistics ensuring prompt delivery across all destinations.',
-};
-
 export function ManufacturingProcessSection({ steps }: ManufacturingProcessSectionProps) {
   if (!steps || steps.length === 0) return null;
 
@@ -60,7 +47,7 @@ export function ManufacturingProcessSection({ steps }: ManufacturingProcessSecti
                 const isTop = idx % 2 === 1;
                 const color = STEP_COLORS[idx % STEP_COLORS.length];
                 const numStr = step.step_number < 10 ? `0${step.step_number}` : `${step.step_number}`;
-                const desc = step.description?.trim() || STEP_DEFAULT_DESCRIPTIONS[step.step_number] || '';
+                const desc = step.description?.trim() || '';
 
                 return (
                   <div

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Save, ShieldAlert, CheckCircle2, Loader2, Phone, Mail, Building } from 'lucide-react';
+import { Save, ShieldAlert, CheckCircle2, Loader2, Phone, Mail, Building, MessageCircle } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/components/ui/Toast';
 
@@ -22,30 +22,25 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
   // Parse initial values
   const getSettingVal = (key: string, defaultValue: unknown = '') => {
     const row = initialSettings.find((s) => s.key === key);
-    return row ? row.value : defaultValue;
+    return row && row.value !== null && row.value !== undefined ? row.value : defaultValue;
   };
 
   // General Company Settings
   const [companyName, setCompanyName] = useState<string>(getSettingVal('company_name', 'Twinplast Polymers Pvt. Ltd.') as string);
   const [publicAddress, setPublicAddress] = useState<string>(getSettingVal('public_address', 'South Silukkanpatti, Tuticorin, Tamilnadu, India') as string);
-  
-  // Explicit Primary Contact Designation
-  // Default values check existing public_phone / primary_phone / public_email / primary_email
-  const initialPhone = (getSettingVal('primary_phone') || getSettingVal('public_phone') || '+91 95853 88444') as string;
-  const initialEmail = (getSettingVal('primary_email') || getSettingVal('public_email') || 'twinplastpolymers@gmail.com') as string;
 
-  const [primaryPhoneChoice, setPrimaryPhoneChoice] = useState<'p1' | 'p2' | 'custom'>(
-    initialPhone === '+91 95853 88444' ? 'p1' : initialPhone === '+91 96458 32154' ? 'p2' : 'custom'
+  // Direct Phone & WhatsApp Numbers
+  const [primaryPhone, setPrimaryPhone] = useState<string>(
+    (getSettingVal('primary_phone') || getSettingVal('public_phone') || '+91 95853 88444') as string
   );
-  const [customPhone, setCustomPhone] = useState<string>(initialPhone);
-
-  const [primaryEmailChoice, setPrimaryEmailChoice] = useState<'e1' | 'e2' | 'custom'>(
-    initialEmail === 'twinplastpolymers@gmail.com' ? 'e1' : initialEmail === 'info@twinplastpolymers.com' ? 'e2' : 'custom'
+  const [whatsappNumber, setWhatsappNumber] = useState<string>(
+    (getSettingVal('whatsapp_number') || getSettingVal('secondary_phone') || '+91 96458 32154') as string
   );
-  const [customEmail, setCustomEmail] = useState<string>(initialEmail);
 
-  // Official & Alternate contacts (stored separately)
-  const [officialEmail, setOfficialEmail] = useState<string>((getSettingVal('official_email', 'info@twinplastpolymers.com')) as string);
+  // Official & Alternate contacts
+  const [officialEmail, setOfficialEmail] = useState<string>(
+    (getSettingVal('official_email') || getSettingVal('primary_email') || getSettingVal('public_email') || 'info@twinplastpolymers.com') as string
+  );
   const [alternatePhone, setAlternatePhone] = useState<string>((getSettingVal('alternate_phone', '+91 96458 32154')) as string);
   const [alternateEmail, setAlternateEmail] = useState<string>((getSettingVal('alternate_email', 'info@twinplastpolymers.com')) as string);
 
@@ -63,35 +58,30 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Resolved public primary phone & email
-  const resolvedPrimaryPhone =
-    primaryPhoneChoice === 'p1' ? '+91 95853 88444' : primaryPhoneChoice === 'p2' ? '+91 96458 32154' : customPhone;
-
-  const resolvedSecondaryPhone =
-    primaryPhoneChoice === 'p1' ? '+91 96458 32154' : primaryPhoneChoice === 'p2' ? '+91 95853 88444' : alternatePhone;
-
-  const resolvedPrimaryEmail =
-    primaryEmailChoice === 'e1' ? 'twinplastpolymers@gmail.com' : primaryEmailChoice === 'e2' ? 'info@twinplastpolymers.com' : customEmail;
-
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
     setSuccessMsg('');
     setErrorMsg('');
 
+    const cleanPrimaryPhone = primaryPhone.trim();
+    const cleanWhatsappNumber = whatsappNumber.trim();
+    const cleanOfficialEmail = officialEmail.trim();
+
     const settingsPayloads = [
-      { key: 'company_name', value: companyName },
-      { key: 'public_phone', value: resolvedPrimaryPhone },
-      { key: 'public_email', value: resolvedPrimaryEmail },
-      { key: 'primary_phone', value: resolvedPrimaryPhone },
-      { key: 'primary_email', value: resolvedPrimaryEmail },
-      { key: 'secondary_phone', value: resolvedSecondaryPhone },
-      { key: 'alternate_phone', value: resolvedSecondaryPhone },
-      { key: 'official_email', value: officialEmail },
-      { key: 'alternate_email', value: alternateEmail },
-      { key: 'public_address', value: publicAddress },
-      { key: 'website_metadata', value: { title: seoTitle, description: seoDescription } },
-      { key: 'business_info', value: { established } },
+      { key: 'company_name', value: companyName.trim() },
+      { key: 'public_phone', value: cleanPrimaryPhone },
+      { key: 'primary_phone', value: cleanPrimaryPhone },
+      { key: 'whatsapp_number', value: cleanWhatsappNumber },
+      { key: 'secondary_phone', value: cleanWhatsappNumber || alternatePhone.trim() },
+      { key: 'public_email', value: cleanOfficialEmail },
+      { key: 'primary_email', value: cleanOfficialEmail },
+      { key: 'official_email', value: cleanOfficialEmail },
+      { key: 'alternate_phone', value: alternatePhone.trim() },
+      { key: 'alternate_email', value: alternateEmail.trim() },
+      { key: 'public_address', value: publicAddress.trim() },
+      { key: 'website_metadata', value: { title: seoTitle.trim(), description: seoDescription.trim() } },
+      { key: 'business_info', value: { established: established.trim() } },
     ];
 
     try {
@@ -117,7 +107,7 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
         setErrorMsg(msg);
         toast.error('Failed to Update Settings', msg);
       } else {
-        const msg = 'Corporate settings & explicit primary contacts saved successfully.';
+        const msg = 'Site contact numbers and official business settings saved successfully.';
         setSuccessMsg(msg);
         toast.success('Settings Saved', msg);
       }
@@ -137,10 +127,10 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
           <Building className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-          <span>Site Settings &amp; Primary Contact Designation</span>
+          <span>Site Settings &amp; Contact Numbers</span>
         </h1>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Configure business metadata and explicitly designate the public Primary Contact rendered across public channels.
+          Manage your site contact numbers, WhatsApp redirect number, official email, and corporate metadata.
         </p>
       </div>
 
@@ -199,159 +189,80 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
           </div>
         </div>
 
-        {/* Explicit Primary Contact Designation Section */}
+        {/* Public Contact Numbers Section */}
         <div className="space-y-4 pt-2">
           <div className="border-b border-slate-100 dark:border-slate-900 pb-2">
             <h2 className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
               <Phone className="w-3.5 h-3.5" />
-              <span>Explicit Primary Contact Designation</span>
+              <span>Public Contact Numbers</span>
             </h2>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-              Only the explicitly designated Primary Contact details will propagate to public header/hero/footer call/email links and JSON-LD. Alternate contacts remain stored in settings.
+              Phone number displays first across all public channels. WhatsApp number displays second and handles all WhatsApp icon redirects across the website.
             </p>
           </div>
 
-          {/* Phone Designation */}
-          <div className="space-y-3 bg-slate-50/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800">
-            <span className="block text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
-              Designate Public Primary Phone *
-            </span>
-
-            <div className="space-y-2 text-sm">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="primaryPhoneChoice"
-                  checked={primaryPhoneChoice === 'p1'}
-                  onChange={() => setPrimaryPhoneChoice('p1')}
-                  className="text-blue-600 focus:ring-blue-500"
-                />
-                <span className="font-mono text-slate-900 dark:text-slate-100">+91 95853 88444</span>
-                <span className="text-xs text-slate-500 dark:text-slate-400">(Production Phone)</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="primary-phone" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1">
+                <Phone className="w-3.5 h-3.5 text-blue-600" />
+                <span>Phone Number (1st Place) *</span>
               </label>
-
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="primaryPhoneChoice"
-                  checked={primaryPhoneChoice === 'p2'}
-                  onChange={() => setPrimaryPhoneChoice('p2')}
-                  className="text-blue-600 focus:ring-blue-500"
-                />
-                <span className="font-mono text-slate-900 dark:text-slate-100">+91 96458 32154</span>
-                <span className="text-xs text-slate-500 dark:text-slate-400">(Company Doc Phone)</span>
-              </label>
-
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="primaryPhoneChoice"
-                  checked={primaryPhoneChoice === 'custom'}
-                  onChange={() => setPrimaryPhoneChoice('custom')}
-                  className="text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Custom Phone Number</span>
-              </label>
-            </div>
-
-            {primaryPhoneChoice === 'custom' && (
               <input
+                id="primary-phone"
                 type="text"
-                value={customPhone}
-                onChange={(e) => setCustomPhone(e.target.value)}
-                placeholder="+91 XXXXX XXXXX"
+                required
+                value={primaryPhone}
+                onChange={(e) => setPrimaryPhone(e.target.value)}
+                placeholder="+91 95853 88444"
+                disabled={isSaving}
                 className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-mono text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
               />
-            )}
-
-            <div className="space-y-1 text-[11px] font-semibold pt-1">
-              <div className="text-emerald-700 dark:text-emerald-400">
-                Active Public Primary Phone: <span className="font-mono font-bold">{resolvedPrimaryPhone}</span> (Displays First)
-              </div>
-              <div className="text-slate-600 dark:text-slate-400">
-                Active Public Secondary Phone: <span className="font-mono font-bold">{resolvedSecondaryPhone}</span> (Displays Second)
-              </div>
-            </div>
-          </div>
-
-          {/* Email Designation */}
-          <div className="space-y-3 bg-slate-50/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800">
-            <span className="block text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1">
-              <Mail className="w-3.5 h-3.5 text-blue-600" />
-              Designate Public Primary Email *
-            </span>
-
-            <div className="space-y-2 text-sm">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="primaryEmailChoice"
-                  checked={primaryEmailChoice === 'e1'}
-                  onChange={() => setPrimaryEmailChoice('e1')}
-                  className="text-blue-600 focus:ring-blue-500"
-                />
-                <span className="font-mono text-slate-900 dark:text-slate-100">twinplastpolymers@gmail.com</span>
-                <span className="text-xs text-slate-500 dark:text-slate-400">(Production Email)</span>
-              </label>
-
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="primaryEmailChoice"
-                  checked={primaryEmailChoice === 'e2'}
-                  onChange={() => setPrimaryEmailChoice('e2')}
-                  className="text-blue-600 focus:ring-blue-500"
-                />
-                <span className="font-mono text-slate-900 dark:text-slate-100">info@twinplastpolymers.com</span>
-                <span className="text-xs text-slate-500 dark:text-slate-400">(Official Business Email)</span>
-              </label>
-
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="radio"
-                  name="primaryEmailChoice"
-                  checked={primaryEmailChoice === 'custom'}
-                  onChange={() => setPrimaryEmailChoice('custom')}
-                  className="text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">Custom Email Address</span>
-              </label>
+              <span className="text-[11px] text-slate-400 mt-1 block">Displayed first on header, call buttons &amp; contact pages</span>
             </div>
 
-            {primaryEmailChoice === 'custom' && (
+            <div>
+              <label htmlFor="whatsapp-number" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1">
+                <MessageCircle className="w-3.5 h-3.5 text-green-600" />
+                <span>WhatsApp Number (2nd Place) *</span>
+              </label>
               <input
-                type="email"
-                value={customEmail}
-                onChange={(e) => setCustomEmail(e.target.value)}
-                placeholder="contact@twinplastpolymers.com"
+                id="whatsapp-number"
+                type="text"
+                required
+                value={whatsappNumber}
+                onChange={(e) => setWhatsappNumber(e.target.value)}
+                placeholder="+91 96458 32154"
+                disabled={isSaving}
                 className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-mono text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
               />
-            )}
-
-            <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold pt-1">
-              Active Public Primary Email: <span className="font-mono font-bold">{resolvedPrimaryEmail}</span>
+              <span className="text-[11px] text-slate-400 mt-1 block">All site WhatsApp icons redirect to this number</span>
             </div>
           </div>
         </div>
 
         {/* Official & Alternate Contacts Stored Separately */}
         <div className="space-y-4 pt-2">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 border-b border-slate-100 dark:border-slate-900 pb-2">
-            Official &amp; Alternate Contacts (Stored Separately)
+          <h2 className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 border-b border-slate-100 dark:border-slate-900 pb-2 flex items-center gap-1.5">
+            <Mail className="w-3.5 h-3.5" />
+            <span>Official Business Email &amp; Plant Address</span>
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="official-email" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Official Business Email
+                Official Business Email *
               </label>
               <input
                 id="official-email"
                 type="email"
+                required
                 value={officialEmail}
                 onChange={(e) => setOfficialEmail(e.target.value)}
+                disabled={isSaving}
+                placeholder="info@twinplastpolymers.com"
                 className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-mono text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
               />
+              <span className="text-[11px] text-slate-400 mt-1 block">Used for site email display &amp; enquiry notifications</span>
             </div>
 
             <div>
@@ -363,6 +274,7 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
                 type="text"
                 value={alternatePhone}
                 onChange={(e) => setAlternatePhone(e.target.value)}
+                disabled={isSaving}
                 className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-mono text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
               />
             </div>
@@ -377,6 +289,7 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
               type="email"
               value={alternateEmail}
               onChange={(e) => setAlternateEmail(e.target.value)}
+              disabled={isSaving}
               className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-mono text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
             />
           </div>

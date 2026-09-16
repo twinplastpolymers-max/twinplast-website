@@ -27,9 +27,9 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
   const resolvedParams = searchParams ? await searchParams : undefined;
   const initialProduct = resolvedParams?.product || '';
 
-  let publicPhone = '+91 95853 88444';
-  let publicEmail = 'twinplastpolymers@gmail.com';
-  let publicAddress = 'South Silukkanpatti, Tuticorin, Tamilnadu, India';
+  let publicPhone = '';
+  let publicEmail = '';
+  let publicAddress = '';
   let products: string[] = [];
   let solutions: string[] = [];
 
@@ -54,9 +54,9 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
       const pEmail = settings.find((s) => s.key === 'public_email')?.value;
       const pAddr = settings.find((s) => s.key === 'public_address')?.value;
 
-      if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone;
-      if (typeof pEmail === 'string' && pEmail.trim()) publicEmail = pEmail;
-      if (typeof pAddr === 'string' && pAddr.trim()) publicAddress = pAddr;
+      if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone.trim();
+      if (typeof pEmail === 'string' && pEmail.trim()) publicEmail = pEmail.trim();
+      if (typeof pAddr === 'string' && pAddr.trim()) publicAddress = pAddr.trim();
     }
   } catch {
     // Graceful fallback
