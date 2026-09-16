@@ -22,10 +22,10 @@ values
     ('company_name', '"Twinplast Polymers Pvt. Ltd."'::jsonb),
     ('public_phone', '"+91 96458 32154"'::jsonb),
     ('public_email', '"info@twinplastpolymers.com"'::jsonb),
-    ('public_address', '"Tuticorin, Tamil Nadu, India"'::jsonb),
+    ('public_address', '"South Silukkanpatti, Tuticorin, Tamilnadu, India"'::jsonb),
     ('business_info', '{
         "company_name": "Twinplast Polymers Pvt. Ltd.",
-        "location": "Tuticorin, Tamil Nadu, India",
+        "location": "South Silukkanpatti, Tuticorin, Tamilnadu, India",
         "primary_contact": "+91 96458 32154",
         "official_email": "info@twinplastpolymers.com"
     }'::jsonb)
@@ -243,8 +243,8 @@ values (
     '{
         "eyebrow": "ABOUT US",
         "heading": "Twinplast Polymers Pvt. Ltd.",
-        "subheadline": "Tuticorin, Tamil Nadu, India",
-        "content": "Twinplast Polymers Pvt. Ltd. is a manufacturer of high-quality Polypropylene (PP) Corrugated Sheets and PP-based products, serving customers across packaging, construction, industrial, advertising and other commercial applications.\n\nBased in Tuticorin, Tamil Nadu, India, Twinplast specializes in manufacturing versatile PP sheet solutions designed to provide lightweight, durable, reusable and moisture-resistant alternatives for a wide range of applications.\n\nOur product range includes PP Corrugated Sheets, PP Layer Pad Sheets, PP Sunpack Sheets, PP Floor Protection Sheets, PP Corrugated Boxes and customized PP products.\n\nWith a focus on product quality, customization and reliable supply, we work closely with customers to understand their requirements and provide practical PP solutions for their specific applications.",
+        "subheadline": "South Silukkanpatti, Tuticorin, Tamilnadu, India",
+        "content": "Twinplast Polymers Pvt. Ltd. is a manufacturer of high-quality Polypropylene (PP) Corrugated Sheets and PP-based products, serving customers across packaging, construction, industrial, advertising and other commercial applications.\n\nBased in South Silukkanpatti, Tuticorin, Tamilnadu, India, Twinplast specializes in manufacturing versatile PP sheet solutions designed to provide lightweight, durable, reusable and moisture-resistant alternatives for a wide range of applications.\n\nOur product range includes PP Corrugated Sheets, PP Layer Pad Sheets, PP Sunpack Sheets, PP Floor Protection Sheets, PP Corrugated Boxes and customized PP products.\n\nWith a focus on product quality, customization and reliable supply, we work closely with customers to understand their requirements and provide practical PP solutions for their specific applications.",
         "cta_label": "More About Us",
         "cta_url": "/about"
     }'::jsonb

@@ -36,7 +36,7 @@ const DEFAULT_SOLUTIONS = [
 export function HomeContactSection({
   phone = '+91 95853 88444',
   email = 'twinplastpolymers@gmail.com',
-  address = 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan, Thoothukudi, Tamil Nadu - 628101',
+  address = 'South Silukkanpatti, Tuticorin, Tamilnadu, India',
   initialProduct = '',
   products,
   solutions,
