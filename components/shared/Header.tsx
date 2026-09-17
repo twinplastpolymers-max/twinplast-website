@@ -11,6 +11,11 @@ interface HeaderProps {
   secondaryPhone?: string;
   whatsappNumber?: string;
   publicEmail?: string;
+  socialLinks?: {
+    facebook?: string;
+    instagram?: string;
+    youtube?: string;
+  };
   products?: Array<{ title: string; slug: string }>;
   solutions?: Array<{ id: string; title: string }>;
 }
@@ -40,7 +45,7 @@ const YouTubeIcon = () => (
   </svg>
 );
 
-export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmail, products, solutions }: HeaderProps) {
+export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmail, socialLinks, products, solutions }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredNav, setHoveredNav] = useState<'products' | 'solutions' | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<{ products: boolean; solutions: boolean }>({
@@ -65,28 +70,36 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  const socialLinks = [
+  const fbUrl = socialLinks?.facebook?.trim() || 'https://facebook.com';
+  const igUrl = socialLinks?.instagram?.trim() || 'https://instagram.com';
+  const ytUrl = socialLinks?.youtube?.trim() || 'https://youtube.com';
+
+  const socialLinksList = [
     {
       label: 'Facebook',
-      href: 'https://facebook.com',
+      href: fbUrl,
       icon: <FacebookIcon />,
       hoverColor: 'hover:bg-[#1877F2]',
     },
     {
       label: 'Instagram',
-      href: 'https://instagram.com',
+      href: igUrl,
       icon: <InstagramIcon />,
       hoverColor: 'hover:bg-[#E1306C]',
     },
-    {
-      label: 'WhatsApp',
-      href: cleanWaNumber ? `https://wa.me/${cleanWaNumber}` : 'https://wa.me/',
-      icon: <WhatsAppIcon />,
-      hoverColor: 'hover:bg-[#25D366]',
-    },
+    ...(cleanWaNumber
+      ? [
+          {
+            label: 'WhatsApp',
+            href: `https://wa.me/${cleanWaNumber}`,
+            icon: <WhatsAppIcon />,
+            hoverColor: 'hover:bg-[#25D366]',
+          },
+        ]
+      : []),
     {
       label: 'YouTube',
-      href: 'https://youtube.com',
+      href: ytUrl,
       icon: <YouTubeIcon />,
       hoverColor: 'hover:bg-[#FF0000]',
     },
@@ -100,7 +113,7 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
         <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
           {/* Left: contact info (Phone 1st, WhatsApp 2nd, Email 3rd) */}
-          <div className="flex items-center gap-2 sm:gap-3 lg:gap-5 text-[11px] font-medium text-white/90 min-w-0 flex-shrink">
+          <div className="flex items-center gap-2 sm:gap-4 lg:gap-5 text-[10px] sm:text-[11px] font-medium text-white/90 overflow-x-auto no-scrollbar">
             {email && (
               <a
                 href={`mailto:${email}`}
@@ -114,11 +127,11 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
             {phone && (
               <a
                 href={`tel:${cleanPhone}`}
-                className="flex items-center gap-1.5 hover:text-white transition-colors shrink-0"
+                className="flex items-center gap-1 sm:gap-1.5 hover:text-white transition-colors shrink-0"
                 title="Phone Number (1st Place)"
               >
                 <Phone className="w-3 h-3 shrink-0 opacity-80 text-blue-300" />
-                <span className="hidden sm:inline">{phone}</span>
+                <span>{phone}</span>
               </a>
             )}
 
@@ -127,18 +140,18 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
                 href={`https://wa.me/${cleanWaNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:text-white transition-colors shrink-0 opacity-90 hover:opacity-100"
+                className="flex items-center gap-1 sm:gap-1.5 hover:text-white transition-colors shrink-0 opacity-90 hover:opacity-100"
                 title="WhatsApp (2nd Place)"
               >
                 <WhatsAppIcon />
-                <span className="hidden sm:inline">{waNumber}</span>
+                <span>{waNumber}</span>
               </a>
             )}
           </div>
 
           {/* Right: social icons */}
           <div className="flex items-center gap-1">
-            {socialLinks.map((s) => (
+            {socialLinksList.map((s) => (
               <a
                 key={s.label}
                 href={s.href}
@@ -489,15 +502,15 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
                     <span>{phone}</span>
                   </a>
                 )}
-                {whatsappNumber && (
+                {waNumber && (
                   <a
-                    href={`https://wa.me/${whatsappNumber.replace(/[^+\d]/g, '').replace('+', '')}`}
+                    href={`https://wa.me/${cleanWaNumber}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 hover:text-emerald-800"
                   >
                     <MessageCircle className="w-3 h-3 text-emerald-600" />
-                    <span>WhatsApp: {whatsappNumber}</span>
+                    <span>WhatsApp: {waNumber}</span>
                   </a>
                 )}
                 {email && (
@@ -513,7 +526,7 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
 
               {/* Social links in mobile menu */}
               <div className="flex items-center justify-center gap-3 pt-1">
-                {socialLinks.map((s) => (
+                {socialLinksList.map((s) => (
                   <a
                     key={s.label}
                     href={s.href}

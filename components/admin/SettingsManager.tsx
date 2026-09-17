@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Save, ShieldAlert, CheckCircle2, Loader2, Phone, Mail, Building, MessageCircle } from 'lucide-react';
+import { Save, ShieldAlert, CheckCircle2, Loader2, Phone, Mail, Building, MessageCircle, Globe } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/components/ui/Toast';
 
@@ -44,6 +44,18 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
   const [alternatePhone, setAlternatePhone] = useState<string>((getSettingVal('alternate_phone', '+91 96458 32154')) as string);
   const [alternateEmail, setAlternateEmail] = useState<string>((getSettingVal('alternate_email', 'info@twinplastpolymers.com')) as string);
 
+  // Social Media Links
+  const initialSocial = (getSettingVal('social_links', {}) || {}) as Record<string, string>;
+  const [facebookUrl, setFacebookUrl] = useState<string>(
+    (initialSocial.facebook || getSettingVal('facebook_url', 'https://facebook.com')) as string
+  );
+  const [instagramUrl, setInstagramUrl] = useState<string>(
+    (initialSocial.instagram || getSettingVal('instagram_url', 'https://instagram.com')) as string
+  );
+  const [youtubeUrl, setYoutubeUrl] = useState<string>(
+    (initialSocial.youtube || getSettingVal('youtube_url', 'https://youtube.com')) as string
+  );
+
   // JSON website_metadata
   const meta = getSettingVal('website_metadata', {}) as Record<string, string>;
   const [seoTitle, setSeoTitle] = useState<string>(meta.title || 'Twinplast Polymers | Industrial PP Sheets');
@@ -73,6 +85,7 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
       { key: 'public_phone', value: cleanPrimaryPhone },
       { key: 'primary_phone', value: cleanPrimaryPhone },
       { key: 'whatsapp_number', value: cleanWhatsappNumber },
+      { key: 'public_whatsapp', value: cleanWhatsappNumber },
       { key: 'secondary_phone', value: cleanWhatsappNumber || alternatePhone.trim() },
       { key: 'public_email', value: cleanOfficialEmail },
       { key: 'primary_email', value: cleanOfficialEmail },
@@ -80,6 +93,19 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
       { key: 'alternate_phone', value: alternatePhone.trim() },
       { key: 'alternate_email', value: alternateEmail.trim() },
       { key: 'public_address', value: publicAddress.trim() },
+      { key: 'facebook_url', value: facebookUrl.trim() },
+      { key: 'instagram_url', value: instagramUrl.trim() },
+      { key: 'youtube_url', value: youtubeUrl.trim() },
+      {
+        key: 'social_links',
+        value: {
+          facebook: facebookUrl.trim(),
+          instagram: instagramUrl.trim(),
+          youtube: youtubeUrl.trim(),
+          whatsapp: cleanWhatsappNumber ? `https://wa.me/${cleanWhatsappNumber.replace(/[^+\d]/g, '').replace('+', '')}` : '',
+          whatsapp_number: cleanWhatsappNumber,
+        },
+      },
       { key: 'website_metadata', value: { title: seoTitle.trim(), description: seoDescription.trim() } },
       { key: 'business_info', value: { established: established.trim() } },
     ];
@@ -307,6 +333,66 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
               disabled={isSaving}
               className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white resize-y"
             />
+          </div>
+        </div>
+
+        {/* Social Media Links Section */}
+        <div className="space-y-4 pt-2">
+          <div className="border-b border-slate-100 dark:border-slate-900 pb-2">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+              <Globe className="w-3.5 h-3.5" />
+              <span>Social Media Links &amp; Profiles</span>
+            </h2>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+              Configure URLs for header &amp; footer social icons. Leaving a field blank will use platform defaults.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label htmlFor="facebook-url" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                Facebook Page URL
+              </label>
+              <input
+                id="facebook-url"
+                type="url"
+                value={facebookUrl}
+                onChange={(e) => setFacebookUrl(e.target.value)}
+                placeholder="https://facebook.com"
+                disabled={isSaving}
+                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="instagram-url" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                Instagram Profile URL
+              </label>
+              <input
+                id="instagram-url"
+                type="url"
+                value={instagramUrl}
+                onChange={(e) => setInstagramUrl(e.target.value)}
+                placeholder="https://instagram.com"
+                disabled={isSaving}
+                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="youtube-url" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                YouTube Channel URL
+              </label>
+              <input
+                id="youtube-url"
+                type="url"
+                value={youtubeUrl}
+                onChange={(e) => setYoutubeUrl(e.target.value)}
+                placeholder="https://youtube.com"
+                disabled={isSaving}
+                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              />
+            </div>
           </div>
         </div>
 
