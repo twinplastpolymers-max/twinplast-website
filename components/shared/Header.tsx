@@ -78,16 +78,12 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
       icon: <InstagramIcon />,
       hoverColor: 'hover:bg-[#E1306C]',
     },
-    ...(cleanWaNumber
-      ? [
-          {
-            label: 'WhatsApp',
-            href: `https://wa.me/${cleanWaNumber}`,
-            icon: <WhatsAppIcon />,
-            hoverColor: 'hover:bg-[#25D366]',
-          },
-        ]
-      : []),
+    {
+      label: 'WhatsApp',
+      href: cleanWaNumber ? `https://wa.me/${cleanWaNumber}` : 'https://wa.me/',
+      icon: <WhatsAppIcon />,
+      hoverColor: 'hover:bg-[#25D366]',
+    },
     {
       label: 'YouTube',
       href: 'https://youtube.com',
@@ -104,7 +100,7 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
         <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
           {/* Left: contact info (Phone 1st, WhatsApp 2nd, Email 3rd) */}
-          <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 text-[11px] font-medium text-white/90 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-5 text-[11px] font-medium text-white/90 min-w-0 flex-shrink">
             {email && (
               <a
                 href={`mailto:${email}`}
@@ -122,7 +118,7 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
                 title="Phone Number (1st Place)"
               >
                 <Phone className="w-3 h-3 shrink-0 opacity-80 text-blue-300" />
-                <span>{phone}</span>
+                <span className="hidden sm:inline">{phone}</span>
               </a>
             )}
 
@@ -135,7 +131,7 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
                 title="WhatsApp (2nd Place)"
               >
                 <WhatsAppIcon />
-                <span>{waNumber}</span>
+                <span className="hidden sm:inline">{waNumber}</span>
               </a>
             )}
           </div>
