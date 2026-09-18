@@ -57,20 +57,19 @@ export default async function SolutionsPage() {
               <p className="text-sm text-muted">Loading industry solutions...</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-6">
               {industries.map((ind) => (
                 <div
                   key={ind.id}
                   id={ind.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
                   className="flex flex-col bg-surface border border-surface-border rounded-sm overflow-hidden shadow-xs hover:shadow-md transition-all group scroll-mt-28"
                 >
-                  <div className="w-full bg-slate-50 border-b border-surface-border overflow-hidden h-36 sm:h-72 lg:h-80 relative">
+                  <div className="w-full bg-slate-50 border-b border-surface-border relative">
                     <ImageContainer
                       src={ind.image_cloudinary_public_id}
                       alt={ind.title}
-                      aspectRatio="tall"
+                      aspectRatio="video"
                       fit="cover"
-                      className="h-full w-full"
                       unstyled
                     />
                   </div>

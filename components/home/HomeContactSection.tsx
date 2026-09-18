@@ -172,7 +172,6 @@ export function HomeContactSection({
                     >
                       {internationalPhone}
                     </a>
-                    <span className="text-[10px] text-slate-400 mt-0.5 block">UAE / Middle East</span>
                   </div>
                 </div>
               )}
