@@ -50,7 +50,8 @@ export default async function ProductsCatalogPage() {
           {/* Section Header */}
           <div className="mb-12 text-center sm:text-left space-y-2">
             <h1 className="text-2xl sm:text-3xl tracking-tight text-foreground ">
-              Polypropylene (PP) Sheet Catalog
+              PP Corrugated Product Range
+
             </h1>
             <p className="text-sm text-muted max-w-2xl leading-relaxed">
               Our sheets are engineered for packaging durability, material handling safety, custom advertising, and structural floor protection. We custom-manufacture to client thickness and GSM parameters.
@@ -97,7 +98,7 @@ export default async function ProductsCatalogPage() {
                     <p className="mt-1 sm:mt-2 text-[11px] sm:text-xs text-muted line-clamp-2 sm:line-clamp-3 flex-1 leading-relaxed">
                       {prod.description}
                     </p>
-                    
+
                     <div className="mt-2 sm:mt-4 pt-2 sm:pt-3">
                       <Link
                         href={`/products/${prod.slug}`}

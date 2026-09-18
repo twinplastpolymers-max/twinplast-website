@@ -129,8 +129,8 @@ export default async function AboutPage() {
         whyEyebrow = (whyContent.eyebrow as string) || undefined;
         whyHeading = (whyContent.heading as string) || (whyContent.title as string) || undefined;
         whyDescription = (whyContent.description as string) || undefined;
-        pillars = (whyContent.pillars as Array<{ title: string; description: string }>) || 
-                  (whyContent.reasons as Array<{ title: string; description: string }>) || [];
+        pillars = (whyContent.pillars as Array<{ title: string; description: string }>) ||
+          (whyContent.reasons as Array<{ title: string; description: string }>) || [];
         const customWhyImg = (whyContent.image as string) || (whyContent.image_url as string);
         if (customWhyImg) whyImageId = customWhyImg;
       }
@@ -196,10 +196,7 @@ export default async function AboutPage() {
         showButton={false}
       />
 
-      {/* 2. Statistics Section */}
-      <StatisticsSection stats={statsItems} />
-
-      {/* 3. Vision & Mission */}
+      {/* 2. Vision & Mission */}
       <VisionMissionSection
         visionTitle={visionTitle}
         visionText={visionText}
@@ -208,7 +205,7 @@ export default async function AboutPage() {
         vmImage={vmImage}
       />
 
-      {/* 4. Markets We Serve */}
+      {/* 3. Markets We Serve */}
       <MarketsSection
         eyebrow={mktEyebrow}
         heading={mktHeading}
@@ -217,7 +214,13 @@ export default async function AboutPage() {
         regions={mktRegions}
       />
 
-      {/* 5. Why Choose Us */}
+      {/* 4. 9-Stage Manufacturing Process */}
+      <ManufacturingProcessSection steps={steps} />
+
+      {/* 5. Statistics Section */}
+      <StatisticsSection stats={statsItems} />
+
+      {/* 6. Why Choose Us */}
       <WhyChooseSection
         eyebrow={whyEyebrow}
         heading={whyHeading}
@@ -226,8 +229,7 @@ export default async function AboutPage() {
         image={whyImageId}
       />
 
-      {/* 6. 9-Stage Manufacturing Process */}
-      <ManufacturingProcessSection steps={steps} />
+
 
 
 

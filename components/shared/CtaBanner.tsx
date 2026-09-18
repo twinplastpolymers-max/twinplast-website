@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 
 export interface CtaBannerProps {
-  eyebrow?: string;
   heading?: string;
   description?: string;
   contactLabel?: string;
@@ -12,8 +11,7 @@ export interface CtaBannerProps {
 }
 
 export function CtaBanner({
-  eyebrow = 'INITIATE CONSULTATION',
-  heading = 'Have a PP Requirement? Let’s Talk.',
+  heading = 'Have a PP Corrugated Sheet Requirement? Let’s Talk.',
   description = 'Discuss your requirements with our team and find the right PP product for your application.',
   contactLabel = 'Contact Us',
   contactHref = '/contact',
@@ -27,16 +25,10 @@ export function CtaBanner({
       <div className="mx-auto max-w-7xl w-full">
         <div className="bg-[#1a1464] text-white px-6 py-10 sm:p-12 lg:p-14 shadow-none sm:shadow-lg rounded-none sm:rounded-sm w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            
+
             {/* Left Side: Suitable Project Content */}
             <div className="lg:col-span-8 space-y-3">
-              {eyebrow && (
-                <div className="flex items-center gap-2 text-blue-300 text-xs font-bold uppercase tracking-widest">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-                  <span>{eyebrow}</span>
-                </div>
-              )}
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-snug">
+              <h2 className="text-lg sm:text-xl lg:text-3xl font-bold tracking-tight text-white leading-snug">
                 {heading}
               </h2>
               {description && (

@@ -12,6 +12,7 @@ export interface HomeContactSectionProps {
   initialProduct?: string;
   products?: string[];
   solutions?: string[];
+  internationalPhone?: string;
 }
 
 export function HomeContactSection({
@@ -21,6 +22,7 @@ export function HomeContactSection({
   initialProduct = '',
   products,
   solutions,
+  internationalPhone,
 }: HomeContactSectionProps) {
   const searchParams = useSearchParams();
   const rawProduct = searchParams.get('product') || initialProduct || '';
@@ -99,7 +101,7 @@ export function HomeContactSection({
           <div className="lg:col-span-5 space-y-8">
             <div>
               <h2 id="contact-heading" className="text-2xl sm:text-3xl lg:text-4xl text-slate-900 tracking-tight leading-tight">
-                Let’s Build the Right Solution
+                For Enquiry and Contact
               </h2>
               <p className="mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed">
                 Connect with our factory team directly for product inquiries, custom PP sheet specifications, and orders.
@@ -154,6 +156,26 @@ export function HomeContactSection({
                   </div>
                 </div>
               )}
+
+              {internationalPhone && (
+                <div className="flex items-start gap-4 pt-4 border-t border-slate-100">
+                  <div className="w-9 h-9 flex items-center justify-center shrink-0 bg-amber-50 text-amber-600">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                      International &amp; Export Orders
+                    </span>
+                    <a
+                      href={`tel:${internationalPhone.replace(/\s+/g, '')}`}
+                      className="text-sm font-medium text-slate-800 hover:text-blue-600 transition-colors block mt-0.5"
+                    >
+                      {internationalPhone}
+                    </a>
+                    <span className="text-[10px] text-slate-400 mt-0.5 block">UAE / Middle East</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -168,10 +190,10 @@ export function HomeContactSection({
               </p>
             </div>
 
-            {selectedProduct && (
+            {formData.product && (
               <div className="mb-6 flex items-center gap-2 p-3 bg-blue-50 border-l-2 border-blue-600 text-xs text-slate-700">
                 <span>Selected Product:</span>
-                <span className="font-bold text-blue-900">{selectedProduct}</span>
+                <span className="font-bold text-blue-900">{formData.product}</span>
               </div>
             )}
 
@@ -240,18 +262,10 @@ export function HomeContactSection({
                     value={formData.product}
                     onChange={(e) => {
                       const val = e.target.value;
-                      setFormData((prev) => ({
-                        ...prev,
-                        product: val,
-                        message:
-                          val && !prev.message
-                            ? `I would like to request a quote for ${val}. Please share specifications, pricing, and MOQ details.`
-                            : prev.message,
-                      }));
+                      setFormData((prev) => ({ ...prev, product: val }));
                     }}
-                    className={`w-full bg-transparent border-b border-slate-300 py-3 text-sm rounded-none focus:outline-none focus:border-blue-600 transition-colors cursor-pointer ${
-                      formData.product ? 'text-slate-900 font-medium' : 'text-slate-400'
-                    }`}
+                    className={`w-full bg-transparent border-b border-slate-300 py-3 text-sm rounded-none focus:outline-none focus:border-blue-600 transition-colors cursor-pointer ${formData.product ? 'text-slate-900 font-medium' : 'text-slate-400'
+                      }`}
                   >
                     <option value="" disabled className="text-slate-400">
                       Select Product / Requirement *
