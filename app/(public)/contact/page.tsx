@@ -30,6 +30,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
   let publicPhone = '';
   let publicEmail = '';
   let publicAddress = '';
+  let internationalPhone = '';
   let products: string[] = [];
   let solutions: string[] = [];
 
@@ -57,6 +58,9 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
       if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone.trim();
       if (typeof pEmail === 'string' && pEmail.trim()) publicEmail = pEmail.trim();
       if (typeof pAddr === 'string' && pAddr.trim()) publicAddress = pAddr.trim();
+
+      const pIntlPhone = settings.find((s) => s.key === 'international_phone')?.value;
+      if (typeof pIntlPhone === 'string' && pIntlPhone.trim()) internationalPhone = pIntlPhone.trim();
     }
   } catch {
     // Graceful fallback
@@ -96,6 +100,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           initialProduct={initialProduct}
           products={products}
           solutions={solutions}
+          internationalPhone={internationalPhone}
         />
       </Suspense>
     </div>

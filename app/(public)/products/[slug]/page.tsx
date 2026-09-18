@@ -136,78 +136,78 @@ export default async function ProductDetailPage({ params }: PageProps) {
       <JsonLd data={[productSchema, breadcrumbSchema]} />
       <div className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-        {/* Breadcrumb Navigation */}
-   
+          {/* Breadcrumb Navigation */}
 
-        {/* Product Spec Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start bg-surface sm:p-8 ">
-          {/* Product Media - Left 5 cols */}
-          <div className="md:col-span-5 w-full">
-            <ImageContainer
-              src={product.image_cloudinary_public_id}
-              alt={product.title}
-              aspectRatio="square"
-            />
-          </div>
-          
-          {/* Specifications Panel - Right 7 cols */}
-          <div className="md:col-span-7 flex flex-col gap-6">
-            <div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
-                {product.title}
-              </h1>
+
+          {/* Product Spec Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start bg-surface sm:p-8 ">
+            {/* Product Media - Left 5 cols */}
+            <div className="md:col-span-5 w-full">
+              <ImageContainer
+                src={product.image_cloudinary_public_id}
+                alt={product.title}
+                aspectRatio="square"
+              />
             </div>
 
-            <div className="prose prose-slate dark:prose-invert">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-primary">Overview</h2>
-              <p className="text-sm text-muted leading-relaxed mt-1.5">
-                {product.description}
-              </p>
-            </div>
+            {/* Specifications Panel - Right 7 cols */}
+            <div className="md:col-span-7 flex flex-col gap-6">
+              <div>
+                <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
+                  {product.title}
+                </h1>
+              </div>
 
-            {/* Extensible B2B Specification Container (Ready for dynamic columns later) */}
-            <div className="border-t border-secondary/50 pt-6 space-y-4">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-primary">
-                Technical Specifications
-              </h2>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">GSM Weight Range</span>
-                  <span className="font-semibold text-foreground text-sm mt-1 block">200GSM to 1500 GSM</span>
-                </div>
+              <div className="prose prose-slate dark:prose-invert">
+                <h2 className="text-sm font-bold uppercase tracking-wider text-primary">Overview</h2>
+                <p className="text-sm text-muted leading-relaxed mt-1.5">
+                  {product.description}
+                </p>
+              </div>
 
-                <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">Available Thickness</span>
-                  <span className="font-semibold text-foreground text-sm mt-1 block">2mm to 10 mm</span>
-                </div>
+              {/* Extensible B2B Specification Container (Ready for dynamic columns later) */}
+              <div className="border-t border-secondary/50 pt-6 space-y-4">
+                <h2 className="text-sm font-bold uppercase tracking-wider text-primary">
+                  Technical Specifications
+                </h2>
 
-                <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">Dimensions</span>
-                  <span className="font-semibold text-foreground text-sm mt-1 block">Max Width: 2 meter</span>
-                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">GSM Weight Range</span>
+                    <span className="font-semibold text-foreground text-sm mt-1 block">200 GSM to 1500 GSM</span>
+                  </div>
 
-                <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">Color Choices</span>
-                  <span className="font-semibold text-foreground text-sm mt-1 block">Blue, White, Yellow, green, black, Red, Multiple Choices Etc.</span>
+                  <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">Available Thickness</span>
+                    <span className="font-semibold text-foreground text-sm mt-1 block">2 mm to 10 mm</span>
+                  </div>
+
+                  <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">Dimensions</span>
+                    <span className="font-semibold text-foreground text-sm mt-1 block">Max Width: 2 meter</span>
+                  </div>
+
+                  <div className="bg-secondary/20 p-3.5 rounded-lg border border-secondary/40">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted block">Color Choices</span>
+                    <span className="font-semibold text-foreground text-sm mt-1 block">Blue, White, Yellow, green, black, Red, Multiple Choices Etc.</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Inquire Action Button */}
-            <div className="pt-6 border-t border-secondary/50">
-              <Link
-                href={`/contact?product=${encodeURIComponent(product.title)}`}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent text-accent-foreground px-5 py-3.5 text-sm font-bold uppercase tracking-wider hover:bg-accent/90 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-              >
-                {/* <Mail className="w-4 h-4" /> */}
-                <span>Request Quote</span>
-              </Link>
+              {/* Inquire Action Button */}
+              <div className="pt-6 border-t border-secondary/50">
+                <Link
+                  href={`/contact?product=${encodeURIComponent(product.title)}`}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent text-accent-foreground px-5 py-3.5 text-sm font-bold uppercase tracking-wider hover:bg-accent/90 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  {/* <Mail className="w-4 h-4" /> */}
+                  <span>Request Quote</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
       {/* Bottom CTA Banner (Same content reused across all pages) */}
       <CtaBanner />

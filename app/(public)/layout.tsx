@@ -20,7 +20,7 @@ export default async function PublicLayout({
   let products: Array<{ title: string; slug: string }> = [];
   let solutions: Array<{ id: string; title: string }> = [];
 
-  let socialLinks: { facebook?: string; instagram?: string; youtube?: string; whatsapp?: string } = {};
+  let socialLinks: { facebook?: string; instagram?: string; youtube?: string; twitter?: string } = {};
 
   try {
     const supabase = await createClient();
@@ -49,6 +49,7 @@ export default async function PublicLayout({
       const socObj = (settings.find((s) => s.key === 'social_links')?.value || {}) as Record<string, string>;
       const fb = typeof socObj.facebook === 'string' ? socObj.facebook : (settings.find((s) => s.key === 'facebook_url')?.value as string || '');
       const ig = typeof socObj.instagram === 'string' ? socObj.instagram : (settings.find((s) => s.key === 'instagram_url')?.value as string || '');
+      const tw = typeof socObj.twitter === 'string' ? socObj.twitter : (settings.find((s) => s.key === 'twitter_url')?.value as string || '');
       const yt = typeof socObj.youtube === 'string' ? socObj.youtube : (settings.find((s) => s.key === 'youtube_url')?.value as string || '');
 
       if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone.trim();
@@ -68,6 +69,7 @@ export default async function PublicLayout({
       socialLinks = {
         facebook: fb.trim(),
         instagram: ig.trim(),
+        twitter: tw.trim(),
         youtube: yt.trim(),
       };
     }

@@ -36,6 +36,9 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
   const [whatsappNumber, setWhatsappNumber] = useState<string>(
     (getSettingVal('whatsapp_number') || getSettingVal('secondary_phone') || '+91 96458 32154') as string
   );
+  const [internationalPhone, setInternationalPhone] = useState<string>(
+    (getSettingVal('international_phone', '')) as string
+  );
 
   // Official & Alternate contacts
   const [officialEmail, setOfficialEmail] = useState<string>(
@@ -51,6 +54,9 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
   );
   const [instagramUrl, setInstagramUrl] = useState<string>(
     (initialSocial.instagram || getSettingVal('instagram_url', 'https://instagram.com')) as string
+  );
+  const [twitterUrl, setTwitterUrl] = useState<string>(
+    (initialSocial.twitter || getSettingVal('twitter_url', 'https://twitter.com')) as string
   );
   const [youtubeUrl, setYoutubeUrl] = useState<string>(
     (initialSocial.youtube || getSettingVal('youtube_url', 'https://youtube.com')) as string
@@ -87,6 +93,7 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
       { key: 'whatsapp_number', value: cleanWhatsappNumber },
       { key: 'public_whatsapp', value: cleanWhatsappNumber },
       { key: 'secondary_phone', value: cleanWhatsappNumber || alternatePhone.trim() },
+      { key: 'international_phone', value: internationalPhone.trim() },
       { key: 'public_email', value: cleanOfficialEmail },
       { key: 'primary_email', value: cleanOfficialEmail },
       { key: 'official_email', value: cleanOfficialEmail },
@@ -95,12 +102,14 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
       { key: 'public_address', value: publicAddress.trim() },
       { key: 'facebook_url', value: facebookUrl.trim() },
       { key: 'instagram_url', value: instagramUrl.trim() },
+      { key: 'twitter_url', value: twitterUrl.trim() },
       { key: 'youtube_url', value: youtubeUrl.trim() },
       {
         key: 'social_links',
         value: {
           facebook: facebookUrl.trim(),
           instagram: instagramUrl.trim(),
+          twitter: twitterUrl.trim(),
           youtube: youtubeUrl.trim(),
           whatsapp: cleanWhatsappNumber ? `https://wa.me/${cleanWhatsappNumber.replace(/[^+\d]/g, '').replace('+', '')}` : '',
           whatsapp_number: cleanWhatsappNumber,
@@ -264,6 +273,23 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
               <span className="text-[11px] text-slate-400 mt-1 block">All site WhatsApp icons redirect to this number</span>
             </div>
           </div>
+
+          <div>
+            <label htmlFor="international-phone" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1">
+              <Phone className="w-3.5 h-3.5 text-amber-600" />
+              <span>International &amp; Export Phone (UAE / Middle East)</span>
+            </label>
+            <input
+              id="international-phone"
+              type="text"
+              value={internationalPhone}
+              onChange={(e) => setInternationalPhone(e.target.value)}
+              placeholder="e.g. +971 50 123 4567"
+              disabled={isSaving}
+              className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-mono text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+            />
+            <span className="text-[11px] text-slate-400 mt-1 block">Displayed on Contact Us page under &quot;International &amp; Export Orders&quot;</span>
+          </div>
         </div>
 
         {/* Official & Alternate Contacts Stored Separately */}
@@ -348,7 +374,7 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label htmlFor="facebook-url" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                 Facebook Page URL
@@ -374,6 +400,21 @@ export function SettingsManager({ initialSettings }: SettingsManagerProps) {
                 value={instagramUrl}
                 onChange={(e) => setInstagramUrl(e.target.value)}
                 placeholder="https://instagram.com"
+                disabled={isSaving}
+                className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="twitter-url" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                Twitter / X Profile URL
+              </label>
+              <input
+                id="twitter-url"
+                type="url"
+                value={twitterUrl}
+                onChange={(e) => setTwitterUrl(e.target.value)}
+                placeholder="https://twitter.com"
                 disabled={isSaving}
                 className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-white"
               />

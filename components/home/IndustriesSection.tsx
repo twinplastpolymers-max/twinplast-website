@@ -130,7 +130,7 @@ export function IndustriesSection({
           {industries.map((ind) => (
             <div
               key={ind.id}
-              className="flex-none w-[88%] xs:w-[320px] sm:w-[calc(50%-10px)] md:w-[calc((100%-40px)/3)] snap-start flex flex-col bg-white shadow-sm hover:shadow-xl transition-all duration-300 group overflow-hidden"
+              className="flex-none w-[280px] sm:w-[320px] snap-start flex flex-col bg-white shadow-sm hover:shadow-xl transition-all duration-300 group overflow-hidden"
             >
               {/* Card Image */}
               <div className="relative w-full overflow-hidden">

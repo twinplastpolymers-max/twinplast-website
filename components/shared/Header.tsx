@@ -15,6 +15,7 @@ interface HeaderProps {
     facebook?: string;
     instagram?: string;
     youtube?: string;
+    twitter?: string;
   };
   products?: Array<{ title: string; slug: string }>;
   solutions?: Array<{ id: string; title: string }>;
@@ -30,6 +31,12 @@ const FacebookIcon = () => (
 const InstagramIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+  </svg>
+);
+
+const TwitterIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
   </svg>
 );
 
@@ -72,6 +79,7 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
 
   const fbUrl = socialLinks?.facebook?.trim() || 'https://facebook.com';
   const igUrl = socialLinks?.instagram?.trim() || 'https://instagram.com';
+  const twUrl = socialLinks?.twitter?.trim() || 'https://twitter.com';
   const ytUrl = socialLinks?.youtube?.trim() || 'https://youtube.com';
 
   const socialLinksList = [
@@ -87,16 +95,12 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
       icon: <InstagramIcon />,
       hoverColor: 'hover:bg-[#E1306C]',
     },
-    ...(cleanWaNumber
-      ? [
-          {
-            label: 'WhatsApp',
-            href: `https://wa.me/${cleanWaNumber}`,
-            icon: <WhatsAppIcon />,
-            hoverColor: 'hover:bg-[#25D366]',
-          },
-        ]
-      : []),
+    {
+      label: 'Twitter',
+      href: twUrl,
+      icon: <TwitterIcon />,
+      hoverColor: 'hover:bg-slate-800',
+    },
     {
       label: 'YouTube',
       href: ytUrl,
@@ -338,15 +342,21 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
                 </div>
               </div>
 
+              {/* Contact Us */}
+              <Link
+                href="/contact"
+                className={`relative text-sm font-semibold transition-colors px-3 py-2 rounded-md ${isActive('/contact') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                  }`}
+              >
+                Contact Us
+                {isActive('/contact') && (
+                  <span className="absolute bottom-0.5 left-3 right-3 h-[2.5px] bg-[#1a1464] rounded-full" />
+                )}
+              </Link>
+
             </nav>
 
             <div className="flex items-center gap-2">
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center border border-[#1a1464] text-[#1a1464] hover:bg-[#1a1464] hover:text-white px-4 py-2.5 text-[12px] xl:text-[13px] font-bold uppercase tracking-wider transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1464]"
-              >
-                Contact Us
-              </Link>
               <Link
                 href="/contact"
                 className="inline-flex items-center justify-center bg-[#1a1464] hover:bg-[#13104f] text-white px-4 py-2.5 text-[12px] xl:text-[13px] font-bold uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1a1464]"
@@ -472,17 +482,19 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
                   </div>
                 )}
               </div>
+
+              <Link
+                href="/contact"
+                onClick={() => setIsOpen(false)}
+                className={`text-base py-2 transition-colors ${isActive('/contact') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                  }`}
+              >
+                Contact Us
+              </Link>
             </div>
 
             <div className="space-y-3 border-t border-slate-100 pt-6 mt-6">
               <div className="flex flex-col gap-2">
-                <Link
-                  href="/contact"
-                  onClick={() => setIsOpen(false)}
-                  className="flex w-full items-center justify-center rounded-sm border border-[#1a1464] text-[#1a1464] hover:bg-slate-50 py-3 text-xs font-bold uppercase tracking-wider transition-colors"
-                >
-                  Contact Us
-                </Link>
                 <Link
                   href="/contact"
                   onClick={() => setIsOpen(false)}

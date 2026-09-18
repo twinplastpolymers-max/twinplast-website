@@ -44,7 +44,7 @@ export default async function SolutionsPage() {
           {/* Section Header */}
           <div className="mb-12 text-center sm:text-left space-y-2">
             <h1 className="text-2xl sm:text-3xl  tracking-tight text-foreground">
-              Industry Applications & Solutions
+              PP Corrugated Industry Applications & Solutions
             </h1>
             <p className="text-sm max-w-2xl leading-relaxed">
               High-performance polypropylene sheets tailored for demanding operational conditions across packaging, logistics, commercial signage, and structural floor protection.
