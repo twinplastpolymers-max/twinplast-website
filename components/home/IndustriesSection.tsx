@@ -137,10 +137,9 @@ export function IndustriesSection({
                 <ImageContainer
                   src={ind.image_cloudinary_public_id || ind.image_url}
                   alt={ind.title}
-                  aspectRatio="square"
+                  aspectRatio="video"
                   fit="cover"
                   unstyled
-                  className="w-full"
                 />
               </div>
 
