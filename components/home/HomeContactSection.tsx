@@ -158,17 +158,17 @@ export function HomeContactSection({
               )}
 
               {internationalPhone && (
-                <div className="flex items-start gap-4 pt-4 border-t border-slate-100">
-                  <div className="w-9 h-9 flex items-center justify-center shrink-0 bg-amber-50 text-amber-600">
-                    <Phone className="w-4 h-4" />
+                <div className="flex items-start gap-4 p-4 mt-4 rounded-xl border border-amber-200 bg-amber-50">
+                  <div className="w-10 h-10 flex items-center justify-center shrink-0 bg-amber-100 text-amber-600 rounded-lg">
+                    <Phone className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                    <span className="text-sm sm:text-md font-bold uppercase tracking-wider text-amber-800 block">
                       International &amp; Export Orders
                     </span>
                     <a
                       href={`tel:${internationalPhone.replace(/\s+/g, '')}`}
-                      className="text-sm font-medium text-slate-800 hover:text-blue-600 transition-colors block mt-0.5"
+                      className="text-base font-bold text-slate-900 hover:text-amber-600 transition-colors block mt-1"
                     >
                       {internationalPhone}
                     </a>

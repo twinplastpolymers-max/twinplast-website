@@ -60,13 +60,13 @@ export function Footer({ publicPhone, whatsappNumber, publicEmail, publicAddress
 
           {/* Mobile Brand Area */}
           <div className="space-y-2">
-            <Link href="/" className="relative h-20 w-60 block focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400 rounded">
+            <Link href="/" className="relative h-28 w-72 block focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400 rounded">
               <Image
                 src="/logo-white.png"
                 alt="Twinplast Polymers Logo"
                 fill
                 priority
-                sizes="240px"
+                sizes="300px"
                 className="object-contain object-left"
               />
             </Link>
@@ -206,13 +206,13 @@ export function Footer({ publicPhone, whatsappNumber, publicEmail, publicAddress
 
             {/* Brand/About column - Left 4 cols */}
             <div className="md:col-span-4 flex flex-col gap-2">
-              <Link href="/" className="relative h-28 w-72 block focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded">
+              <Link href="/" className="relative h-36 w-80 block focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded">
                 <Image
                   src="/logo-white.png"
                   alt="Twinplast Polymers Logo"
                   fill
                   priority
-                  sizes="300px"
+                  sizes="400px"
                   className="object-contain object-left"
                 />
               </Link>
