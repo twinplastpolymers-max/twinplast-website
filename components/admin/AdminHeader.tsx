@@ -15,6 +15,7 @@ import {
   Building2,
   Layers,
   Settings,
+  BookOpen,
 } from 'lucide-react';
 import { SignOutButton } from '@/components/admin/SignOutButton';
 import { HomepageSidebarGroup } from '@/components/admin/HomepageSidebarGroup';
@@ -22,6 +23,8 @@ import { HomepageSidebarGroup } from '@/components/admin/HomepageSidebarGroup';
 const routeLabels: Record<string, { title: string; category?: string }> = {
   '/admin': { title: 'Dashboard' },
   '/admin/products': { title: 'Products Catalog', category: 'Catalog' },
+  '/admin/blog': { title: 'Blog Posts', category: 'Articles' },
+  '/admin/blog/new': { title: 'Create Blog Post', category: 'Articles' },
   '/admin/certifications': { title: 'Quality Certifications', category: 'Compliance' },
   '/admin/industries': { title: 'Applications & Solutions', category: 'Markets' },
   '/admin/manufacturing': { title: 'Manufacturing Process', category: 'Operations' },
@@ -41,6 +44,7 @@ const routeLabels: Record<string, { title: string; category?: string }> = {
 const mobileNavLinks = [
   { label: 'Dashboard',      href: '/admin',              icon: LayoutDashboard },
   { label: 'Products',       href: '/admin/products',     icon: ShoppingBag },
+  { label: 'Blog Posts',     href: '/admin/blog',         icon: BookOpen },
   { label: 'Certifications', href: '/admin/certifications', icon: Award },
   { label: 'Applications',   href: '/admin/industries',   icon: Building2 },
   { label: 'Process',        href: '/admin/manufacturing', icon: Layers },

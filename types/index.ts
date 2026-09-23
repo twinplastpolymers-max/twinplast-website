@@ -26,6 +26,10 @@ export type ManufacturingStep = Database['public']['Tables']['manufacturing_step
 export type ManufacturingStepInsert = Database['public']['Tables']['manufacturing_steps']['Insert'];
 export type ManufacturingStepUpdate = Database['public']['Tables']['manufacturing_steps']['Update'];
 
+export type BlogPost = Database['public']['Tables']['blog_posts']['Row'];
+export type BlogPostInsert = Database['public']['Tables']['blog_posts']['Insert'];
+export type BlogPostUpdate = Database['public']['Tables']['blog_posts']['Update'];
+
 export type UserRole = Database['public']['Tables']['user_roles']['Row'];
 export type RoleType = Database['public']['Enums']['user_role'];
 

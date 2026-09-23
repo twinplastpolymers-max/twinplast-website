@@ -19,6 +19,14 @@ export const metadata: Metadata = {
     description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets from Twinplast Polymers for industrial and packaging applications.',
     url: getSiteUrl('/products'),
     type: 'website',
+    images: [
+      {
+        url: getSiteUrl('/logo.png'),
+        width: 512,
+        height: 512,
+        alt: 'Twinplast Polymers',
+      },
+    ],
   },
 };
 

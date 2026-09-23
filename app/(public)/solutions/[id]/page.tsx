@@ -5,6 +5,7 @@ import { ChevronRight, ArrowLeft, Mail, ShieldCheck, CheckCircle2 } from 'lucide
 import { createClient } from '@/lib/supabase/server';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Industry } from '@/types';
+import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { getSiteUrl } from '@/lib/site';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const supabase = await createClient();
     const { data: industry } = await supabase
       .from('industries')
-      .select('title, description')
+      .select('title, description, image_cloudinary_public_id, image_url')
       .or(`id.eq.${id},title.ilike.%${decodeURIComponent(id).replace(/-/g, '%')}%`)
       .eq('active', true)
       .limit(1)
@@ -33,6 +34,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const title = `${industry.title} Solution | Twinplast Polymers`;
     const description = industry.description;
+    const ogImageUrl = industry.image_cloudinary_public_id
+      ? getOptimizedImageUrl(industry.image_cloudinary_public_id, { width: 1200, height: 630, quality: 'auto' })
+      : industry.image_url || getSiteUrl('/logo.png');
 
     return {
       title,
@@ -45,6 +49,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         description,
         url: canonicalUrl,
         type: 'website',
+        images: [
+          {
+            url: ogImageUrl,
+            alt: industry.title,
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [ogImageUrl],
       },
     };
   } catch {
@@ -52,6 +68,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: 'Industry Solution Detail | Twinplast Polymers',
       alternates: {
         canonical: canonicalUrl,
+      },
+      openGraph: {
+        title: 'Industry Solution Detail | Twinplast Polymers',
+        url: canonicalUrl,
+        type: 'website',
+        images: [{ url: getSiteUrl('/logo.png') }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        images: [getSiteUrl('/logo.png')],
       },
     };
   }
