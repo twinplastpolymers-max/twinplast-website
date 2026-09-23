@@ -7,8 +7,6 @@ import "./globals.css";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 const geistSans = Geist({
@@ -41,12 +39,21 @@ export const metadata: Metadata = {
     title: "Twinplast Polymers | PP Sheet Manufacturer in Tamil Nadu",
     description:
       "Twinplast Polymers Private Limited manufactures high-quality PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection, and Box sheets in Thoothukudi, Tamil Nadu. Established in 2021.",
+    images: [
+      {
+        url: getSiteUrl("/logo.png"),
+        width: 512,
+        height: 512,
+        alt: "Twinplast Polymers",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Twinplast Polymers | PP Sheet Manufacturer in Tamil Nadu",
     description:
       "Twinplast Polymers Private Limited manufactures high-quality PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection, and Box sheets in Thoothukudi, Tamil Nadu. Established in 2021.",
+    images: [getSiteUrl("/logo.png")],
   },
   robots: {
     index: true,

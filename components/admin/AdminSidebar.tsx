@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   ShoppingBag,
+  BookOpen,
   Award,
   Building2,
   Layers,
@@ -22,6 +23,7 @@ export function AdminSidebar() {
   const topLinks = [
     { label: 'Dashboard', href: '/admin', icon: LayoutDashboard, exact: true },
     { label: 'Products', href: '/admin/products', icon: ShoppingBag, exact: false },
+    { label: 'Blog Posts', href: '/admin/blog', icon: BookOpen, exact: false },
   ];
 
   const bottomLinks = [

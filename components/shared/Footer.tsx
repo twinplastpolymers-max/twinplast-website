@@ -42,7 +42,14 @@ export function Footer({ publicPhone, whatsappNumber, publicEmail, publicAddress
     { label: 'About Us', href: '/about' },
     { label: 'Products', href: '/products' },
     { label: 'Solutions', href: '/solutions' },
+    { label: 'Blog', href: '/blog' },
     { label: 'Contact Us', href: '/contact' },
+  ];
+
+  const locationLinks = [
+    { label: 'Tamil Nadu', href: '/locations/tamil-nadu' },
+    { label: 'Kerala', href: '/locations/kerala' },
+    { label: 'Karnataka', href: '/locations/karnataka' },
   ];
 
   const productLinks = products && products.length > 0
@@ -136,7 +143,35 @@ export function Footer({ publicPhone, whatsappNumber, publicEmail, publicAddress
               </div>
             )}
 
-            {/* 3. Contact Us Accordion */}
+            {/* 3. Locations Accordion */}
+            <div>
+              <button
+                type="button"
+                onClick={() => toggleSection('locations')}
+                className="w-full py-3.5 flex items-center justify-between text-left text-xs font-bold uppercase tracking-wider text-white hover:text-blue-400 transition-colors focus-visible:outline-none"
+                aria-expanded={!!openSections.locations}
+              >
+                <span>Locations</span>
+                <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${openSections.locations ? 'rotate-180 text-blue-400' : ''}`} />
+              </button>
+
+              {openSections.locations && (
+                <ul className="pb-3.5 space-y-2.5 pl-1 animate-fade-in">
+                  {locationLinks.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="text-xs text-slate-400 hover:text-white transition-colors block py-0.5"
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* 4. Contact Us Accordion */}
             {(address || phone || waNumber || email) && (
               <div>
                 <button
@@ -202,11 +237,11 @@ export function Footer({ publicPhone, whatsappNumber, publicEmail, publicAddress
       {/* ========================================================================= */}
       <div className="hidden md:block bg-[#06152b] text-slate-200 border-t border-slate-900">
         <div className="mx-auto max-w-7xl px-4 pt-16 pb-12 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
 
-            {/* Brand/About column - Left 4 cols */}
-            <div className="md:col-span-4 flex flex-col gap-2">
-              <Link href="/" className="relative h-36 w-80 block focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded">
+            {/* Brand/About column - Left 3 cols */}
+            <div className="md:col-span-3 flex flex-col gap-2">
+              <Link href="/" className="relative h-36 w-72 block focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded">
                 <Image
                   src="/logo-white.png"
                   alt="Twinplast Polymers Logo"
@@ -240,9 +275,9 @@ export function Footer({ publicPhone, whatsappNumber, publicEmail, publicAddress
               </ul>
             </div>
 
-            {/* Our Products column - Right-mid 3 cols */}
+            {/* Our Products column - Right-mid 2 cols */}
             {productLinks.length > 0 && (
-              <div className="md:col-span-3 flex flex-col gap-4">
+              <div className="md:col-span-2 flex flex-col gap-4">
                 <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
                   Our Products
                 </span>
@@ -260,6 +295,25 @@ export function Footer({ publicPhone, whatsappNumber, publicEmail, publicAddress
                 </ul>
               </div>
             )}
+
+            {/* Locations column - 2 cols */}
+            <div className="md:col-span-2 flex flex-col gap-4">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                Locations
+              </span>
+              <ul className="space-y-3">
+                {locationLinks.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-slate-400 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded px-0.5"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             {/* Contact Information column - Right 3 cols */}
             {(address || phone || waNumber || email) && (

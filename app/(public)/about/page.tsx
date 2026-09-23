@@ -24,6 +24,14 @@ export const metadata: Metadata = {
     description: 'Learn about Twinplast Polymers Pvt. Ltd., a specialized Polypropylene (PP) Corrugated Sheets and PP-based products manufacturer in South Silukkanpatti, Tuticorin, Tamilnadu, India.',
     url: getSiteUrl('/about'),
     type: 'website',
+    images: [
+      {
+        url: getSiteUrl('/logo.png'),
+        width: 512,
+        height: 512,
+        alt: 'Twinplast Polymers',
+      },
+    ],
   },
 };
 
@@ -33,6 +41,10 @@ export default async function AboutPage() {
   let aboutSecondary2: string | null = null;
   let whyImageId: string | null = null;
   let vmImage: string | null = null;
+
+  let publicPhone = '';
+  let publicEmail = '';
+  let publicAddress = '';
 
   let aboutEyebrow: string | undefined = undefined;
   let aboutHeading: string | undefined = undefined;
@@ -66,12 +78,14 @@ export default async function AboutPage() {
       { data: mediaData },
       { data: secData },
       { data: stepRes },
-      { data: certData }
+      { data: certData },
+      { data: settingRes }
     ] = await Promise.all([
       supabase.from('homepage_media').select('*'),
       supabase.from('homepage_sections').select('*').in('section_key', ['about', 'statistics', 'markets', 'why_choose', 'vision_mission']),
       supabase.from('manufacturing_steps').select('*').eq('active', true).order('step_number', { ascending: true }),
-      supabase.from('certifications').select('*').eq('active', true).not('image_url', 'is', null).order('display_order', { ascending: true })
+      supabase.from('certifications').select('*').eq('active', true).not('image_url', 'is', null).order('display_order', { ascending: true }),
+      supabase.from('company_settings').select('*')
     ]);
 
     if (mediaData) {
@@ -154,6 +168,17 @@ export default async function AboutPage() {
     if (certData) {
       certifications = (certData as unknown as Certification[]).filter((c) => Boolean(c.image_url));
     }
+
+    if (settingRes) {
+      const settings = settingRes as Array<{ key: string; value: unknown }>;
+      const pPhone = settings.find((s) => s.key === 'public_phone')?.value;
+      const pEmail = settings.find((s) => s.key === 'public_email')?.value;
+      const pAddr = settings.find((s) => s.key === 'public_address')?.value;
+
+      if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone.trim();
+      if (typeof pEmail === 'string' && pEmail.trim()) publicEmail = pEmail.trim();
+      if (typeof pAddr === 'string' && pAddr.trim()) publicAddress = pAddr.trim();
+    }
   } catch {
     // Graceful fallback
   }
@@ -166,11 +191,11 @@ export default async function AboutPage() {
     url: getSiteUrl('/about'),
     logo: getSiteUrl('/logo.png'),
     description: 'Polypropylene (PP) sheet manufacturing facility operating in South Silukkanpatti, Tuticorin, Tamilnadu, India.',
-    telephone: '+91 96458 32154',
-    email: 'info@twinplastpolymers.com',
+    telephone: publicPhone || undefined,
+    email: publicEmail || undefined,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan',
+      streetAddress: publicAddress || 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan',
       addressLocality: 'Thoothukudi',
       addressRegion: 'Tamil Nadu',
       postalCode: '628101',

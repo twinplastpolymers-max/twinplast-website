@@ -288,6 +288,57 @@ export interface Database {
         }
         Relationships: []
       }
+      blog_posts: {
+        Row: {
+          id: string
+          title: string
+          slug: string
+          excerpt: string | null
+          content: string
+          featured_image: string | null
+          featured_image_cloudinary_public_id: string | null
+          author: string | null
+          published_at: string | null
+          status: 'draft' | 'published'
+          seo_title: string | null
+          seo_description: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          slug: string
+          excerpt?: string | null
+          content: string
+          featured_image?: string | null
+          featured_image_cloudinary_public_id?: string | null
+          author?: string | null
+          published_at?: string | null
+          status?: 'draft' | 'published'
+          seo_title?: string | null
+          seo_description?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          slug?: string
+          excerpt?: string | null
+          content?: string
+          featured_image?: string | null
+          featured_image_cloudinary_public_id?: string | null
+          author?: string | null
+          published_at?: string | null
+          status?: 'draft' | 'published'
+          seo_title?: string | null
+          seo_description?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           user_id: string

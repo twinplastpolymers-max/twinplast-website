@@ -155,14 +155,21 @@ export function IndustriesSection({
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-100">
+                <div className="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1">
+                  <Link
+                    href={`/solutions/${ind.id}`}
+                    className="inline-flex w-full items-center justify-between text-blue-600 hover:text-blue-700 px-1 py-1 text-xs font-bold uppercase tracking-wider transition-colors group/btn"
+                    aria-label={`View solution for ${ind.title}`}
+                  >
+                    <span>View Solution</span>
+                    <ChevronRight className="w-4 h-4 text-blue-600 group-hover/btn:translate-x-0.5 transition-transform" />
+                  </Link>
                   <Link
                     href={`/contact?product=${encodeURIComponent(ind.title)}`}
-                    className="inline-flex w-full items-center justify-between text-blue-500 hover:text-blue-600 px-1 py-1 text-xs font-bold uppercase tracking-wider transition-colors group/btn"
+                    className="inline-flex items-center px-1 text-[11px] text-slate-500 hover:text-slate-800 font-medium transition-colors"
                     aria-label={`Enquire about ${ind.title}`}
                   >
-                    <span>Enquire Now</span>
-                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover/btn:text-blue-600 transition-colors" />
+                    <span>Enquire →</span>
                   </Link>
                 </div>
               </div>

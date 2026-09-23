@@ -18,6 +18,14 @@ export const metadata: Metadata = {
     description: 'Explore polypropylene (PP) sheet applications across packaging, advertising, construction, agriculture, and industrial material handling from Twinplast Polymers.',
     url: getSiteUrl('/solutions'),
     type: 'website',
+    images: [
+      {
+        url: getSiteUrl('/logo.png'),
+        width: 512,
+        height: 512,
+        alt: 'Twinplast Polymers',
+      },
+    ],
   },
 };
 
@@ -81,14 +89,21 @@ export default async function SolutionsPage() {
                       {ind.description}
                     </p>
 
-                    <div className="mt-2 sm:mt-4 pt-2 sm:pt-3 border-t border-surface-border">
+                    <div className="mt-2 sm:mt-4 pt-2 sm:pt-3 border-t border-surface-border flex flex-col gap-1.5">
+                      <Link
+                        href={`/solutions/${ind.id}`}
+                        className="inline-flex w-full items-center justify-between text-blue-600 hover:text-blue-700 py-1 sm:py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-colors group/btn"
+                        aria-label={`View solution for ${ind.title}`}
+                      >
+                        <span className="truncate">View Solution</span>
+                        <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 group-hover/btn:translate-x-0.5 transition-transform shrink-0" />
+                      </Link>
                       <Link
                         href={`/contact?product=${encodeURIComponent(ind.title)}`}
-                        className="inline-flex w-full items-center justify-between text-blue-500 hover:text-blue-600 py-1 sm:py-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-colors group/btn"
+                        className="inline-flex w-full items-center text-[10px] sm:text-xs text-muted hover:text-foreground font-medium transition-colors"
                         aria-label={`Enquire about ${ind.title}`}
                       >
-                        <span className="truncate">Enquire Now</span>
-                        <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted group-hover/btn:text-blue-600 transition-colors shrink-0" />
+                        <span>Enquire →</span>
                       </Link>
                     </div>
                   </div>

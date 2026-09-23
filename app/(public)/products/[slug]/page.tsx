@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Mail, HelpCircle } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Product } from '@/types';
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const supabase = await createClient();
     const { data: product } = await supabase
       .from('products')
-      .select('title, description')
+      .select('title, description, image_cloudinary_public_id, image_url')
       .eq('slug', slug)
       .eq('active', true)
       .single() as unknown as { data: Product | null };
@@ -34,6 +34,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const title = `${product.title} | Twinplast Polymers`;
     const description = product.description;
+    const ogImageUrl = product.image_cloudinary_public_id
+      ? getOptimizedImageUrl(product.image_cloudinary_public_id, { width: 1200, height: 630, quality: 'auto' })
+      : product.image_url || getSiteUrl('/logo.png');
 
     return {
       title,
@@ -46,6 +49,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         description,
         url: canonicalUrl,
         type: 'website',
+        images: [
+          {
+            url: ogImageUrl,
+            alt: product.title,
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [ogImageUrl],
       },
     };
   } catch {
@@ -53,6 +68,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: 'Product Specifications | Twinplast Polymers',
       alternates: {
         canonical: canonicalUrl,
+      },
+      openGraph: {
+        title: 'Product Specifications | Twinplast Polymers',
+        url: canonicalUrl,
+        type: 'website',
+        images: [{ url: getSiteUrl('/logo.png') }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        images: [getSiteUrl('/logo.png')],
       },
     };
   }
@@ -137,7 +162,17 @@ export default async function ProductDetailPage({ params }: PageProps) {
       <div className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           {/* Breadcrumb Navigation */}
-
+          <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs text-muted font-medium">
+            <Link href="/" className="hover:text-foreground transition-colors">
+              Home
+            </Link>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <Link href="/products" className="hover:text-foreground transition-colors">
+              Products
+            </Link>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-foreground font-bold truncate max-w-xs">{product.title}</span>
+          </nav>
 
           {/* Product Spec Grid */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start bg-surface sm:p-8 ">

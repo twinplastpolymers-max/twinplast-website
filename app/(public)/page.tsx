@@ -30,6 +30,14 @@ export const metadata: Metadata = {
     description: 'Twinplast Polymers Private Limited is a specialized PP sheet manufacturer in Thoothukudi, Tamil Nadu, supplying PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets for industrial applications.',
     url: getSiteUrl('/'),
     type: 'website',
+    images: [
+      {
+        url: getSiteUrl('/logo.png'),
+        width: 512,
+        height: 512,
+        alt: 'Twinplast Polymers',
+      },
+    ],
   },
 };
 
@@ -46,6 +54,7 @@ export default async function HomePage() {
   let publicPhone = '';
   let publicEmail = '';
   let publicAddress = '';
+  let sameAsLinks: string[] = [];
 
   let secData: HomepageSection[] = [];
 
@@ -88,6 +97,27 @@ export default async function HomePage() {
       if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone.trim();
       if (typeof pEmail === 'string' && pEmail.trim()) publicEmail = pEmail.trim();
       if (typeof pAddr === 'string' && pAddr.trim()) publicAddress = pAddr.trim();
+
+      const socObj = (settings.find((s) => s.key === 'social_links')?.value || {}) as Record<string, string>;
+      const validUrls = [socObj.facebook, socObj.instagram, socObj.youtube, socObj.twitter, socObj.linkedin]
+        .filter((u): u is string => typeof u === 'string' && u.trim().length > 0)
+        .map((u) => u.trim())
+        .filter(
+          (u) =>
+            ![
+              'https://facebook.com',
+              'https://instagram.com',
+              'https://youtube.com',
+              'https://twitter.com',
+              'https://linkedin.com',
+              'https://www.facebook.com',
+              'https://www.instagram.com',
+              'https://www.youtube.com',
+              'https://www.twitter.com',
+              'https://www.linkedin.com',
+            ].includes(u)
+        );
+      sameAsLinks = validUrls;
     }
   } catch {
     // Graceful fallback to empty state
@@ -157,8 +187,9 @@ export default async function HomePage() {
     logo: getSiteUrl('/logo.png'),
     description: 'Twinplast Polymers Private Limited is a specialized manufacturer of PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection, and Box sheets located in Thoothukudi, Tamil Nadu, India.',
     foundingDate: '2021',
-    telephone: publicPhone,
-    email: publicEmail,
+    telephone: publicPhone || undefined,
+    email: publicEmail || undefined,
+    sameAs: sameAsLinks.length > 0 ? sameAsLinks : undefined,
     address: {
       '@type': 'PostalAddress',
       streetAddress: publicAddress,
@@ -169,9 +200,20 @@ export default async function HomePage() {
     },
   };
 
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${getSiteUrl('/')}#website`,
+    name: 'Twinplast Polymers',
+    url: getSiteUrl('/'),
+    publisher: {
+      '@id': `${getSiteUrl('/')}#organization`,
+    },
+  };
+
   return (
     <div className="flex flex-col w-full overflow-hidden bg-white text-slate-900 font-sans">
-      <JsonLd data={organizationSchema} />
+      <JsonLd data={[organizationSchema, websiteSchema]} />
 
       {/* 1. HERO SECTION */}
       <HeroSection

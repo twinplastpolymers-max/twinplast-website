@@ -16,6 +16,14 @@ export const metadata: Metadata = {
     description: 'Contact Twinplast Polymers in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
     url: getSiteUrl('/contact'),
     type: 'website',
+    images: [
+      {
+        url: getSiteUrl('/logo.png'),
+        width: 512,
+        height: 512,
+        alt: 'Twinplast Polymers',
+      },
+    ],
   },
 };
 
