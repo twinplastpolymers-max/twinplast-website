@@ -6,32 +6,33 @@ import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
 export const metadata: Metadata = {
-  title: 'PP Sheet Supplier in Kerala | Twinplast Polymers',
+  title: 'PP Sheet Supplier in Kerala | Twinplast Polymers PVT LTD',
   description:
-    'Twinplast Polymers supplies PP Corrugated, Hollow, Sunpack and Layer Pad sheets to packaging, textile and manufacturing businesses across Kerala from our Thoothukudi, Tamil Nadu facility.',
+    'Twinplast Polymers PVT LTD supplies PP Corrugated, Hollow, Sunpack and Layer Pad sheets to packaging, textile and manufacturing businesses across Kerala from our Thoothukudi, Tamil Nadu facility.',
   alternates: {
     canonical: getSiteUrl('/locations/kerala'),
   },
   openGraph: {
-    title: 'PP Sheet Supplier in Kerala | Twinplast Polymers',
+    title: 'PP Sheet Supplier in Kerala | Twinplast Polymers PVT LTD',
     description:
-      'Twinplast Polymers supplies PP Corrugated, Hollow, Sunpack and Layer Pad sheets to packaging, textile and manufacturing businesses across Kerala from our Thoothukudi, Tamil Nadu facility.',
+      'Twinplast Polymers PVT LTD supplies PP Corrugated, Hollow, Sunpack and Layer Pad sheets to packaging, textile and manufacturing businesses across Kerala from our Thoothukudi, Tamil Nadu facility.',
     url: getSiteUrl('/locations/kerala'),
+    siteName: 'Twinplast Polymers PVT LTD',
     type: 'website',
     images: [
       {
         url: getSiteUrl('/logo.png'),
-        width: 512,
-        height: 512,
-        alt: 'Twinplast Polymers',
+        width: 572,
+        height: 436,
+        alt: 'Twinplast Polymers PVT LTD',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PP Sheet Supplier in Kerala | Twinplast Polymers',
+    title: 'PP Sheet Supplier in Kerala | Twinplast Polymers PVT LTD',
     description:
-      'Twinplast Polymers supplies PP Corrugated, Hollow, Sunpack and Layer Pad sheets to packaging, textile and manufacturing businesses across Kerala from our Thoothukudi, Tamil Nadu facility.',
+      'Twinplast Polymers PVT LTD supplies PP Corrugated, Hollow, Sunpack and Layer Pad sheets to packaging, textile and manufacturing businesses across Kerala from our Thoothukudi, Tamil Nadu facility.',
     images: [getSiteUrl('/logo.png')],
   },
 };
@@ -81,10 +82,10 @@ export default function KeralaLocationPage() {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': `${getSiteUrl('/locations/kerala')}#webpage`,
-    name: 'PP Sheet Supplier in Kerala | Twinplast Polymers',
+    name: 'PP Sheet Supplier in Kerala | Twinplast Polymers PVT LTD',
     url: getSiteUrl('/locations/kerala'),
     description:
-      'Twinplast Polymers supplies PP Corrugated, Hollow, Sunpack and Layer Pad sheets to packaging, textile and manufacturing businesses across Kerala from our Thoothukudi, Tamil Nadu facility.',
+      'Twinplast Polymers PVT LTD supplies PP Corrugated, Hollow, Sunpack and Layer Pad sheets to packaging, textile and manufacturing businesses across Kerala from our Thoothukudi, Tamil Nadu facility.',
     isPartOf: {
       '@id': `${getSiteUrl('/')}#website`,
     },
@@ -107,7 +108,7 @@ export default function KeralaLocationPage() {
         '@type': 'ListItem',
         position: 2,
         name: 'Locations',
-        item: getSiteUrl('/locations/kerala'),
+        item: getSiteUrl('/locations'),
       },
       {
         '@type': 'ListItem',
@@ -131,7 +132,9 @@ export default function KeralaLocationPage() {
               Home
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-            <span className="text-slate-300">Locations</span>
+            <Link href="/locations" className="text-slate-400 hover:text-white transition-colors">
+              Locations
+            </Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
             <span className="text-white font-bold">Kerala</span>
           </nav>

@@ -23,36 +23,50 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Twinplast Polymers | PP Sheet Manufacturer in Tamil Nadu",
-    template: "%s | Twinplast Polymers",
+    default: "Twinplast Polymers PVT LTD | PP Sheet Manufacturer in Tamil Nadu",
+    template: "%s | Twinplast Polymers PVT LTD",
   },
   description:
-    "Twinplast Polymers Private Limited is a specialized manufacturer of PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection, and Box sheets located in Thoothukudi, Tamil Nadu, India. Established in 2021.",
+    "Twinplast Polymers PVT LTD is a PP sheet manufacturer and supplier in Tamil Nadu, specializing in PP corrugated sheets, layer pads, hollow sheets, Sunpack sheets and customized polypropylene products.",
+  authors: [{ name: "Twinplast Polymers PVT LTD", url: getSiteUrl("/") }],
+  creator: "Twinplast Polymers PVT LTD",
+  publisher: "Twinplast Polymers PVT LTD",
   alternates: {
     canonical: getSiteUrl("/"),
   },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
   openGraph: {
     type: "website",
-    siteName: "Twinplast Polymers",
+    siteName: "Twinplast Polymers PVT LTD",
     locale: "en_IN",
     url: getSiteUrl("/"),
-    title: "Twinplast Polymers | PP Sheet Manufacturer in Tamil Nadu",
+    title: "Twinplast Polymers PVT LTD | PP Sheet Manufacturer in Tamil Nadu",
     description:
-      "Twinplast Polymers Private Limited manufactures high-quality PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection, and Box sheets in Thoothukudi, Tamil Nadu. Established in 2021.",
+      "Twinplast Polymers PVT LTD is a PP sheet manufacturer and supplier in Tamil Nadu, specializing in PP corrugated sheets, layer pads, hollow sheets, Sunpack sheets and customized polypropylene products.",
     images: [
       {
         url: getSiteUrl("/logo.png"),
-        width: 512,
-        height: 512,
-        alt: "Twinplast Polymers",
+        width: 572,
+        height: 436,
+        alt: "Twinplast Polymers PVT LTD",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Twinplast Polymers | PP Sheet Manufacturer in Tamil Nadu",
+    title: "Twinplast Polymers PVT LTD | PP Sheet Manufacturer in Tamil Nadu",
     description:
-      "Twinplast Polymers Private Limited manufactures high-quality PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection, and Box sheets in Thoothukudi, Tamil Nadu. Established in 2021.",
+      "Twinplast Polymers PVT LTD is a PP sheet manufacturer and supplier in Tamil Nadu, specializing in PP corrugated sheets, layer pads, hollow sheets, Sunpack sheets and customized polypropylene products.",
     images: [getSiteUrl("/logo.png")],
   },
   robots: {

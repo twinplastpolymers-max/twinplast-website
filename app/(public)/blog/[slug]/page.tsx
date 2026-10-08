@@ -28,10 +28,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       .single() as unknown as { data: BlogPost | null };
 
     if (!post) {
-      return { title: 'Article Not Found | Twinplast Polymers' };
+      return { title: 'Article Not Found | Twinplast Polymers PVT LTD' };
     }
 
-    const title = post.seo_title || `${post.title} | Twinplast Polymers`;
+    const title = post.seo_title || `${post.title} | Twinplast Polymers PVT LTD`;
     const description = post.seo_description || post.excerpt || post.content.slice(0, 155);
 
     const ogImageUrl = post.featured_image_cloudinary_public_id
@@ -48,6 +48,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title,
         description,
         url: canonicalUrl,
+        siteName: 'Twinplast Polymers PVT LTD',
         type: 'article',
         images: [
           {
@@ -65,13 +66,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   } catch {
     return {
-      title: 'Article | Twinplast Polymers',
+      title: 'Article | Twinplast Polymers PVT LTD',
       alternates: {
         canonical: canonicalUrl,
       },
       openGraph: {
-        title: 'Article | Twinplast Polymers',
+        title: 'Article | Twinplast Polymers PVT LTD',
         url: canonicalUrl,
+        siteName: 'Twinplast Polymers PVT LTD',
         type: 'article',
         images: [{ url: getSiteUrl('/logo.png') }],
       },
@@ -139,7 +141,7 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
     publisher: {
       '@type': 'Organization',
       '@id': `${getSiteUrl('/')}#organization`,
-      name: 'Twinplast Polymers Private Limited',
+      name: 'Twinplast Polymers PVT LTD',
       logo: {
         '@type': 'ImageObject',
         url: getSiteUrl('/logo.png'),

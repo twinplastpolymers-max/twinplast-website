@@ -342,6 +342,30 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
                 </div>
               </div>
 
+              {/* Locations */}
+              <Link
+                href="/locations"
+                className={`relative text-sm font-semibold transition-colors px-3 py-2 rounded-md ${isActive('/locations') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                  }`}
+              >
+                Locations
+                {isActive('/locations') && (
+                  <span className="absolute bottom-0.5 left-3 right-3 h-[2.5px] bg-[#1a1464] rounded-full" />
+                )}
+              </Link>
+
+              {/* Blog */}
+              <Link
+                href="/blog"
+                className={`relative text-sm font-semibold transition-colors px-3 py-2 rounded-md ${isActive('/blog') ? 'text-[#1a1464] font-bold' : 'text-slate-600 hover:text-[#1a1464]'
+                  }`}
+              >
+                Blog
+                {isActive('/blog') && (
+                  <span className="absolute bottom-0.5 left-3 right-3 h-[2.5px] bg-[#1a1464] rounded-full" />
+                )}
+              </Link>
+
               {/* Contact Us */}
               <Link
                 href="/contact"
@@ -482,6 +506,24 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
                   </div>
                 )}
               </div>
+
+              <Link
+                href="/locations"
+                onClick={() => setIsOpen(false)}
+                className={`text-base py-2 transition-colors ${isActive('/locations') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                  }`}
+              >
+                Locations
+              </Link>
+
+              <Link
+                href="/blog"
+                onClick={() => setIsOpen(false)}
+                className={`text-base py-2 transition-colors ${isActive('/blog') ? 'font-bold text-[#1a1464]' : 'font-medium text-slate-700 hover:text-[#1a1464]'
+                  }`}
+              >
+                Blog
+              </Link>
 
               <Link
                 href="/contact"

@@ -9,32 +9,33 @@ import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
 export const metadata: Metadata = {
-  title: 'Blog & Technical Articles | Twinplast Polymers',
+  title: 'Blog & Technical Articles | Twinplast Polymers PVT LTD',
   description:
-    'Read articles, technical guides, and industry updates on PP Corrugated sheets, Sunpack boards, structural protection, and industrial packaging from Twinplast Polymers.',
+    'Read articles, technical guides, and industry updates on PP Corrugated sheets, Sunpack boards, structural protection, and industrial packaging from Twinplast Polymers PVT LTD.',
   alternates: {
     canonical: getSiteUrl('/blog'),
   },
   openGraph: {
-    title: 'Blog & Technical Articles | Twinplast Polymers',
+    title: 'Blog & Technical Articles | Twinplast Polymers PVT LTD',
     description:
-      'Read articles, technical guides, and industry updates on PP Corrugated sheets, Sunpack boards, structural protection, and industrial packaging from Twinplast Polymers.',
+      'Read articles, technical guides, and industry updates on PP Corrugated sheets, Sunpack boards, structural protection, and industrial packaging from Twinplast Polymers PVT LTD.',
     url: getSiteUrl('/blog'),
+    siteName: 'Twinplast Polymers PVT LTD',
     type: 'website',
     images: [
       {
         url: getSiteUrl('/logo.png'),
-        width: 512,
-        height: 512,
-        alt: 'Twinplast Polymers',
+        width: 572,
+        height: 436,
+        alt: 'Twinplast Polymers PVT LTD',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Blog & Technical Articles | Twinplast Polymers',
+    title: 'Blog & Technical Articles | Twinplast Polymers PVT LTD',
     description:
-      'Read articles, technical guides, and industry updates on PP Corrugated sheets, Sunpack boards, structural protection, and industrial packaging from Twinplast Polymers.',
+      'Read articles, technical guides, and industry updates on PP Corrugated sheets, Sunpack boards, structural protection, and industrial packaging from Twinplast Polymers PVT LTD.',
     images: [getSiteUrl('/logo.png')],
   },
 };
@@ -64,10 +65,10 @@ export default async function BlogListingPage() {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     '@id': `${getSiteUrl('/blog')}#collection`,
-    name: 'Twinplast Polymers Blog & Technical Guides',
+    name: 'Twinplast Polymers PVT LTD Blog & Technical Guides',
     url: getSiteUrl('/blog'),
     description:
-      'Industry insights, polymer extrusion guides, and packaging solutions published by Twinplast Polymers Private Limited.',
+      'Industry insights, polymer extrusion guides, and packaging solutions published by Twinplast Polymers PVT LTD.',
     publisher: {
       '@id': `${getSiteUrl('/')}#organization`,
     },

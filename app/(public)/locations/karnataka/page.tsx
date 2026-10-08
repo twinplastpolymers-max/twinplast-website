@@ -6,32 +6,33 @@ import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
 export const metadata: Metadata = {
-  title: 'PP Sheet Supplier in Karnataka | Twinplast Polymers',
+  title: 'PP Sheet Supplier in Karnataka | Twinplast Polymers PVT LTD',
   description:
-    'Twinplast Polymers supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
+    'Twinplast Polymers PVT LTD supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
   alternates: {
     canonical: getSiteUrl('/locations/karnataka'),
   },
   openGraph: {
-    title: 'PP Sheet Supplier in Karnataka | Twinplast Polymers',
+    title: 'PP Sheet Supplier in Karnataka | Twinplast Polymers PVT LTD',
     description:
-      'Twinplast Polymers supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
+      'Twinplast Polymers PVT LTD supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
     url: getSiteUrl('/locations/karnataka'),
+    siteName: 'Twinplast Polymers PVT LTD',
     type: 'website',
     images: [
       {
         url: getSiteUrl('/logo.png'),
-        width: 512,
-        height: 512,
-        alt: 'Twinplast Polymers',
+        width: 572,
+        height: 436,
+        alt: 'Twinplast Polymers PVT LTD',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PP Sheet Supplier in Karnataka | Twinplast Polymers',
+    title: 'PP Sheet Supplier in Karnataka | Twinplast Polymers PVT LTD',
     description:
-      'Twinplast Polymers supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
+      'Twinplast Polymers PVT LTD supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
     images: [getSiteUrl('/logo.png')],
   },
 };
@@ -81,10 +82,10 @@ export default function KarnatakaLocationPage() {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': `${getSiteUrl('/locations/karnataka')}#webpage`,
-    name: 'PP Sheet Supplier in Karnataka | Twinplast Polymers',
+    name: 'PP Sheet Supplier in Karnataka | Twinplast Polymers PVT LTD',
     url: getSiteUrl('/locations/karnataka'),
     description:
-      'Twinplast Polymers supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
+      'Twinplast Polymers PVT LTD supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
     isPartOf: {
       '@id': `${getSiteUrl('/')}#website`,
     },
@@ -107,7 +108,7 @@ export default function KarnatakaLocationPage() {
         '@type': 'ListItem',
         position: 2,
         name: 'Locations',
-        item: getSiteUrl('/locations/karnataka'),
+        item: getSiteUrl('/locations'),
       },
       {
         '@type': 'ListItem',
@@ -131,7 +132,9 @@ export default function KarnatakaLocationPage() {
               Home
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-            <span className="text-slate-300">Locations</span>
+            <Link href="/locations" className="text-slate-400 hover:text-white transition-colors">
+              Locations
+            </Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
             <span className="text-white font-bold">Karnataka</span>
           </nav>

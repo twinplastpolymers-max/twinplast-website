@@ -29,10 +29,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       .single() as unknown as { data: Product | null };
 
     if (!product) {
-      return { title: 'Product Not Found | Twinplast Polymers' };
+      return { title: 'Product Not Found | Twinplast Polymers PVT LTD' };
     }
 
-    const title = `${product.title} | Twinplast Polymers`;
+    const title = `${product.title} | Twinplast Polymers PVT LTD`;
     const description = product.description;
     const ogImageUrl = product.image_cloudinary_public_id
       ? getOptimizedImageUrl(product.image_cloudinary_public_id, { width: 1200, height: 630, quality: 'auto' })
@@ -48,6 +48,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title,
         description,
         url: canonicalUrl,
+        siteName: 'Twinplast Polymers PVT LTD',
         type: 'website',
         images: [
           {
@@ -65,13 +66,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   } catch {
     return {
-      title: 'Product Specifications | Twinplast Polymers',
+      title: 'Product Specifications | Twinplast Polymers PVT LTD',
       alternates: {
         canonical: canonicalUrl,
       },
       openGraph: {
-        title: 'Product Specifications | Twinplast Polymers',
+        title: 'Product Specifications | Twinplast Polymers PVT LTD',
         url: canonicalUrl,
+        siteName: 'Twinplast Polymers PVT LTD',
         type: 'website',
         images: [{ url: getSiteUrl('/logo.png') }],
       },
@@ -122,12 +124,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
     category: product.category,
     brand: {
       '@type': 'Brand',
-      name: 'Twinplast Polymers',
+      name: 'Twinplast Polymers PVT LTD',
     },
     manufacturer: {
       '@type': 'Organization',
       '@id': `${getSiteUrl('/')}#organization`,
-      name: 'Twinplast Polymers Private Limited',
+      name: 'Twinplast Polymers PVT LTD',
     },
   };
 

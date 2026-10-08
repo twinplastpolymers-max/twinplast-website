@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { MarketRegionItem } from '@/types';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 
@@ -102,34 +103,55 @@ export function MarketsSection({
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-4 md:gap-x-0 relative z-10">
             {marketItems.map((item) => {
               const resolvedImg = item.image_url || (item.image ? getOptimizedImageUrl(item.image, { quality: 'best', upscale: true }) : '');
+              const lower = item.label.toLowerCase();
+              const locHref = lower.includes('tamil')
+                ? '/locations/tamil-nadu'
+                : lower.includes('kerala')
+                ? '/locations/kerala'
+                : lower.includes('karnataka')
+                ? '/locations/karnataka'
+                : '/locations';
 
               return (
                 <div key={item.id} className="w-full flex flex-col items-center group px-2">
-                  
-                  {/* Circular Node with Uploaded Map Image and 360 Soft Blue Glow */}
-                  <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white shadow-[0_0_36px_rgba(59,130,246,0.18)] border border-blue-50 flex items-center justify-center p-2 sm:p-2.5 relative z-10 transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_42px_rgba(37,99,235,0.28)] overflow-hidden">
-                    {resolvedImg ? (
-                      <img
-                        src={resolvedImg}
-                        alt={item.label}
-                        className="w-16 h-16 md:w-20 md:h-20 object-contain transition-transform duration-300 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center" />
-                    )}
-                  </div>
+                  <Link
+                    href={locHref}
+                    className="flex flex-col items-center group/item focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-400 rounded-full"
+                    aria-label={`PP Sheet supply in ${item.label}`}
+                  >
+                    {/* Circular Node with Uploaded Map Image and 360 Soft Blue Glow */}
+                    <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white shadow-[0_0_36px_rgba(59,130,246,0.18)] border border-blue-50 flex items-center justify-center p-2 sm:p-2.5 relative z-10 transition-all duration-300 group-hover/item:scale-105 group-hover/item:shadow-[0_0_42px_rgba(37,99,235,0.28)] overflow-hidden">
+                      {resolvedImg ? (
+                        <img
+                          src={resolvedImg}
+                          alt={item.label}
+                          className="w-16 h-16 md:w-20 md:h-20 object-contain transition-transform duration-300 group-hover/item:scale-110"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center" />
+                      )}
+                    </div>
 
-
-                  {/* Text Label Only (No Box) */}
-                  <div className="mt-2.5 text-center">
-                    <span className="text-sm sm:text-base font-bold text-white block transition-colors group-hover:text-blue-400">
-                      {item.label}
-                    </span>
-                  </div>
-
+                    {/* Text Label Only (No Box) */}
+                    <div className="mt-2.5 text-center">
+                      <span className="text-sm sm:text-base font-bold text-white block transition-colors group-hover/item:text-blue-400">
+                        {item.label}
+                      </span>
+                    </div>
+                  </Link>
                 </div>
               );
             })}
+          </div>
+
+          <div className="mt-8 text-center relative z-10">
+            <Link
+              href="/locations"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-blue-300 hover:text-white uppercase tracking-wider transition-colors"
+            >
+              <span>View All Supply Locations</span>
+              <span>→</span>
+            </Link>
           </div>
 
         </div>

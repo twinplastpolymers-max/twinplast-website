@@ -6,32 +6,33 @@ import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
 export const metadata: Metadata = {
-  title: 'PP Sheet Manufacturer in Tamil Nadu | Twinplast Polymers',
+  title: 'PP Sheet Manufacturer in Tamil Nadu | Twinplast Polymers PVT LTD',
   description:
-    'Twinplast Polymers Private Limited manufactures PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets in Thoothukudi, Tamil Nadu, serving customers across South India.',
+    'Twinplast Polymers PVT LTD manufactures PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets in Thoothukudi, Tamil Nadu, serving customers across South India.',
   alternates: {
     canonical: getSiteUrl('/locations/tamil-nadu'),
   },
   openGraph: {
-    title: 'PP Sheet Manufacturer in Tamil Nadu | Twinplast Polymers',
+    title: 'PP Sheet Manufacturer in Tamil Nadu | Twinplast Polymers PVT LTD',
     description:
-      'Twinplast Polymers Private Limited manufactures PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets in Thoothukudi, Tamil Nadu, serving customers across South India.',
+      'Twinplast Polymers PVT LTD manufactures PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets in Thoothukudi, Tamil Nadu, serving customers across South India.',
     url: getSiteUrl('/locations/tamil-nadu'),
+    siteName: 'Twinplast Polymers PVT LTD',
     type: 'website',
     images: [
       {
         url: getSiteUrl('/logo.png'),
-        width: 512,
-        height: 512,
-        alt: 'Twinplast Polymers',
+        width: 572,
+        height: 436,
+        alt: 'Twinplast Polymers PVT LTD',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PP Sheet Manufacturer in Tamil Nadu | Twinplast Polymers',
+    title: 'PP Sheet Manufacturer in Tamil Nadu | Twinplast Polymers PVT LTD',
     description:
-      'Twinplast Polymers Private Limited manufactures PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets in Thoothukudi, Tamil Nadu, serving customers across South India.',
+      'Twinplast Polymers PVT LTD manufactures PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets in Thoothukudi, Tamil Nadu, serving customers across South India.',
     images: [getSiteUrl('/logo.png')],
   },
 };
@@ -82,10 +83,10 @@ export default function TamilNaduLocationPage() {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': `${getSiteUrl('/locations/tamil-nadu')}#webpage`,
-    name: 'PP Sheet Manufacturer in Tamil Nadu | Twinplast Polymers',
+    name: 'PP Sheet Manufacturer in Tamil Nadu | Twinplast Polymers PVT LTD',
     url: getSiteUrl('/locations/tamil-nadu'),
     description:
-      'Twinplast Polymers Private Limited manufactures PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets in Thoothukudi, Tamil Nadu, serving customers across South India.',
+      'Twinplast Polymers PVT LTD manufactures PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets in Thoothukudi, Tamil Nadu, serving customers across South India.',
     isPartOf: {
       '@id': `${getSiteUrl('/')}#website`,
     },
@@ -108,7 +109,7 @@ export default function TamilNaduLocationPage() {
         '@type': 'ListItem',
         position: 2,
         name: 'Locations',
-        item: getSiteUrl('/locations/tamil-nadu'),
+        item: getSiteUrl('/locations'),
       },
       {
         '@type': 'ListItem',
@@ -132,7 +133,9 @@ export default function TamilNaduLocationPage() {
               Home
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
-            <span className="text-slate-300">Locations</span>
+            <Link href="/locations" className="text-slate-400 hover:text-white transition-colors">
+              Locations
+            </Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
             <span className="text-white font-bold">Tamil Nadu</span>
           </nav>
