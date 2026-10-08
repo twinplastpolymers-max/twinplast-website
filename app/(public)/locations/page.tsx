@@ -186,6 +186,134 @@ export default function LocationsOverviewPage() {
             ))}
           </div>
 
+          {/* Major Industrial & Commercial Supply Hubs */}
+          <div className="mt-14">
+            <div className="text-center max-w-2xl mx-auto mb-8">
+              <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                Major Industrial & Commercial Supply Hubs
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                Explore dedicated regional supply specifications, logistics corridors, and industrial dunnage solutions.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Link
+                href="/locations/india"
+                className="p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-400 hover:shadow-sm transition-all group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">Pan-India Supply</div>
+                  <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    All India Manufacturer
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                    National supply of PP corrugated sheets, Sunpack boards, and export packaging across India.
+                  </p>
+                </div>
+                <div className="mt-4 flex items-center text-xs font-bold text-blue-600 gap-1">
+                  <span>View National Hub</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+
+              <Link
+                href="/locations/chennai"
+                className="p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-400 hover:shadow-sm transition-all group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">Automotive & Electronics</div>
+                  <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    Chennai & Sriperumbudur
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                    Fluted dunnage sheets and returnable packaging for Sriperumbudur, Oragadam, and Ambattur.
+                  </p>
+                </div>
+                <div className="mt-4 flex items-center text-xs font-bold text-blue-600 gap-1">
+                  <span>View Chennai Hub</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+
+              <Link
+                href="/locations/coimbatore"
+                className="p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-400 hover:shadow-sm transition-all group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">Engineering & Pumps</div>
+                  <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    Coimbatore & Tiruppur
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                    Heavy-duty PP sheets for pump castings, textile machinery, and Tiruppur apparel packaging.
+                  </p>
+                </div>
+                <div className="mt-4 flex items-center text-xs font-bold text-blue-600 gap-1">
+                  <span>View Coimbatore Hub</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+
+              <Link
+                href="/locations/bengaluru"
+                className="p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-400 hover:shadow-sm transition-all group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">Tech & Aerospace</div>
+                  <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    Bengaluru & Peenya
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                    ESD anti-static PP sheets, hardware boxes, and luxury floor protection rolls in Karnataka.
+                  </p>
+                </div>
+                <div className="mt-4 flex items-center text-xs font-bold text-blue-600 gap-1">
+                  <span>View Bengaluru Hub</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+
+              <Link
+                href="/locations/kochi"
+                className="p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-400 hover:shadow-sm transition-all group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">Coastal & Packaging</div>
+                  <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    Kochi & Ernakulam
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                    100% waterproof PP sheets, beverage layer pads, and Sunpack outdoor advertising boards.
+                  </p>
+                </div>
+                <div className="mt-4 flex items-center text-xs font-bold text-blue-600 gap-1">
+                  <span>View Kochi Hub</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+
+              <Link
+                href="/locations/thoothukudi"
+                className="p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-400 hover:shadow-sm transition-all group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">Factory Gate Supply</div>
+                  <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    Thoothukudi & Madurai
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                    Direct factory gate pickup, VOC port container packaging, and Southern Tamil Nadu distribution.
+                  </p>
+                </div>
+                <div className="mt-4 flex items-center text-xs font-bold text-blue-600 gap-1">
+                  <span>View Factory Hub</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </div>
+              </Link>
+            </div>
+          </div>
+
           {/* Quick Product Reference Section */}
           <div className="mt-14 p-6 sm:p-8 bg-white rounded-2xl border border-slate-200 shadow-xs">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">

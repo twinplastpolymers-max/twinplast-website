@@ -65,6 +65,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
+      url: getSiteUrl('/locations/india'),
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
       url: getSiteUrl('/locations/tamil-nadu'),
       lastModified: now,
       changeFrequency: 'monthly',
@@ -78,6 +84,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: getSiteUrl('/locations/karnataka'),
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: getSiteUrl('/locations/chennai'),
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: getSiteUrl('/locations/coimbatore'),
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: getSiteUrl('/locations/bengaluru'),
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: getSiteUrl('/locations/kochi'),
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: getSiteUrl('/locations/thoothukudi'),
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.7,
