@@ -1,4 +1,4 @@
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://twinplastpolymers.com';
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.twinplastpolymers.com';
 
 /**
  * Returns a fully-qualified URL using the NEXT_PUBLIC_SITE_URL environment variable.

@@ -4,28 +4,36 @@ import { ChevronRight } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Industry } from '@/types';
+import { JsonLd } from '@/components/shared/JsonLd';
 import { getSiteUrl } from '@/lib/site';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
 export const metadata: Metadata = {
-  title: 'PP Sheet Solutions & Industry Applications | Twinplast Polymers',
-  description: 'Explore polypropylene (PP) sheet applications across packaging, advertising, construction, agriculture, and industrial material handling from Twinplast Polymers.',
+  title: 'PP Sheet Solutions & Industry Applications | Twinplast Polymers PVT LTD',
+  description: 'Explore polypropylene (PP) sheet applications across packaging, advertising, construction, agriculture, and industrial material handling from Twinplast Polymers PVT LTD.',
   alternates: {
     canonical: getSiteUrl('/solutions'),
   },
   openGraph: {
-    title: 'PP Sheet Solutions & Industry Applications | Twinplast Polymers',
-    description: 'Explore polypropylene (PP) sheet applications across packaging, advertising, construction, agriculture, and industrial material handling from Twinplast Polymers.',
+    title: 'PP Sheet Solutions & Industry Applications | Twinplast Polymers PVT LTD',
+    description: 'Explore polypropylene (PP) sheet applications across packaging, advertising, construction, agriculture, and industrial material handling from Twinplast Polymers PVT LTD.',
     url: getSiteUrl('/solutions'),
+    siteName: 'Twinplast Polymers PVT LTD',
     type: 'website',
     images: [
       {
         url: getSiteUrl('/logo.png'),
-        width: 512,
-        height: 512,
-        alt: 'Twinplast Polymers',
+        width: 572,
+        height: 436,
+        alt: 'Twinplast Polymers PVT LTD',
       },
     ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PP Sheet Solutions & Industry Applications | Twinplast Polymers PVT LTD',
+    description: 'Explore polypropylene (PP) sheet applications across packaging, advertising, construction, agriculture, and industrial material handling from Twinplast Polymers PVT LTD.',
+    images: [getSiteUrl('/logo.png')],
   },
 };
 
@@ -45,13 +53,42 @@ export default async function SolutionsPage() {
     industries = [];
   }
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: getSiteUrl('/'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Solutions',
+        item: getSiteUrl('/solutions'),
+      },
+    ],
+  };
+
   return (
     <div className="flex-1 bg-background">
+      <JsonLd data={breadcrumbSchema} />
       <div className="py-8 sm:py-16 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
+          {/* Breadcrumb Navigation */}
+          <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs text-muted font-medium">
+            <Link href="/" className="hover:text-foreground transition-colors">
+              Home
+            </Link>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-foreground font-bold">Solutions</span>
+          </nav>
+
           {/* Section Header */}
           <div className="mb-12 text-center sm:text-left space-y-2">
-            <h1 className="text-2xl sm:text-3xl  tracking-tight text-foreground">
+            <h1 className="text-2xl sm:text-3xl tracking-tight text-foreground">
               PP Corrugated Industry Applications & Solutions
             </h1>
             <p className="text-sm max-w-2xl leading-relaxed">

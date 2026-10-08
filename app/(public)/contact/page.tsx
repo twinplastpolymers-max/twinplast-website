@@ -6,24 +6,31 @@ import { JsonLd } from '@/components/shared/JsonLd';
 import { HomeContactSection } from '@/components/home/HomeContactSection';
 
 export const metadata: Metadata = {
-  title: 'Contact Twinplast Polymers | Request a PP Sheet Quote',
-  description: 'Contact Twinplast Polymers in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
+  title: 'Contact Twinplast Polymers PVT LTD | Request a PP Sheet Quote',
+  description: 'Contact Twinplast Polymers PVT LTD in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
   alternates: {
     canonical: getSiteUrl('/contact'),
   },
   openGraph: {
-    title: 'Contact Twinplast Polymers | Request a PP Sheet Quote',
-    description: 'Contact Twinplast Polymers in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
+    title: 'Contact Twinplast Polymers PVT LTD | Request a PP Sheet Quote',
+    description: 'Contact Twinplast Polymers PVT LTD in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
     url: getSiteUrl('/contact'),
+    siteName: 'Twinplast Polymers PVT LTD',
     type: 'website',
     images: [
       {
         url: getSiteUrl('/logo.png'),
-        width: 512,
-        height: 512,
-        alt: 'Twinplast Polymers',
+        width: 572,
+        height: 436,
+        alt: 'Twinplast Polymers PVT LTD',
       },
     ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact Twinplast Polymers PVT LTD | Request a PP Sheet Quote',
+    description: 'Contact Twinplast Polymers PVT LTD in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
+    images: [getSiteUrl('/logo.png')],
   },
 };
 
@@ -78,15 +85,15 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${getSiteUrl('/')}#localbusiness`,
-    name: 'Twinplast Polymers Private Limited',
+    name: 'Twinplast Polymers PVT LTD',
     url: getSiteUrl('/contact'),
     logo: getSiteUrl('/logo.png'),
     description: 'Sales and customer support for PP sheet orders in Thoothukudi, Tamil Nadu.',
-    telephone: publicPhone,
-    email: publicEmail,
+    telephone: publicPhone || undefined,
+    email: publicEmail || undefined,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan',
+      streetAddress: publicAddress || 'SF.NO.1/2A1, South Sillukanpatti Village, Milavittan',
       addressLocality: 'Thoothukudi',
       addressRegion: 'Tamil Nadu',
       postalCode: '628101',
@@ -97,9 +104,28 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
     },
   };
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: getSiteUrl('/'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Contact Us',
+        item: getSiteUrl('/contact'),
+      },
+    ],
+  };
+
   return (
     <div className="flex-1 bg-white">
-      <JsonLd data={localBusinessSchema} />
+      <JsonLd data={[localBusinessSchema, breadcrumbSchema]} />
       <Suspense fallback={null}>
         <HomeContactSection
           phone={publicPhone}

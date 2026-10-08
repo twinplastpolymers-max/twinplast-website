@@ -5,28 +5,36 @@ import { createClient } from '@/lib/supabase/server';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Product } from '@/types';
 
+import { JsonLd } from '@/components/shared/JsonLd';
 import { getSiteUrl } from '@/lib/site';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
 export const metadata: Metadata = {
-  title: 'PP Sheets | Corrugated, Sunpack & More | Twinplast Polymers',
-  description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets from Twinplast Polymers for industrial and packaging applications.',
+  title: 'PP Products | Twinplast Polymers PVT LTD',
+  description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets manufactured by Twinplast Polymers PVT LTD for industrial and packaging applications.',
   alternates: {
     canonical: getSiteUrl('/products'),
   },
   openGraph: {
-    title: 'PP Sheets | Corrugated, Sunpack & More | Twinplast Polymers',
-    description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets from Twinplast Polymers for industrial and packaging applications.',
+    title: 'PP Products | Twinplast Polymers PVT LTD',
+    description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets manufactured by Twinplast Polymers PVT LTD for industrial and packaging applications.',
     url: getSiteUrl('/products'),
+    siteName: 'Twinplast Polymers PVT LTD',
     type: 'website',
     images: [
       {
         url: getSiteUrl('/logo.png'),
-        width: 512,
-        height: 512,
-        alt: 'Twinplast Polymers',
+        width: 572,
+        height: 436,
+        alt: 'Twinplast Polymers PVT LTD',
       },
     ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PP Products | Twinplast Polymers PVT LTD',
+    description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets manufactured by Twinplast Polymers PVT LTD for industrial and packaging applications.',
+    images: [getSiteUrl('/logo.png')],
   },
 };
 
@@ -51,15 +59,43 @@ export default async function ProductsCatalogPage() {
     hasDbError = true;
   }
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: getSiteUrl('/'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Products',
+        item: getSiteUrl('/products'),
+      },
+    ],
+  };
+
   return (
     <div className="flex-1 bg-background">
+      <JsonLd data={breadcrumbSchema} />
       <div className="py-10 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
+          {/* Breadcrumb Navigation */}
+          <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs text-muted font-medium">
+            <Link href="/" className="hover:text-foreground transition-colors">
+              Home
+            </Link>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-foreground font-bold">Products</span>
+          </nav>
+
           {/* Section Header */}
           <div className="mb-12 text-center sm:text-left space-y-2">
-            <h1 className="text-2xl sm:text-3xl tracking-tight text-foreground ">
+            <h1 className="text-2xl sm:text-3xl tracking-tight text-foreground">
               PP Corrugated Product Range
-
             </h1>
             <p className="text-sm text-muted max-w-2xl leading-relaxed">
               Our sheets are engineered for packaging durability, material handling safety, custom advertising, and structural floor protection. We custom-manufacture to client thickness and GSM parameters.
