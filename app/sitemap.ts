@@ -2,6 +2,9 @@ import { createClient } from '@supabase/supabase-js';
 import type { MetadataRoute } from 'next';
 import { getSiteUrl } from '@/lib/site';
 
+// Revalidate sitemap every 1 hour (3600 seconds) via Next.js ISR for fast CDN delivery to Googlebot
+export const revalidate = 3600;
+
 interface ProductSitemapItem {
   slug: string;
   updated_at: string | null;
@@ -129,58 +132,78 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (supabaseUrl && supabaseAnonKey) {
-      const supabase = createClient(supabaseUrl, supabaseAnonKey);
-      
-      const [
-        { data: prodData, error: prodErr },
-        { data: indData, error: indErr },
-        { data: blogData, error: blogErr }
-      ] = await Promise.all([
+      const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false,
+        },
+      });
+
+      // Fetch products, industries, and blog posts with individual failure isolation
+      const [prodResult, indResult, blogResult] = await Promise.allSettled([
         supabase.from('products').select('slug, updated_at').eq('active', true),
         supabase.from('industries').select('id, updated_at').eq('active', true),
         supabase.from('blog_posts').select('slug, updated_at, published_at').eq('status', 'published'),
       ]);
 
-      if (prodErr) {
-        console.error('[Sitemap] Failed to fetch active products from Supabase:', prodErr.message);
-      } else if (prodData) {
-        const products = prodData as unknown as ProductSitemapItem[];
-        productRoutes = products
-          .filter((prod) => prod && typeof prod.slug === 'string' && prod.slug.trim().length > 0)
-          .map((prod) => ({
-            url: getSiteUrl(`/products/${prod.slug}`),
-            lastModified: prod.updated_at ? new Date(prod.updated_at) : now,
-            changeFrequency: 'monthly' as const,
-            priority: 0.8,
-          }));
+      // Process products
+      if (prodResult.status === 'fulfilled') {
+        const { data: prodData, error: prodErr } = prodResult.value;
+        if (prodErr) {
+          console.error('[Sitemap] Failed to fetch active products:', prodErr.message);
+        } else if (Array.isArray(prodData)) {
+          const products = prodData as unknown as ProductSitemapItem[];
+          productRoutes = products
+            .filter((prod) => prod && typeof prod.slug === 'string' && prod.slug.trim().length > 0)
+            .map((prod) => ({
+              url: getSiteUrl(`/products/${prod.slug}`),
+              lastModified: prod.updated_at ? new Date(prod.updated_at) : now,
+              changeFrequency: 'monthly' as const,
+              priority: 0.8,
+            }));
+        }
+      } else {
+        console.error('[Sitemap] Product query rejected:', prodResult.reason);
       }
 
-      if (indErr) {
-        console.error('[Sitemap] Failed to fetch active industries from Supabase:', indErr.message);
-      } else if (indData) {
-        const industries = indData as unknown as IndustrySitemapItem[];
-        solutionRoutes = industries
-          .filter((ind) => ind && ind.id !== undefined && ind.id !== null)
-          .map((ind) => ({
-            url: getSiteUrl(`/solutions/${ind.id}`),
-            lastModified: ind.updated_at ? new Date(ind.updated_at) : now,
-            changeFrequency: 'monthly' as const,
-            priority: 0.8,
-          }));
+      // Process industries / solutions
+      if (indResult.status === 'fulfilled') {
+        const { data: indData, error: indErr } = indResult.value;
+        if (indErr) {
+          console.error('[Sitemap] Failed to fetch active industries:', indErr.message);
+        } else if (Array.isArray(indData)) {
+          const industries = indData as unknown as IndustrySitemapItem[];
+          solutionRoutes = industries
+            .filter((ind) => ind && ind.id !== undefined && ind.id !== null)
+            .map((ind) => ({
+              url: getSiteUrl(`/solutions/${ind.id}`),
+              lastModified: ind.updated_at ? new Date(ind.updated_at) : now,
+              changeFrequency: 'monthly' as const,
+              priority: 0.8,
+            }));
+        }
+      } else {
+        console.error('[Sitemap] Industries query rejected:', indResult.reason);
       }
 
-      if (blogErr) {
-        console.error('[Sitemap] Failed to fetch published blog posts from Supabase:', blogErr.message);
-      } else if (blogData) {
-        const blogPosts = blogData as unknown as BlogSitemapItem[];
-        blogRoutes = blogPosts
-          .filter((post) => post && typeof post.slug === 'string' && post.slug.trim().length > 0)
-          .map((post) => ({
-            url: getSiteUrl(`/blog/${post.slug}`),
-            lastModified: post.updated_at ? new Date(post.updated_at) : post.published_at ? new Date(post.published_at) : now,
-            changeFrequency: 'monthly' as const,
-            priority: 0.7,
-          }));
+      // Process blog posts
+      if (blogResult.status === 'fulfilled') {
+        const { data: blogData, error: blogErr } = blogResult.value;
+        if (blogErr) {
+          console.error('[Sitemap] Failed to fetch published blog posts:', blogErr.message);
+        } else if (Array.isArray(blogData)) {
+          const blogPosts = blogData as unknown as BlogSitemapItem[];
+          blogRoutes = blogPosts
+            .filter((post) => post && typeof post.slug === 'string' && post.slug.trim().length > 0)
+            .map((post) => ({
+              url: getSiteUrl(`/blog/${post.slug}`),
+              lastModified: post.updated_at ? new Date(post.updated_at) : post.published_at ? new Date(post.published_at) : now,
+              changeFrequency: 'monthly' as const,
+              priority: 0.7,
+            }));
+        }
+      } else {
+        console.error('[Sitemap] Blog posts query rejected:', blogResult.reason);
       }
     }
   } catch (err) {
@@ -189,3 +212,4 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [...staticRoutes, ...productRoutes, ...solutionRoutes, ...blogRoutes];
 }
+
