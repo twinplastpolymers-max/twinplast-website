@@ -23,14 +23,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Twinplast Polymers PVT LTD | PP Sheet Manufacturer in Tamil Nadu",
-    template: "%s | Twinplast Polymers PVT LTD",
+    default: "Twinplast Polymers | PP Corrugated Sheet Manufacturer in Tamil Nadu",
+    template: "%s | Twinplast Polymers",
   },
   description:
-    "Twinplast Polymers PVT LTD is a PP sheet manufacturer and supplier in Tamil Nadu, specializing in PP corrugated sheets, layer pads, hollow sheets, Sunpack sheets and customized polypropylene products.",
-  authors: [{ name: "Twinplast Polymers PVT LTD", url: getSiteUrl("/") }],
-  creator: "Twinplast Polymers PVT LTD",
-  publisher: "Twinplast Polymers PVT LTD",
+    "Twinplast Polymers is a PP Corrugated Sheet manufacturer and supplier in Tamil Nadu, specializing in PP corrugated sheets, layer pads, hollow sheets, Sunpack sheets and customized polypropylene products.",
+  authors: [{ name: "Twinplast Polymers", url: getSiteUrl("/") }],
+  creator: "Twinplast Polymers",
+  publisher: "Twinplast Polymers",
   alternates: {
     canonical: getSiteUrl("/"),
   },
