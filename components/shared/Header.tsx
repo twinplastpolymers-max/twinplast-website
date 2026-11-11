@@ -187,7 +187,7 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
                   src="/twinplast logo icon.png"
                   alt="Twinplast Polymers Logo Icon"
                   fill
-                  priority
+                  preload
                   sizes="(max-width: 640px) 44px, 56px"
                   className="object-contain"
                 />
@@ -197,7 +197,7 @@ export function Header({ publicPhone, secondaryPhone, whatsappNumber, publicEmai
                   src="/twinplast logo text-black.png"
                   alt="Twinplast Polymers"
                   fill
-                  priority
+                  preload
                   sizes="(max-width: 640px) 160px, 224px"
                   className="object-contain object-left"
                 />

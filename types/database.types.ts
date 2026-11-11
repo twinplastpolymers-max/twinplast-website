@@ -214,6 +214,8 @@ export interface Database {
           phone: string | null
           email: string
           company: string | null
+          product?: string | null
+          solution?: string | null
           message: string
           status: string
           created_at: string
@@ -225,6 +227,8 @@ export interface Database {
           phone?: string | null
           email: string
           company?: string | null
+          product?: string | null
+          solution?: string | null
           message: string
           status?: string
           created_at?: string
@@ -236,6 +240,8 @@ export interface Database {
           phone?: string | null
           email?: string
           company?: string | null
+          product?: string | null
+          solution?: string | null
           message?: string
           status?: string
           created_at?: string

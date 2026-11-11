@@ -2,25 +2,37 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ChevronRight } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
+import { createPublicClient } from '@/lib/supabase/public';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Product } from '@/types';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { getSiteUrl } from '@/lib/site';
+import { BRAND_NAME, buildPublicMetadata, normalizeMetaDescription } from '@/lib/seo';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const supabase = createPublicClient();
+  if (!supabase) return [];
+  const { data } = await supabase.from('products').select('slug').eq('active', true);
+  return ((data || []) as Array<{ slug: string }>)
+    .filter((p) => typeof p.slug === 'string' && p.slug.trim().length > 0)
+    .map((p) => ({ slug: p.slug.trim() }));
+}
+
 // Dynamically generate metadata by querying Supabase
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const canonicalUrl = getSiteUrl(`/products/${slug}`);
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
+    if (!supabase) throw new Error('Public Supabase client unavailable');
     const { data: product } = await supabase
       .from('products')
       .select('title, description, image_cloudinary_public_id, image_url')
@@ -29,59 +41,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       .single() as unknown as { data: Product | null };
 
     if (!product) {
-      return { title: 'Product Not Found | Twinplast Polymers PVT LTD' };
+      return { title: 'Product Not Found' };
     }
 
-    const title = `${product.title} | Twinplast Polymers PVT LTD`;
-    const description = product.description;
     const ogImageUrl = product.image_cloudinary_public_id
       ? getOptimizedImageUrl(product.image_cloudinary_public_id, { width: 1200, height: 630, quality: 'auto' })
-      : product.image_url || getSiteUrl('/logo.png');
+      : product.image_url || undefined;
 
-    return {
-      title,
-      description,
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title,
-        description,
-        url: canonicalUrl,
-        siteName: 'Twinplast Polymers PVT LTD',
-        type: 'website',
-        images: [
-          {
-            url: ogImageUrl,
-            alt: product.title,
-          },
-        ],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title,
-        description,
-        images: [ogImageUrl],
-      },
-    };
+    return buildPublicMetadata({
+      title: product.title,
+      description: normalizeMetaDescription(product.description, 160),
+      path: `/products/${slug}`,
+      imageUrl: ogImageUrl,
+      imageAlt: product.title,
+    });
   } catch {
-    return {
-      title: 'Product Specifications | Twinplast Polymers PVT LTD',
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title: 'Product Specifications | Twinplast Polymers PVT LTD',
-        url: canonicalUrl,
-        siteName: 'Twinplast Polymers PVT LTD',
-        type: 'website',
-        images: [{ url: getSiteUrl('/logo.png') }],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        images: [getSiteUrl('/logo.png')],
-      },
-    };
+    return buildPublicMetadata({
+      title: 'PP Corrugated Product Specifications',
+      description: 'View technical specifications and industrial applications for polypropylene corrugated sheet products manufactured by Twinplast Polymers.',
+      path: `/products/${slug}`,
+    });
   }
 }
 
@@ -90,7 +69,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
   let product: Product | null = null;
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
+    if (!supabase) throw new Error('Public Supabase client unavailable');
     const { data, error } = await supabase
       .from('products')
       .select('*')
@@ -124,12 +104,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
     category: product.category,
     brand: {
       '@type': 'Brand',
-      name: 'Twinplast Polymers PVT LTD',
+      name: BRAND_NAME,
     },
     manufacturer: {
       '@type': 'Organization',
       '@id': `${getSiteUrl('/')}#organization`,
-      name: 'Twinplast Polymers PVT LTD',
+      name: BRAND_NAME,
     },
   };
 
@@ -184,6 +164,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 src={product.image_cloudinary_public_id}
                 alt={product.title}
                 aspectRatio="square"
+                sizes="(max-width: 768px) 100vw, 42vw"
+                preload
               />
             </div>
 

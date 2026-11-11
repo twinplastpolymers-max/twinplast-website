@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SITE_URL, getSiteUrl } from "@/lib/site";
+import { BRAND_NAME, PRIMARY_SEO_POSITIONING } from "@/lib/seo";
 import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
 
@@ -12,25 +13,28 @@ export const viewport: Viewport = {
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  manifest: "/manifest.webmanifest",
   title: {
-    default: "Twinplast Polymers | PP Corrugated Sheet Manufacturer in Tamil Nadu",
-    template: "%s | Twinplast Polymers",
+    default: `${BRAND_NAME} | ${PRIMARY_SEO_POSITIONING}`,
+    template: `%s | ${BRAND_NAME}`,
   },
   description:
     "Twinplast Polymers is a PP Corrugated Sheet manufacturer and supplier in Tamil Nadu, specializing in PP corrugated sheets, layer pads, hollow sheets, Sunpack sheets and customized polypropylene products.",
-  authors: [{ name: "Twinplast Polymers", url: getSiteUrl("/") }],
-  creator: "Twinplast Polymers",
-  publisher: "Twinplast Polymers",
+  authors: [{ name: BRAND_NAME, url: getSiteUrl("/") }],
+  creator: BRAND_NAME,
+  publisher: BRAND_NAME,
   alternates: {
     canonical: getSiteUrl("/"),
   },

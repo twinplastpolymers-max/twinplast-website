@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { Phone, Mail, MapPin, Send } from 'lucide-react';
 import { submitEnquiry } from '@/app/actions';
 
@@ -10,9 +9,27 @@ export interface HomeContactSectionProps {
   email?: string;
   address?: string;
   initialProduct?: string;
+  initialSolution?: string;
   products?: string[];
   solutions?: string[];
   internationalPhone?: string;
+}
+
+function formatSelectionName(name: string): string {
+  const trimmed = name.trim();
+  if (!trimmed) return '';
+  if (trimmed.includes('-') && !trimmed.includes(' ')) {
+    return trimmed
+      .split('-')
+      .map((w) => (w.toLowerCase() === 'pp' ? 'PP' : w.charAt(0).toUpperCase() + w.slice(1)))
+      .join(' ');
+  }
+  return trimmed;
+}
+
+function resolveOptionMatch(value: string, options: string[]): string | undefined {
+  if (!value) return undefined;
+  return options.find((opt) => opt.toLowerCase() === value.toLowerCase());
 }
 
 export function HomeContactSection({
@@ -20,49 +37,58 @@ export function HomeContactSection({
   email,
   address,
   initialProduct = '',
+  initialSolution = '',
   products,
   solutions,
   internationalPhone,
 }: HomeContactSectionProps) {
-  const searchParams = useSearchParams();
-  const rawProduct = searchParams.get('product') || initialProduct || '';
-
-  const formatProductName = (name: string) => {
-    if (!name) return '';
-    if (name.includes('-') && !name.includes(' ')) {
-      return name
-        .split('-')
-        .map((w) => (w.toLowerCase() === 'pp' ? 'PP' : w.charAt(0).toUpperCase() + w.slice(1)))
-        .join(' ');
-    }
-    return name;
-  };
-
-  const selectedProduct = formatProductName(rawProduct);
-
   const productOptions = products || [];
   const solutionOptions = solutions || [];
-  const allOptions = [...productOptions, ...solutionOptions];
-  const customSelectedOption = selectedProduct && !allOptions.includes(selectedProduct) ? selectedProduct : null;
+
+  const formattedInitialProduct = formatSelectionName(initialProduct);
+  const formattedInitialSolution = formatSelectionName(initialSolution);
+
+  // Support legacy links that pass an industry solution name via ?product=<Industry>
+  const matchedProduct = resolveOptionMatch(formattedInitialProduct, productOptions);
+  const matchedSolutionFromProductParam =
+    !matchedProduct && !formattedInitialSolution
+      ? resolveOptionMatch(formattedInitialProduct, solutionOptions)
+      : undefined;
+  const matchedSolution =
+    resolveOptionMatch(formattedInitialSolution, solutionOptions) ||
+    matchedSolutionFromProductParam;
+
+  const resolvedProduct = matchedSolutionFromProductParam
+    ? ''
+    : matchedProduct || formattedInitialProduct;
+  const resolvedSolution = matchedSolution || formattedInitialSolution;
+
+  const customProductOption =
+    resolvedProduct &&
+    !productOptions.includes(resolvedProduct) &&
+    resolvedProduct !== 'General Enquiry / Custom Order'
+      ? resolvedProduct
+      : null;
+
+  const customSolutionOption =
+    resolvedSolution &&
+    !solutionOptions.includes(resolvedSolution) &&
+    resolvedSolution !== 'Other / General Industrial'
+      ? resolvedSolution
+      : null;
 
   const [formData, setFormData] = useState({
     customer_name: '',
     email: '',
     phone: '',
     company: '',
-    product: selectedProduct,
-    solution: '',
+    product: resolvedProduct,
+    solution: resolvedSolution,
     message: '',
   });
 
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-
-  useEffect(() => {
-    if (selectedProduct) {
-      setFormData((prev) => ({ ...prev, product: selectedProduct }));
-    }
-  }, [selectedProduct]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -223,10 +249,20 @@ export function HomeContactSection({
               </p>
             </div>
 
-            {formData.product && (
-              <div className="mb-6 flex items-center gap-2 p-3 bg-blue-50 border-l-2 border-blue-600 text-xs text-slate-700">
-                <span>Selected Product:</span>
-                <span className="font-bold text-blue-900">{formData.product}</span>
+            {(formData.product || formData.solution) && (
+              <div className="mb-6 flex flex-wrap items-center gap-3 p-3 bg-blue-50 border-l-2 border-blue-600 text-xs text-slate-700">
+                {formData.product && (
+                  <div className="flex items-center gap-1.5">
+                    <span>Selected Product:</span>
+                    <span className="font-bold text-blue-900">{formData.product}</span>
+                  </div>
+                )}
+                {formData.solution && (
+                  <div className="flex items-center gap-1.5">
+                    <span>Selected Solution:</span>
+                    <span className="font-bold text-blue-900">{formData.solution}</span>
+                  </div>
+                )}
               </div>
             )}
 
@@ -290,46 +326,72 @@ export function HomeContactSection({
                   </div>
                 </div>
 
-                <div>
-                  <select
-                    value={formData.product}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setFormData((prev) => ({ ...prev, product: val }));
-                    }}
-                    className={`w-full bg-transparent border-b border-slate-300 py-3 text-sm rounded-none focus:outline-none focus:border-blue-600 transition-colors cursor-pointer ${formData.product ? 'text-slate-900 font-medium' : 'text-slate-400'
-                      }`}
-                  >
-                    <option value="" disabled className="text-slate-400">
-                      Select Product / Requirement *
-                    </option>
-
-                    {customSelectedOption && (
-                      <option value={customSelectedOption} className="text-slate-900 bg-white py-1">
-                        {customSelectedOption}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <select
+                      aria-label="Product or Requirement"
+                      value={formData.product}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setFormData((prev) => ({ ...prev, product: val }));
+                      }}
+                      className={`w-full bg-transparent border-b border-slate-300 py-3 text-sm rounded-none focus:outline-none focus:border-blue-600 transition-colors cursor-pointer ${formData.product ? 'text-slate-900 font-medium' : 'text-slate-400'
+                        }`}
+                    >
+                      <option value="" className="text-slate-400">
+                        Select Product / Requirement
                       </option>
-                    )}
 
-                    <optgroup label="Products Catalog">
+                      {customProductOption && (
+                        <option value={customProductOption} className="text-slate-900 bg-white py-1">
+                          {customProductOption}
+                        </option>
+                      )}
+
                       {productOptions.map((p) => (
                         <option key={p} value={p} className="text-slate-900 bg-white py-1">
                           {p}
                         </option>
                       ))}
-                    </optgroup>
 
-                    <optgroup label="Industry Solutions">
+                      <option value="General Enquiry / Custom Order" className="text-slate-900 bg-white py-1">
+                        General Enquiry / Custom Order
+                      </option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <select
+                      aria-label="Industry or Solution"
+                      value={formData.solution}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setFormData((prev) => ({ ...prev, solution: val }));
+                      }}
+                      className={`w-full bg-transparent border-b border-slate-300 py-3 text-sm rounded-none focus:outline-none focus:border-blue-600 transition-colors cursor-pointer ${formData.solution ? 'text-slate-900 font-medium' : 'text-slate-400'
+                        }`}
+                    >
+                      <option value="" className="text-slate-400">
+                        Select Industry / Application
+                      </option>
+
+                      {customSolutionOption && (
+                        <option value={customSolutionOption} className="text-slate-900 bg-white py-1">
+                          {customSolutionOption}
+                        </option>
+                      )}
+
                       {solutionOptions.map((s) => (
                         <option key={s} value={s} className="text-slate-900 bg-white py-1">
                           {s}
                         </option>
                       ))}
-                    </optgroup>
 
-                    <option value="General Enquiry / Custom Order" className="text-slate-900 bg-white py-1">
-                      General Enquiry / Custom Order
-                    </option>
-                  </select>
+                      <option value="Other / General Industrial" className="text-slate-900 bg-white py-1">
+                        Other / General Industrial
+                      </option>
+                    </select>
+                  </div>
                 </div>
 
                 <div>

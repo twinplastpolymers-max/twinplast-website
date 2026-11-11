@@ -14,40 +14,97 @@ function escapeHtml(unsafe: string | null | undefined): string {
     .replace(/'/g, '&#039;');
 }
 
+function cleanOptionalText(value: unknown, maxLength: number): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  return trimmed.slice(0, maxLength);
+}
+
 export async function submitEnquiry(data: EnquiryInsert) {
   try {
     // 1. Server-side Input Validation
-    if (!data.customer_name || !data.customer_name.trim()) {
+    const customerName = typeof data.customer_name === 'string' ? data.customer_name.trim() : '';
+    const email = typeof data.email === 'string' ? data.email.trim() : '';
+
+    if (!customerName) {
       return { success: false, error: 'Customer name is required.' };
     }
-    if (!data.email || !data.email.trim()) {
+    if (customerName.length > 150) {
+      return { success: false, error: 'Customer name must be 150 characters or fewer.' };
+    }
+    if (!email) {
       return { success: false, error: 'Email address is required.' };
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email.trim())) {
+    if (email.length > 254 || !emailRegex.test(email)) {
       return { success: false, error: 'Please enter a valid email address.' };
     }
 
-    const enquiryMessage = data.message?.trim() || 'General enquiry / consultation request';
+    const phone = cleanOptionalText(data.phone, 50);
+    const company = cleanOptionalText(data.company, 150);
+    const product = cleanOptionalText(data.product, 200);
+    const solution = cleanOptionalText(data.solution, 200);
+    const rawMessage = cleanOptionalText(data.message, 5000);
 
-    // 2. Supabase DB Insertion
+    const selectionSummary = [
+      product ? `Product: ${product}` : null,
+      solution ? `Solution: ${solution}` : null,
+    ]
+      .filter(Boolean)
+      .join(' | ');
+
+    const enquiryMessage =
+      rawMessage ||
+      (selectionSummary
+        ? `Enquiry regarding ${selectionSummary}`
+        : 'General enquiry / consultation request');
+
+    // 2. Supabase DB Insertion (persisting product & solution with safe schema fallback)
     const supabase = (await createClient()) as unknown as {
       from: (table: string) => {
-        insert: (data: unknown[]) => Promise<{ error: { message: string } | null }>
-      }
+        insert: (
+          data: unknown[]
+        ) => Promise<{ error: { code?: string; message: string } | null }>;
+      };
     };
-    const { error } = await supabase
-      .from('enquiries')
-      .insert([
+
+    const basePayload = {
+      customer_name: customerName,
+      phone,
+      email,
+      company,
+      message: enquiryMessage,
+      status: 'new',
+    };
+
+    let { error } = await supabase.from('enquiries').insert([
+      {
+        ...basePayload,
+        product,
+        solution,
+      },
+    ]);
+
+    // Safe fallback if migration 008_add_enquiry_product_solution.sql has not been applied yet
+    if (
+      error &&
+      (error.code === 'PGRST204' ||
+        error.code === '42703' ||
+        /column.*\b(product|solution)\b/i.test(error.message) ||
+        /'(product|solution)' column/i.test(error.message))
+    ) {
+      const legacyMessage = selectionSummary
+        ? `[${selectionSummary}]\n\n${enquiryMessage}`
+        : enquiryMessage;
+      const fallbackResult = await supabase.from('enquiries').insert([
         {
-          customer_name: data.customer_name.trim(),
-          phone: data.phone?.trim() || null,
-          email: data.email.trim(),
-          company: data.company?.trim() || null,
-          message: enquiryMessage,
-          status: 'new',
+          ...basePayload,
+          message: legacyMessage,
         },
       ]);
+      error = fallbackResult.error;
+    }
 
     if (error) {
       return { success: false, error: error.message };
@@ -92,10 +149,12 @@ export async function submitEnquiry(data: EnquiryInsert) {
         }
 
         // Sanitize all customer-controlled inputs before htmlContent interpolation
-        const escapedName = escapeHtml(data.customer_name);
-        const escapedEmail = escapeHtml(data.email);
-        const escapedPhone = escapeHtml(data.phone);
-        const escapedCompany = escapeHtml(data.company);
+        const escapedName = escapeHtml(customerName);
+        const escapedEmail = escapeHtml(email);
+        const escapedPhone = escapeHtml(phone);
+        const escapedCompany = escapeHtml(company);
+        const escapedProduct = escapeHtml(product);
+        const escapedSolution = escapeHtml(solution);
         const escapedMessage = escapeHtml(enquiryMessage);
         
         // Format timestamp
@@ -104,6 +163,11 @@ export async function submitEnquiry(data: EnquiryInsert) {
           dateStyle: 'long',
           timeStyle: 'medium',
         });
+
+        const subjectTopic = product || solution;
+        const subjectLine = subjectTopic
+          ? `New Enquiry: ${subjectTopic} – ${customerName}`
+          : `New Enquiry from ${customerName}`;
 
         const brevoPayload = {
           sender: {
@@ -117,10 +181,10 @@ export async function submitEnquiry(data: EnquiryInsert) {
             },
           ],
           replyTo: {
-            email: data.email.trim(),
-            name: data.customer_name.trim(),
+            email,
+            name: customerName,
           },
-          subject: `New Enquiry from ${data.customer_name.trim()}`,
+          subject: subjectLine,
           htmlContent: `
 <!DOCTYPE html>
 <html>
@@ -159,6 +223,14 @@ export async function submitEnquiry(data: EnquiryInsert) {
         <div class="field">
           <div class="label">Phone Number</div>
           <div class="value">${escapedPhone || '<em>Not Specified</em>'}</div>
+        </div>
+        <div class="field">
+          <div class="label">Product / Requirement</div>
+          <div class="value">${escapedProduct || '<em>Not Specified</em>'}</div>
+        </div>
+        <div class="field">
+          <div class="label">Industry / Solution</div>
+          <div class="value">${escapedSolution || '<em>Not Specified</em>'}</div>
         </div>
         <div class="field">
           <div class="label">Submission Date & Time (IST)</div>

@@ -2,73 +2,46 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight, ShieldCheck, Factory, Truck, Layers, Mail, HelpCircle } from 'lucide-react';
 import { getSiteUrl } from '@/lib/site';
+import { buildPublicMetadata } from '@/lib/seo';
+import { buildLocationProducts } from '@/lib/products';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'PP Corrugated Sheet Manufacturer in Bengaluru | Twinplast Polymers PVT LTD',
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'PP Corrugated Sheet Manufacturer in Bengaluru',
   description:
-    'Twinplast Polymers PVT LTD supplies high-grade PP Corrugated Sheets, ESD Anti-Static Fluted Sheets, Sunpack Boards, Layer Pads, and Floor Protection Sheets to electronics, aerospace, and manufacturing hubs in Bengaluru, Peenya, and Bommasandra.',
-  alternates: {
-    canonical: getSiteUrl('/locations/bengaluru'),
-  },
-  openGraph: {
-    title: 'PP Corrugated Sheet Manufacturer in Bengaluru | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD supplies high-grade PP Corrugated Sheets, ESD Anti-Static Fluted Sheets, Sunpack Boards, Layer Pads, and Floor Protection Sheets to electronics, aerospace, and manufacturing hubs in Bengaluru, Peenya, and Bommasandra.',
-    url: getSiteUrl('/locations/bengaluru'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PP Corrugated Sheet Manufacturer in Bengaluru | Twinplast Polymers PVT LTD',
-    description:
-      'Direct manufacturer supply of PP fluted sheets, ESD conductive packaging, and floor protection rolls across Bengaluru and Karnataka.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+    'Twinplast Polymers supplies high-grade PP Corrugated Sheets, ESD Anti-Static Fluted Sheets, Sunpack Boards, Layer Pads, and Floor Protection Sheets to electronics, aerospace, and manufacturing hubs in Bengaluru, Peenya, and Bommasandra.',
+  path: '/locations/bengaluru',
+  twitterDescription:
+    'Direct manufacturer supply of PP fluted sheets, ESD conductive packaging, and floor protection rolls across Bengaluru and Karnataka.',
+});
 
-const products = [
+const products = buildLocationProducts([
   {
-    title: 'PP Corrugated Sheet',
-    slug: 'pp-corrugated-sheet',
+    key: 'corrugatedSheet',
     desc: 'Versatile fluted polypropylene board engineered for industrial partitions, returnable dunnage, and precision hardware cushioning.',
   },
   {
-    title: 'Sunpack Sheet',
-    slug: 'sunpack-sheet',
+    key: 'sunpackSheet',
     desc: 'Corona-treated polypropylene advertising sheet for high-definition screen printing, corporate signage, and retail POS displays in Bengaluru.',
   },
   {
-    title: 'Floor Protection Sheet',
-    slug: 'floor-protection-sheet',
+    key: 'floorProtectionSheet',
     desc: 'Heavy-duty impact protection sheet safeguarding tiles, marble, granite, and wooden floors in Bengaluru luxury residential and commercial fit-outs.',
   },
   {
-    title: 'PP Layer Pad',
-    slug: 'pp-layer-pad',
+    key: 'layerPadSheet',
     desc: 'Smooth, washable, and edge-sealed divider boards designed for automated palletizing in beverage, chemical, and pharma manufacturing.',
   },
   {
-    title: 'PP Hollow Sheet',
-    slug: 'pp-hollow-sheet',
+    key: 'hollowSheet',
     desc: 'Twin-wall polypropylene structured sheet combining ultralight weight with structural rigidity and complete water resistance.',
   },
   {
-    title: 'PP Corrugated Box',
-    slug: 'pp-corrugated-box',
+    key: 'corrugatedBox',
     desc: 'Custom ESD anti-static and standard returnable transit packaging (RTP) boxes tailored for Bengaluru electronics and hardware assembly lines.',
   },
-];
+]);
 
 const faqs = [
   {
@@ -94,10 +67,10 @@ export default function BengaluruLocationPage() {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': `${getSiteUrl('/locations/bengaluru')}#webpage`,
-    name: 'PP Corrugated Sheet Manufacturer in Bengaluru | Twinplast Polymers PVT LTD',
+    name: 'PP Corrugated Sheet Manufacturer in Bengaluru | Twinplast Polymers',
     url: getSiteUrl('/locations/bengaluru'),
     description:
-      'Twinplast Polymers PVT LTD supplies industrial-grade PP corrugated sheets, ESD anti-static packaging, Sunpack boards, and layer pads across Bengaluru manufacturing clusters.',
+      'Twinplast Polymers supplies industrial-grade PP corrugated sheets, ESD anti-static packaging, Sunpack boards, and layer pads across Bengaluru manufacturing clusters.',
     isPartOf: {
       '@id': `${getSiteUrl('/')}#website`,
     },
@@ -172,7 +145,7 @@ export default function BengaluruLocationPage() {
               PP Corrugated Sheet Manufacturer in Bengaluru
             </h1>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed pt-2">
-              Twinplast Polymers PVT LTD manufactures and supplies high-performance polypropylene corrugated sheets, ESD anti-static dunnage, Sunpack advertising boards, and floor protection sheets across Bengaluru. Serving tier-1 electronics, automotive, aerospace, and construction sectors at direct manufacturer rates.
+              Twinplast Polymers manufactures and supplies high-performance polypropylene corrugated sheets, ESD anti-static dunnage, Sunpack advertising boards, and floor protection sheets across Bengaluru. Serving tier-1 electronics, automotive, aerospace, and construction sectors at direct manufacturer rates.
             </p>
             <div className="pt-4 flex flex-wrap gap-3">
               <Link

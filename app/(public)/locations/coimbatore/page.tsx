@@ -2,73 +2,46 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight, ShieldCheck, Factory, Truck, Layers, Mail, HelpCircle } from 'lucide-react';
 import { getSiteUrl } from '@/lib/site';
+import { buildPublicMetadata } from '@/lib/seo';
+import { buildLocationProducts } from '@/lib/products';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'PP Corrugated Sheet Manufacturer in Coimbatore | Twinplast Polymers PVT LTD',
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'PP Corrugated Sheet Manufacturer in Coimbatore',
   description:
-    'Twinplast Polymers PVT LTD manufactures heavy-duty PP Corrugated Sheets, Sunpack Boards, Layer Pads, and Floor Protection Sheets for pump, engineering, textile machinery, and automotive industries in Coimbatore, Tiruppur, and Erode.',
-  alternates: {
-    canonical: getSiteUrl('/locations/coimbatore'),
-  },
-  openGraph: {
-    title: 'PP Corrugated Sheet Manufacturer in Coimbatore | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD manufactures heavy-duty PP Corrugated Sheets, Sunpack Boards, Layer Pads, and Floor Protection Sheets for pump, engineering, textile machinery, and automotive industries in Coimbatore, Tiruppur, and Erode.',
-    url: getSiteUrl('/locations/coimbatore'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PP Corrugated Sheet Manufacturer in Coimbatore | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD supplies industrial PP fluted sheets and protective packaging to Coimbatore engineering and manufacturing clusters.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+    'Twinplast Polymers manufactures heavy-duty PP Corrugated Sheets, Sunpack Boards, Layer Pads, and Floor Protection Sheets for pump, engineering, textile machinery, and automotive industries in Coimbatore, Tiruppur, and Erode.',
+  path: '/locations/coimbatore',
+  twitterDescription:
+    'Twinplast Polymers supplies industrial PP fluted sheets and protective packaging to Coimbatore engineering and manufacturing clusters.',
+});
 
-const products = [
+const products = buildLocationProducts([
   {
-    title: 'PP Corrugated Sheet',
-    slug: 'pp-corrugated-sheet',
+    key: 'corrugatedSheet',
     desc: 'Heavy-duty fluted polypropylene sheets built for engineering spares, pump castings, and machined component separation.',
   },
   {
-    title: 'Sunpack Sheet',
-    slug: 'sunpack-sheet',
+    key: 'sunpackSheet',
     desc: 'Corona-treated polypropylene advertising boards for retail branding, outdoor display boards, and promotional signboards across Coimbatore.',
   },
   {
-    title: 'Floor Protection Sheet',
-    slug: 'floor-protection-sheet',
+    key: 'floorProtectionSheet',
     desc: 'Durable, waterproof fluted plastic sheets for protecting vitrified tile, Italian marble, and wooden flooring during interior work.',
   },
   {
-    title: 'PP Layer Pad',
-    slug: 'pp-layer-pad',
+    key: 'layerPadSheet',
     desc: 'Sealed-edge polypropylene dividers for multi-tier pallet packing in food processing, beverage bottling, and textile yarn cones.',
   },
   {
-    title: 'PP Hollow Sheet',
-    slug: 'pp-hollow-sheet',
+    key: 'hollowSheet',
     desc: 'Rigid twin-wall polypropylene boards delivering impact resistance and chemical inertness for industrial dunnage.',
   },
   {
-    title: 'PP Corrugated Box',
-    slug: 'pp-corrugated-box',
+    key: 'corrugatedBox',
     desc: 'Custom returnable transit packaging (RTP) boxes engineered for Coimbatore pump, motor, and auto-ancillary supply chains.',
   },
-];
+]);
 
 const faqs = [
   {
@@ -94,10 +67,10 @@ export default function CoimbatoreLocationPage() {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': `${getSiteUrl('/locations/coimbatore')}#webpage`,
-    name: 'PP Corrugated Sheet Manufacturer in Coimbatore | Twinplast Polymers PVT LTD',
+    name: 'PP Corrugated Sheet Manufacturer in Coimbatore | Twinplast Polymers',
     url: getSiteUrl('/locations/coimbatore'),
     description:
-      'Twinplast Polymers PVT LTD supplies industrial-grade PP corrugated sheets, Sunpack boards, and layer pads across Coimbatore manufacturing clusters.',
+      'Twinplast Polymers supplies industrial-grade PP corrugated sheets, Sunpack boards, and layer pads across Coimbatore manufacturing clusters.',
     isPartOf: {
       '@id': `${getSiteUrl('/')}#website`,
     },
@@ -172,7 +145,7 @@ export default function CoimbatoreLocationPage() {
               PP Corrugated Sheet Manufacturer in Coimbatore
             </h1>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed pt-2">
-              Twinplast Polymers PVT LTD delivers industrial-grade polypropylene fluted sheets, heavy-duty separator pads, Sunpack advertising boards, and floor protection rolls across Coimbatore, Tiruppur, and the Kongu region. Engineered for pump manufacturers, textile machinery builders, and foundries at direct factory rates.
+              Twinplast Polymers delivers industrial-grade polypropylene fluted sheets, heavy-duty separator pads, Sunpack advertising boards, and floor protection rolls across Coimbatore, Tiruppur, and the Kongu region. Engineered for pump manufacturers, textile machinery builders, and foundries at direct factory rates.
             </p>
             <div className="pt-4 flex flex-wrap gap-3">
               <Link

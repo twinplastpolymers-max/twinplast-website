@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Product } from '@/types';
@@ -89,6 +87,7 @@ export function ProductCarousel({ products }: ProductCarouselProps) {
                     alt={prod.title}
                     aspectRatio="tall"
                     fit="cover"
+                    sizes="(max-width: 640px) 280px, 320px"
                     unstyled
                   />
                 </div>

@@ -47,6 +47,8 @@ export function Footer({ publicPhone, whatsappNumber, publicEmail, publicAddress
   ];
 
   const locationLinks = [
+    { label: 'All Supply Hubs', href: '/locations' },
+    { label: 'India Supply', href: '/locations/india' },
     { label: 'Tamil Nadu', href: '/locations/tamil-nadu' },
     { label: 'Kerala', href: '/locations/kerala' },
     { label: 'Karnataka', href: '/locations/karnataka' },
@@ -72,8 +74,7 @@ export function Footer({ publicPhone, whatsappNumber, publicEmail, publicAddress
                 src="/logo-white.png"
                 alt="Twinplast Polymers Logo"
                 fill
-                priority
-                sizes="300px"
+                sizes="288px"
                 className="object-contain object-left"
               />
             </Link>
@@ -246,8 +247,7 @@ export function Footer({ publicPhone, whatsappNumber, publicEmail, publicAddress
                   src="/logo-white.png"
                   alt="Twinplast Polymers Logo"
                   fill
-                  priority
-                  sizes="400px"
+                  sizes="288px"
                   className="object-contain object-left"
                 />
               </Link>

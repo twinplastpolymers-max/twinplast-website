@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
-import { createClient } from '@/lib/supabase/server';
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
+import { createPublicClient } from '@/lib/supabase/public';
 import { getSiteUrl } from '@/lib/site';
+import { BRAND_NAME, LEGAL_COMPANY_NAME, buildPublicMetadata } from '@/lib/seo';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { HomepageMedia, ManufacturingStep, HomepageSection, MarketRegionItem, Certification } from '@/types';
@@ -13,34 +16,15 @@ import { ManufacturingProcessSection } from '@/components/home/ManufacturingProc
 import { CertificationSection } from '@/components/home/CertificationSection';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'About Twinplast Polymers PVT LTD | PP Sheet Manufacturer',
-  description: 'Learn about Twinplast Polymers PVT LTD, a specialized Polypropylene (PP) Corrugated Sheets and PP-based products manufacturer in South Silukkanpatti, Tuticorin, Tamil Nadu, India.',
-  alternates: {
-    canonical: getSiteUrl('/about'),
-  },
-  openGraph: {
-    title: 'About Twinplast Polymers PVT LTD | PP Sheet Manufacturer',
-    description: 'Learn about Twinplast Polymers PVT LTD, a specialized Polypropylene (PP) Corrugated Sheets and PP-based products manufacturer in South Silukkanpatti, Tuticorin, Tamil Nadu, India.',
-    url: getSiteUrl('/about'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'About Twinplast Polymers PVT LTD | PP Sheet Manufacturer',
-    description: 'Learn about Twinplast Polymers PVT LTD, a specialized Polypropylene (PP) Corrugated Sheets and PP-based products manufacturer in South Silukkanpatti, Tuticorin, Tamil Nadu, India.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+export const revalidate = 300;
+
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'About Twinplast Polymers | PP Corrugated Sheet Manufacturer',
+  description:
+    'Learn about Twinplast Polymers (Twinplast Polymers Private Limited), an ISO 9001:2015 certified PP Corrugated Sheet and polypropylene products manufacturer in Thoothukudi, Tamil Nadu, India.',
+  path: '/about',
+  absoluteTitle: true,
+});
 
 export default async function AboutPage() {
   let aboutMainImage: string | null = null;
@@ -79,7 +63,8 @@ export default async function AboutPage() {
   let certifications: Certification[] = [];
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
+    if (!supabase) throw new Error('Public Supabase client unavailable');
 
     const [
       { data: mediaData },
@@ -140,7 +125,7 @@ export default async function AboutPage() {
         mktHeading = (mktContent.heading as string) || (mktContent.title as string) || undefined;
         mktBody = (mktContent.content as string) || (mktContent.subtitle as string) || undefined;
         const mktBgRaw = (mktContent.background_image as string) || (mktContent.background_image_url as string) || null;
-        mktBgImageUrl = mktBgRaw ? getOptimizedImageUrl(mktBgRaw, { quality: 'best', upscale: true }) : null;
+        mktBgImageUrl = mktBgRaw ? getOptimizedImageUrl(mktBgRaw, { width: 1600, quality: 'auto' }) : null;
         mktRegions = (mktContent.regions as (string | MarketRegionItem)[]) || [];
       }
 
@@ -194,10 +179,11 @@ export default async function AboutPage() {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${getSiteUrl('/')}#localbusiness`,
-    name: 'Twinplast Polymers PVT LTD',
+    name: BRAND_NAME,
+    legalName: LEGAL_COMPANY_NAME,
     url: getSiteUrl('/about'),
     logo: getSiteUrl('/logo.png'),
-    description: 'Polypropylene (PP) sheet manufacturing facility operating in South Silukkanpatti, Tuticorin, Tamil Nadu, India.',
+    description: 'ISO 9001:2015 certified polypropylene (PP) corrugated sheet manufacturing facility operating in South Silukkanpatti, Thoothukudi, Tamil Nadu, India.',
     telephone: publicPhone || undefined,
     email: publicEmail || undefined,
     address: {
@@ -235,6 +221,25 @@ export default async function AboutPage() {
   return (
     <div className="flex flex-col w-full bg-white text-slate-900 font-sans">
       <JsonLd data={[localBusinessSchema, breadcrumbSchema]} />
+
+      {/* Page Header Banner */}
+      <section className="bg-slate-900 text-white py-10 sm:py-14 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+        <div className="mx-auto max-w-7xl space-y-3">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-400 font-medium">
+            <Link href="/" className="hover:text-white transition-colors">
+              Home
+            </Link>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
+            <span className="text-white font-bold">About Us</span>
+          </nav>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+            About Twinplast Polymers — PP Corrugated Sheet Manufacturer
+          </h1>
+          <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
+            Twinplast Polymers Private Limited manufactures polypropylene corrugated sheets, hollow sheets, Sunpack boards, layer pads, and floor protection rolls in Thoothukudi, Tamil Nadu.
+          </p>
+        </div>
+      </section>
 
       {/* 1. Landing Page About Section */}
       <AboutSection
@@ -280,9 +285,8 @@ export default async function AboutPage() {
         image={whyImageId}
       />
 
-
-
-
+      {/* 7. Verified ISO 9001:2015 Quality Certification */}
+      <CertificationSection certifications={certifications} />
 
       {/* 8. CTA Banner */}
       <CtaBanner />

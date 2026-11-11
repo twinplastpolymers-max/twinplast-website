@@ -1,47 +1,29 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
+import { createPublicClient } from '@/lib/supabase/public';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Industry } from '@/types';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { getSiteUrl } from '@/lib/site';
+import { buildPublicMetadata } from '@/lib/seo';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'PP Sheet Solutions & Industry Applications | Twinplast Polymers PVT LTD',
-  description: 'Explore polypropylene (PP) sheet applications across packaging, advertising, construction, agriculture, and industrial material handling from Twinplast Polymers PVT LTD.',
-  alternates: {
-    canonical: getSiteUrl('/solutions'),
-  },
-  openGraph: {
-    title: 'PP Sheet Solutions & Industry Applications | Twinplast Polymers PVT LTD',
-    description: 'Explore polypropylene (PP) sheet applications across packaging, advertising, construction, agriculture, and industrial material handling from Twinplast Polymers PVT LTD.',
-    url: getSiteUrl('/solutions'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PP Sheet Solutions & Industry Applications | Twinplast Polymers PVT LTD',
-    description: 'Explore polypropylene (PP) sheet applications across packaging, advertising, construction, agriculture, and industrial material handling from Twinplast Polymers PVT LTD.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+export const revalidate = 300;
+
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'PP Corrugated Sheet Solutions & Industry Applications',
+  description:
+    'Explore polypropylene (PP) corrugated sheet applications across packaging, beverage layer pads, construction floor protection, advertising signage, automotive, and agriculture from Twinplast Polymers.',
+  path: '/solutions',
+});
 
 export default async function SolutionsPage() {
   let industries: Industry[] = [];
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
+    if (!supabase) throw new Error('Public Supabase client unavailable');
     const { data } = await supabase
       .from('industries')
       .select('*')
@@ -115,6 +97,7 @@ export default async function SolutionsPage() {
                       alt={ind.title}
                       aspectRatio="video"
                       fit="cover"
+                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
                       unstyled
                     />
                   </div>
