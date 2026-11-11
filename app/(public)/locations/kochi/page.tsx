@@ -2,73 +2,46 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight, ShieldCheck, Factory, Truck, Layers, Mail, HelpCircle } from 'lucide-react';
 import { getSiteUrl } from '@/lib/site';
+import { buildPublicMetadata } from '@/lib/seo';
+import { buildLocationProducts } from '@/lib/products';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'PP Corrugated Sheet Manufacturer in Kochi | Twinplast Polymers PVT LTD',
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'PP Corrugated Sheet Manufacturer in Kochi',
   description:
-    'Twinplast Polymers PVT LTD manufactures 100% waterproof PP Corrugated Sheets, PP Layer Pads, Sunpack Boards, and Floor Protection Sheets for seafood, beverage, pharmaceutical, and construction industries across Kochi, Ernakulam, and Kerala.',
-  alternates: {
-    canonical: getSiteUrl('/locations/kochi'),
-  },
-  openGraph: {
-    title: 'PP Corrugated Sheet Manufacturer in Kochi | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD manufactures 100% waterproof PP Corrugated Sheets, PP Layer Pads, Sunpack Boards, and Floor Protection Sheets for seafood, beverage, pharmaceutical, and construction industries across Kochi, Ernakulam, and Kerala.',
-    url: getSiteUrl('/locations/kochi'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PP Corrugated Sheet Manufacturer in Kochi | Twinplast Polymers PVT LTD',
-    description:
-      'Direct manufacturer supply of waterproof PP fluted sheets, seafood layer pads, and Sunpack printing sheets in Kochi and Ernakulam.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+    'Twinplast Polymers manufactures 100% waterproof PP Corrugated Sheets, PP Layer Pads, Sunpack Boards, and Floor Protection Sheets for seafood, beverage, pharmaceutical, and construction industries across Kochi, Ernakulam, and Kerala.',
+  path: '/locations/kochi',
+  twitterDescription:
+    'Direct manufacturer supply of waterproof PP fluted sheets, seafood layer pads, and Sunpack printing sheets in Kochi and Ernakulam.',
+});
 
-const products = [
+const products = buildLocationProducts([
   {
-    title: 'PP Corrugated Sheet',
-    slug: 'pp-corrugated-sheet',
+    key: 'corrugatedSheet',
     desc: '100% waterproof and moisture-impervious polypropylene fluted sheets ideal for seafood processing, coastal cargo packaging, and industrial dunnage.',
   },
   {
-    title: 'Sunpack Sheet',
-    slug: 'sunpack-sheet',
+    key: 'sunpackSheet',
     desc: 'Corona-treated polypropylene advertising board engineered for high-resolution screen printing, outdoor brand campaigns, and retail signs across Kerala.',
   },
   {
-    title: 'Floor Protection Sheet',
-    slug: 'floor-protection-sheet',
+    key: 'floorProtectionSheet',
     desc: 'Durable, waterproof fluted plastic sheets safeguarding premium tile, marble, and granite flooring during Kochi commercial and residential interiors.',
   },
   {
-    title: 'PP Layer Pad',
-    slug: 'pp-layer-pad',
+    key: 'layerPadSheet',
     desc: 'Hygienic, washable, sealed-edge separator pads for multi-tier can, glass bottle, and beverage palletization in automated bottling lines.',
   },
   {
-    title: 'PP Hollow Sheet',
-    slug: 'pp-hollow-sheet',
+    key: 'hollowSheet',
     desc: 'Lightweight, rigid twin-wall polypropylene boards providing complete rot resistance and insulation in high-humidity coastal climates.',
   },
   {
-    title: 'PP Corrugated Box',
-    slug: 'pp-corrugated-box',
+    key: 'corrugatedBox',
     desc: 'Reusable, moisture-proof plastic boxes designed for seafood cold chain storage, spice exports, and fresh agricultural produce transit.',
   },
-];
+]);
 
 const faqs = [
   {
@@ -94,10 +67,10 @@ export default function KochiLocationPage() {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': `${getSiteUrl('/locations/kochi')}#webpage`,
-    name: 'PP Corrugated Sheet Manufacturer in Kochi | Twinplast Polymers PVT LTD',
+    name: 'PP Corrugated Sheet Manufacturer in Kochi | Twinplast Polymers',
     url: getSiteUrl('/locations/kochi'),
     description:
-      'Twinplast Polymers PVT LTD supplies waterproof PP corrugated sheets, layer pads, and Sunpack boards across Kochi and Kerala.',
+      'Twinplast Polymers supplies waterproof PP corrugated sheets, layer pads, and Sunpack boards across Kochi and Kerala.',
     isPartOf: {
       '@id': `${getSiteUrl('/')}#website`,
     },
@@ -172,7 +145,7 @@ export default function KochiLocationPage() {
               PP Corrugated Sheet Manufacturer in Kochi
             </h1>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed pt-2">
-              Twinplast Polymers PVT LTD manufactures premium, 100% waterproof polypropylene corrugated sheets, beverage layer pads, Sunpack printing boards, and floor protection rolls across Kochi, Ernakulam, and all districts of Kerala. Direct factory pricing with complete resistance to coastal humidity and moisture.
+              Twinplast Polymers manufactures premium, 100% waterproof polypropylene corrugated sheets, beverage layer pads, Sunpack printing boards, and floor protection rolls across Kochi, Ernakulam, and all districts of Kerala. Direct factory pricing with complete resistance to coastal humidity and moisture.
             </p>
             <div className="pt-4 flex flex-wrap gap-3">
               <Link

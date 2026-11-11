@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ChevronRight, ArrowLeft, Mail, ShieldCheck, CheckCircle2 } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
+import { createPublicClient } from '@/lib/supabase/public';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Industry } from '@/types';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { getSiteUrl } from '@/lib/site';
+import { BRAND_NAME, buildPublicMetadata, normalizeMetaDescription } from '@/lib/seo';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
@@ -14,74 +15,55 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const supabase = createPublicClient();
+  if (!supabase) return [];
+  const { data } = await supabase.from('industries').select('id').eq('active', true);
+  return ((data || []) as Array<{ id: string }>)
+    .filter((ind) => ind.id !== undefined && ind.id !== null && String(ind.id).trim().length > 0)
+    .map((ind) => ({ id: String(ind.id).trim() }));
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const canonicalUrl = getSiteUrl(`/solutions/${id}`);
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
+    if (!supabase) throw new Error('Public Supabase client unavailable');
     const { data: industry } = await supabase
       .from('industries')
-      .select('title, description, image_cloudinary_public_id, image_url')
+      .select('id, title, description, image_cloudinary_public_id, image_url')
       .or(`id.eq.${id},title.ilike.%${decodeURIComponent(id).replace(/-/g, '%')}%`)
       .eq('active', true)
       .limit(1)
       .maybeSingle() as unknown as { data: Industry | null };
 
     if (!industry) {
-      return { title: 'Solution Not Found | Twinplast Polymers PVT LTD' };
+      return { title: 'Solution Not Found' };
     }
 
-    const title = `${industry.title} Solution | Twinplast Polymers PVT LTD`;
-    const description = industry.description;
     const ogImageUrl = industry.image_cloudinary_public_id
       ? getOptimizedImageUrl(industry.image_cloudinary_public_id, { width: 1200, height: 630, quality: 'auto' })
-      : industry.image_url || getSiteUrl('/logo.png');
+      : industry.image_url || undefined;
 
-    return {
-      title,
-      description,
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title,
-        description,
-        url: canonicalUrl,
-        siteName: 'Twinplast Polymers PVT LTD',
-        type: 'website',
-        images: [
-          {
-            url: ogImageUrl,
-            alt: industry.title,
-          },
-        ],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title,
-        description,
-        images: [ogImageUrl],
-      },
-    };
+    return buildPublicMetadata({
+      title: `${industry.title} PP Sheet Solution`,
+      description: normalizeMetaDescription(
+        `${industry.description} Custom PP corrugated sheet packaging and protection solutions manufactured by Twinplast Polymers.`,
+        160
+      ),
+      path: `/solutions/${industry.id}`,
+      imageUrl: ogImageUrl,
+      imageAlt: industry.title,
+    });
   } catch {
-    return {
-      title: 'Industry Solution Detail | Twinplast Polymers PVT LTD',
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title: 'Industry Solution Detail | Twinplast Polymers PVT LTD',
-        url: canonicalUrl,
-        siteName: 'Twinplast Polymers PVT LTD',
-        type: 'website',
-        images: [{ url: getSiteUrl('/logo.png') }],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        images: [getSiteUrl('/logo.png')],
-      },
-    };
+    return buildPublicMetadata({
+      title: 'Industry PP Sheet Solution',
+      description: 'Industry-specific polypropylene corrugated sheet applications and packaging solutions from Twinplast Polymers.',
+      path: `/solutions/${id}`,
+    });
   }
 }
 
@@ -91,7 +73,8 @@ export default async function SolutionDetailPage({ params }: PageProps) {
   let otherIndustries: Industry[] = [];
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
+    if (!supabase) throw new Error('Public Supabase client unavailable');
     
     // Fetch target industry by ID or title match
     const { data } = await supabase
@@ -133,7 +116,7 @@ export default async function SolutionDetailPage({ params }: PageProps) {
     provider: {
       '@type': 'Organization',
       '@id': `${getSiteUrl('/')}#organization`,
-      name: 'Twinplast Polymers PVT LTD',
+      name: BRAND_NAME,
     },
     url: getSiteUrl(`/solutions/${industry.id}`),
   };
@@ -191,6 +174,8 @@ export default async function SolutionDetailPage({ params }: PageProps) {
                   alt={industry.title}
                   aspectRatio="square"
                   fit="cover"
+                  sizes="(max-width: 1024px) 100vw, 42vw"
+                  preload
                   className="w-full h-full object-cover"
                 />
               </div>

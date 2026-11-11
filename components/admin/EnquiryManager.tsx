@@ -53,12 +53,15 @@ export function EnquiryManager({ initialEnquiries }: EnquiryManagerProps) {
   // Filter Logic: status match and search query match
   const filteredEnquiries = enquiries.filter((e) => {
     const matchesStatus = statusFilter === 'All' || e.status === statusFilter;
-    
-    const matchesSearch = 
-      e.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (e.company && e.company.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      e.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      e.message.toLowerCase().includes(searchQuery.toLowerCase());
+    const q = searchQuery.toLowerCase();
+
+    const matchesSearch =
+      e.customer_name.toLowerCase().includes(q) ||
+      (e.company && e.company.toLowerCase().includes(q)) ||
+      (e.product && e.product.toLowerCase().includes(q)) ||
+      (e.solution && e.solution.toLowerCase().includes(q)) ||
+      e.email.toLowerCase().includes(q) ||
+      e.message.toLowerCase().includes(q);
 
     return matchesStatus && matchesSearch;
   });
@@ -157,6 +160,22 @@ export function EnquiryManager({ initialEnquiries }: EnquiryManagerProps) {
                   </div>
                 </div>
               </div>
+
+              {/* Product / Solution Selection Badges */}
+              {(e.product || e.solution) && (
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {e.product && (
+                    <span className="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 font-semibold text-blue-700 dark:bg-blue-950/30 dark:text-blue-300">
+                      Product: {e.product}
+                    </span>
+                  )}
+                  {e.solution && (
+                    <span className="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 font-semibold text-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                      Solution: {e.solution}
+                    </span>
+                  )}
+                </div>
+              )}
 
               {/* Message Payload */}
               <div className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line bg-slate-50 dark:bg-slate-900/20 p-4 rounded-lg border border-slate-100 dark:border-slate-900">

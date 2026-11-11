@@ -1,5 +1,3 @@
-'use client';
-
 import { ManufacturingStep } from '@/types';
 
 interface ManufacturingProcessSectionProps {

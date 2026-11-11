@@ -1,49 +1,31 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
+import { createPublicClient } from '@/lib/supabase/public';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { Product } from '@/types';
 
 import { JsonLd } from '@/components/shared/JsonLd';
 import { getSiteUrl } from '@/lib/site';
+import { buildPublicMetadata } from '@/lib/seo';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'PP Products | Twinplast Polymers PVT LTD',
-  description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets manufactured by Twinplast Polymers PVT LTD for industrial and packaging applications.',
-  alternates: {
-    canonical: getSiteUrl('/products'),
-  },
-  openGraph: {
-    title: 'PP Products | Twinplast Polymers PVT LTD',
-    description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets manufactured by Twinplast Polymers PVT LTD for industrial and packaging applications.',
-    url: getSiteUrl('/products'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PP Products | Twinplast Polymers PVT LTD',
-    description: 'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheets manufactured by Twinplast Polymers PVT LTD for industrial and packaging applications.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+export const revalidate = 300;
+
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'PP Corrugated Sheets & Polypropylene Products',
+  description:
+    'Explore PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and PP Corrugated Box sheets manufactured by Twinplast Polymers for industrial packaging and signage applications.',
+  path: '/products',
+});
 
 export default async function ProductsCatalogPage() {
   let products: Product[] = [];
   let hasDbError = false;
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
+    if (!supabase) throw new Error('Public Supabase client unavailable');
     const { data, error } = await supabase
       .from('products')
       .select('*')
@@ -132,6 +114,7 @@ export default async function ProductsCatalogPage() {
                       alt={prod.title}
                       aspectRatio="tall"
                       fit="cover"
+                      sizes="(max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                       unstyled
                     />
                   </div>

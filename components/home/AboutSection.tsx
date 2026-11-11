@@ -53,10 +53,9 @@ export function AboutSection({
             <div className="h-52 relative border border-slate-200 bg-slate-50 rounded-xl overflow-hidden shadow-2xs group">
               {mainImage ? (
                 <Image
-                  src={getOptimizedImageUrl(mainImage, { width: 1600, crop: 'fill', quality: 'best' })}
+                  src={getOptimizedImageUrl(mainImage, { width: 1200, crop: 'fill', quality: 'auto' })}
                   alt="Twinplast Polymers manufacturing facility in Thoothukudi"
                   fill
-                  unoptimized
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
@@ -72,10 +71,9 @@ export function AboutSection({
               <div className="h-52 relative border border-slate-200 bg-slate-50 rounded-xl overflow-hidden shadow-2xs group">
                 {secondaryImage1 ? (
                   <Image
-                    src={getOptimizedImageUrl(secondaryImage1, { width: 800, crop: 'fill', quality: 'best' })}
+                    src={getOptimizedImageUrl(secondaryImage1, { width: 800, crop: 'fill', quality: 'auto' })}
                     alt="Automated polypropylene extrusion line machinery"
                     fill
-                    unoptimized
                     sizes="(max-width: 1024px) 50vw, 25vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -89,10 +87,9 @@ export function AboutSection({
               <div className="h-52 relative border border-slate-200 bg-slate-50 rounded-xl overflow-hidden shadow-2xs group">
                 {secondaryImage2 ? (
                   <Image
-                    src={getOptimizedImageUrl(secondaryImage2, { width: 800, crop: 'fill', quality: 'best' })}
+                    src={getOptimizedImageUrl(secondaryImage2, { width: 800, crop: 'fill', quality: 'auto' })}
                     alt="Stacked finished polymer partition layer pads"
                     fill
-                    unoptimized
                     sizes="(max-width: 1024px) 50vw, 25vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />

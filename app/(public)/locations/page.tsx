@@ -2,40 +2,16 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight, MapPin, Factory, Truck, ShieldCheck, ArrowRight } from 'lucide-react';
 import { getSiteUrl } from '@/lib/site';
+import { buildPublicMetadata } from '@/lib/seo';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'PP Sheet Supply Locations in South India | Twinplast Polymers PVT LTD',
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'PP Corrugated Sheet Supply Locations in South India',
   description:
-    'Twinplast Polymers PVT LTD manufactures and supplies high-grade PP Corrugated, Sunpack, Hollow and Layer Pad sheets across Tamil Nadu, Kerala, Karnataka and South India.',
-  alternates: {
-    canonical: getSiteUrl('/locations'),
-  },
-  openGraph: {
-    title: 'PP Sheet Supply Locations in South India | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD manufactures and supplies high-grade PP Corrugated, Sunpack, Hollow and Layer Pad sheets across Tamil Nadu, Kerala, Karnataka and South India.',
-    url: getSiteUrl('/locations'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PP Sheet Supply Locations in South India | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD manufactures and supplies high-grade PP Corrugated, Sunpack, Hollow and Layer Pad sheets across Tamil Nadu, Kerala, Karnataka and South India.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+    'Twinplast Polymers manufactures and supplies PP Corrugated, Sunpack, Hollow, Floor Protection and Layer Pad sheets across Tamil Nadu, Kerala, Karnataka and India.',
+  path: '/locations',
+});
 
 const locations = [
   {
@@ -75,10 +51,10 @@ export default function LocationsOverviewPage() {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     '@id': `${getSiteUrl('/locations')}#collection`,
-    name: 'PP Sheet Supply Locations in South India | Twinplast Polymers PVT LTD',
+    name: 'PP Corrugated Sheet Supply Locations in South India | Twinplast Polymers',
     url: getSiteUrl('/locations'),
     description:
-      'Twinplast Polymers PVT LTD manufactures and supplies high-grade PP Corrugated, Sunpack, Hollow and Layer Pad sheets across Tamil Nadu, Kerala, Karnataka and South India.',
+      'Twinplast Polymers manufactures and supplies PP Corrugated, Sunpack, Hollow, Floor Protection and Layer Pad sheets across Tamil Nadu, Kerala, Karnataka and India.',
     publisher: {
       '@id': `${getSiteUrl('/')}#organization`,
     },
@@ -128,7 +104,7 @@ export default function LocationsOverviewPage() {
               PP Sheet Supply Locations
             </h1>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-              Twinplast Polymers PVT LTD operates an advanced extrusion plant in Thoothukudi, Tamil Nadu, supplying engineered polypropylene fluted sheets, Sunpack boards, and packaging products across South India.
+              Twinplast Polymers operates an advanced extrusion plant in Thoothukudi, Tamil Nadu, supplying engineered polypropylene fluted sheets, Sunpack boards, and packaging products across South India.
             </p>
           </div>
         </div>

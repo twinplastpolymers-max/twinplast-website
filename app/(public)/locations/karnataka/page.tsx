@@ -2,73 +2,44 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight, ShieldCheck, Truck, Layers, Mail } from 'lucide-react';
 import { getSiteUrl } from '@/lib/site';
+import { buildPublicMetadata } from '@/lib/seo';
+import { buildLocationProducts } from '@/lib/products';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'PP Sheet Supplier in Karnataka | Twinplast Polymers PVT LTD',
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'PP Corrugated Sheet Supplier in Karnataka',
   description:
-    'Twinplast Polymers PVT LTD supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
-  alternates: {
-    canonical: getSiteUrl('/locations/karnataka'),
-  },
-  openGraph: {
-    title: 'PP Sheet Supplier in Karnataka | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
-    url: getSiteUrl('/locations/karnataka'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PP Sheet Supplier in Karnataka | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+    'Twinplast Polymers supplies PP Corrugated, Hollow, Sunpack, Layer Pad and Floor Protection sheets to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
+  path: '/locations/karnataka',
+});
 
-const products = [
+const products = buildLocationProducts([
   {
-    title: 'PP Corrugated Sheet',
-    slug: 'pp-corrugated-sheet',
+    key: 'corrugatedSheet',
     desc: 'Lightweight fluted polypropylene sheet engineered for packaging, cushioning, and protective partitions.',
   },
   {
-    title: 'Sunpack Sheet',
-    slug: 'sunpack-sheet',
+    key: 'sunpackSheet',
     desc: 'Corona-treated polypropylene advertising board optimized for high-resolution screen and digital printing.',
   },
   {
-    title: 'PP Hollow Sheet',
-    slug: 'pp-hollow-sheet',
+    key: 'hollowSheet',
     desc: 'Twin-wall structured polypropylene sheet providing high rigidity, insulation, and impact resistance.',
   },
   {
-    title: 'Floor Protection Sheet',
-    slug: 'floor-protection-sheet',
+    key: 'floorProtectionSheet',
     desc: 'Durable, impact-absorbing sheet designed to protect tile, marble, and hardwood flooring during interior construction.',
   },
   {
-    title: 'PP Layer Pad',
-    slug: 'pp-layer-pad',
+    key: 'layerPadSheet',
     desc: 'Hygienic, waterproof separator sheet with sealed edges for automated palletizing and beverage stacking.',
   },
   {
-    title: 'PP Corrugated Box',
-    slug: 'pp-corrugated-box',
+    key: 'corrugatedBox',
     desc: 'Custom collapsible and reusable transit packaging boxes designed for automotive and electronic components.',
   },
-];
+]);
 
 const solutions = [
   { title: 'Automotive Components Packaging', href: '/solutions' },
@@ -82,10 +53,10 @@ export default function KarnatakaLocationPage() {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': `${getSiteUrl('/locations/karnataka')}#webpage`,
-    name: 'PP Sheet Supplier in Karnataka | Twinplast Polymers PVT LTD',
+    name: 'PP Corrugated Sheet Supplier in Karnataka | Twinplast Polymers',
     url: getSiteUrl('/locations/karnataka'),
     description:
-      'Twinplast Polymers PVT LTD supplies PP sheets — Corrugated, Hollow, Sunpack and more — to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
+      'Twinplast Polymers supplies PP Corrugated, Hollow, Sunpack, Layer Pad and Floor Protection sheets to packaging, automotive and construction businesses across Karnataka from Thoothukudi, Tamil Nadu.',
     isPartOf: {
       '@id': `${getSiteUrl('/')}#website`,
     },

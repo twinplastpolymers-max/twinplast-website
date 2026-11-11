@@ -2,73 +2,46 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight, ShieldCheck, Factory, Truck, Layers, Mail, CheckCircle2, HelpCircle } from 'lucide-react';
 import { getSiteUrl } from '@/lib/site';
+import { buildPublicMetadata } from '@/lib/seo';
+import { buildLocationProducts } from '@/lib/products';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'PP Corrugated Sheet Manufacturer in Chennai | Twinplast Polymers PVT LTD',
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'PP Corrugated Sheet Manufacturer in Chennai',
   description:
-    'Twinplast Polymers PVT LTD supplies premium PP Corrugated Sheets, Sunpack Boards, Hollow Sheets, Layer Pads, and Floor Protection Sheets to automotive, electronics, and export industries in Chennai, Sriperumbudur, and Oragadam.',
-  alternates: {
-    canonical: getSiteUrl('/locations/chennai'),
-  },
-  openGraph: {
-    title: 'PP Corrugated Sheet Manufacturer in Chennai | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD supplies premium PP Corrugated Sheets, Sunpack Boards, Hollow Sheets, Layer Pads, and Floor Protection Sheets to automotive, electronics, and export industries in Chennai, Sriperumbudur, and Oragadam.',
-    url: getSiteUrl('/locations/chennai'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PP Corrugated Sheet Manufacturer in Chennai | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD supplies premium PP Corrugated Sheets, Sunpack Boards, Hollow Sheets, Layer Pads, and Floor Protection Sheets to automotive and industrial hubs across Chennai.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+    'Twinplast Polymers supplies premium PP Corrugated Sheets, Sunpack Boards, Hollow Sheets, Layer Pads, and Floor Protection Sheets to automotive, electronics, and export industries in Chennai, Sriperumbudur, and Oragadam.',
+  path: '/locations/chennai',
+  twitterDescription:
+    'Twinplast Polymers supplies premium PP Corrugated Sheets, Sunpack Boards, Hollow Sheets, Layer Pads, and Floor Protection Sheets to automotive and industrial hubs across Chennai.',
+});
 
-const products = [
+const products = buildLocationProducts([
   {
-    title: 'PP Corrugated Sheet',
-    slug: 'pp-corrugated-sheet',
+    key: 'corrugatedSheet',
     desc: 'Impact-absorbing fluted polypropylene sheet designed for returnable dunnage, protective packaging, and automotive part dividers.',
   },
   {
-    title: 'Sunpack Sheet',
-    slug: 'sunpack-sheet',
+    key: 'sunpackSheet',
     desc: 'Corona-treated polypropylene advertising board optimized for high-resolution screen printing, election signage, and POS retail displays.',
   },
   {
-    title: 'Floor Protection Sheet',
-    slug: 'floor-protection-sheet',
+    key: 'floorProtectionSheet',
     desc: 'Tough, waterproof protective sheet safeguarding tile, granite, and marble flooring during Chennai interior finishing and renovation.',
   },
   {
-    title: 'PP Layer Pad',
-    slug: 'pp-layer-pad',
+    key: 'layerPadSheet',
     desc: 'Hygienic, sealed-edge separator sheet for automated pallet stacking in beverage, food processing, and pharmaceutical plants.',
   },
   {
-    title: 'PP Hollow Sheet',
-    slug: 'pp-hollow-sheet',
+    key: 'hollowSheet',
     desc: 'Twin-wall structured polypropylene sheet offering lightweight rigidity, thermal insulation, and total moisture resistance.',
   },
   {
-    title: 'PP Corrugated Box',
-    slug: 'pp-corrugated-box',
+    key: 'corrugatedBox',
     desc: 'Custom reusable returnable transit packaging (RTP) boxes tailored for automotive assembly lines and electronic components in Chennai.',
   },
-];
+]);
 
 const faqs = [
   {
@@ -94,10 +67,10 @@ export default function ChennaiLocationPage() {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': `${getSiteUrl('/locations/chennai')}#webpage`,
-    name: 'PP Corrugated Sheet Manufacturer in Chennai | Twinplast Polymers PVT LTD',
+    name: 'PP Corrugated Sheet Manufacturer in Chennai | Twinplast Polymers',
     url: getSiteUrl('/locations/chennai'),
     description:
-      'Twinplast Polymers PVT LTD supplies industrial-grade PP corrugated sheets, Sunpack boards, and layer pads across Chennai manufacturing clusters.',
+      'Twinplast Polymers supplies industrial-grade PP corrugated sheets, Sunpack boards, and layer pads across Chennai manufacturing clusters.',
     isPartOf: {
       '@id': `${getSiteUrl('/')}#website`,
     },
@@ -173,7 +146,7 @@ export default function ChennaiLocationPage() {
               PP Corrugated Sheet Manufacturer in Chennai
             </h1>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed pt-2">
-              Twinplast Polymers PVT LTD supplies industrial-grade polypropylene fluted sheets, Sunpack boards, and custom corrugated plastic packaging across Chennai. Serving tier-1 automotive vendors in Sriperumbudur and Oragadam, electronics manufacturers, and commercial signage houses, we deliver custom GSM (200–1500) and thicknesses (2–10 mm) at direct factory pricing.
+              Twinplast Polymers supplies industrial-grade polypropylene fluted sheets, Sunpack boards, and custom corrugated plastic packaging across Chennai. Serving tier-1 automotive vendors in Sriperumbudur and Oragadam, electronics manufacturers, and commercial signage houses, we deliver custom GSM (200–1500) and thicknesses (2–10 mm) at direct factory pricing.
             </p>
             <div className="pt-4 flex flex-wrap gap-3">
               <Link

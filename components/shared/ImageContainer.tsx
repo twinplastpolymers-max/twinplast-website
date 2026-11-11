@@ -7,6 +7,8 @@ interface ImageContainerProps {
   aspectRatio?: 'video' | 'square' | 'wide' | 'tall' | 'portrait';
   className?: string;
   priority?: boolean;
+  preload?: boolean;
+  sizes?: string;
   unstyled?: boolean;
   fit?: 'contain' | 'cover';
 }
@@ -17,6 +19,8 @@ export function ImageContainer({
   aspectRatio = 'video',
   className = '',
   priority = false,
+  preload = false,
+  sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw',
   unstyled = false,
   fit = 'contain',
 }: ImageContainerProps) {
@@ -31,12 +35,12 @@ export function ImageContainer({
 
   const selectedAspect = aspectClasses[aspectRatio];
 
-  // Resolve Cloudinary optimised delivery URL with high-DPI support (1200px - 1600px)
+  // Resolve Cloudinary optimised delivery URL cleanly; next/image provides responsive srcset + AVIF/WebP
   const isPlaceholder = !src;
   const resolvedUrl = (!isPlaceholder && src) ? getOptimizedImageUrl(src, {
-    width: aspectRatio === 'square' ? 1200 : 1600,
+    width: aspectRatio === 'square' ? 1000 : 1200,
     crop: fit === 'contain' ? 'fit' : 'fill',
-    quality: 'best',
+    quality: 'auto',
   }) : null;
 
   const containerClasses = unstyled
@@ -54,10 +58,9 @@ export function ImageContainer({
           src={resolvedUrl}
           alt={alt}
           fill
-          unoptimized
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 60vw, 50vw"
+          sizes={sizes}
           className={imageClasses}
-          priority={priority}
+          preload={preload || priority}
         />
       ) : (
         // Premium, Minimalistic Editorial Placeholder for Future Media

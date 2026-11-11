@@ -26,7 +26,7 @@ export function WhyChooseSection({
 
   if (!pillars || pillars.length === 0) return null;
 
-  const resolvedImage = imageUrl || (image ? (image.startsWith('http') ? image : getOptimizedImageUrl(image, { quality: 'best', sharpen: 90, upscale: true })) : null);
+  const resolvedImage = imageUrl || (image ? (image.startsWith('http') ? image : getOptimizedImageUrl(image, { width: 1000, quality: 'auto' })) : null);
 
   const toggleAccordion = (idx: number) => {
     setOpenIndex(openIndex === idx ? null : idx);
@@ -62,7 +62,6 @@ export function WhyChooseSection({
                 src={resolvedImage}
                 alt={heading || 'Why Choose Us'}
                 fill
-                unoptimized
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover object-center"
               />

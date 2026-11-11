@@ -2,73 +2,46 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight, ShieldCheck, Factory, Truck, Layers, Mail, HelpCircle } from 'lucide-react';
 import { getSiteUrl } from '@/lib/site';
+import { buildPublicMetadata } from '@/lib/seo';
+import { buildLocationProducts } from '@/lib/products';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'PP Corrugated Sheet Manufacturer in Thoothukudi & Madurai | Twinplast Polymers PVT LTD',
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'PP Corrugated Sheet Manufacturer in Thoothukudi & Madurai',
   description:
-    'Twinplast Polymers PVT LTD operates high-capacity extrusion lines in Thoothukudi, manufacturing PP Corrugated Sheets, Sunpack Boards, Layer Pads, and Floor Protection Sheets for port export, agro-processing, and manufacturing across Thoothukudi, Madurai, and Tirunelveli.',
-  alternates: {
-    canonical: getSiteUrl('/locations/thoothukudi'),
-  },
-  openGraph: {
-    title: 'PP Corrugated Sheet Manufacturer in Thoothukudi & Madurai | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD operates high-capacity extrusion lines in Thoothukudi, manufacturing PP Corrugated Sheets, Sunpack Boards, Layer Pads, and Floor Protection Sheets for port export, agro-processing, and manufacturing across Thoothukudi, Madurai, and Tirunelveli.',
-    url: getSiteUrl('/locations/thoothukudi'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PP Corrugated Sheet Manufacturer in Thoothukudi & Madurai | Twinplast Polymers PVT LTD',
-    description:
-      'Direct factory gate supply of PP fluted sheets, export layer pads, and Sunpack printing sheets in Thoothukudi, Madurai, and Tirunelveli.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+    'Twinplast Polymers operates high-capacity extrusion lines in Thoothukudi, manufacturing PP Corrugated Sheets, Sunpack Boards, Layer Pads, and Floor Protection Sheets for port export, agro-processing, and manufacturing across Thoothukudi, Madurai, and Tirunelveli.',
+  path: '/locations/thoothukudi',
+  twitterDescription:
+    'Direct factory gate supply of PP fluted sheets, export layer pads, and Sunpack printing sheets in Thoothukudi, Madurai, and Tirunelveli.',
+});
 
-const products = [
+const products = buildLocationProducts([
   {
-    title: 'PP Corrugated Sheet',
-    slug: 'pp-corrugated-sheet',
+    key: 'corrugatedSheet',
     desc: 'Extruded polypropylene fluted sheets manufactured right at our Thoothukudi facility for port packaging, chemical storage, and industrial dividers.',
   },
   {
-    title: 'Sunpack Sheet',
-    slug: 'sunpack-sheet',
+    key: 'sunpackSheet',
     desc: 'High-dyne corona-treated advertising sheets for vibrant screen and UV printing across Madurai, Tirunelveli, and Southern Tamil Nadu.',
   },
   {
-    title: 'Floor Protection Sheet',
-    slug: 'floor-protection-sheet',
+    key: 'floorProtectionSheet',
     desc: 'Heavy-duty fluted polypropylene rolls and sheets providing scratch-proof flooring defense for residential and commercial construction.',
   },
   {
-    title: 'PP Layer Pad',
-    slug: 'pp-layer-pad',
+    key: 'layerPadSheet',
     desc: 'Food-grade, sealed-edge hygienic layer pads for maritime export containers, beverage can palletization, and agro-product stacking.',
   },
   {
-    title: 'PP Hollow Sheet',
-    slug: 'pp-hollow-sheet',
+    key: 'hollowSheet',
     desc: 'Lightweight, twin-wall structured polypropylene sheets resistant to salt air, chemical fumes, and high humidity.',
   },
   {
-    title: 'PP Corrugated Box',
-    slug: 'pp-corrugated-box',
+    key: 'corrugatedBox',
     desc: 'Custom returnable transit packaging (RTP) boxes engineered for export cargo, agro-produce, and engineering components.',
   },
-];
+]);
 
 const faqs = [
   {
@@ -94,10 +67,10 @@ export default function ThoothukudiLocationPage() {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': `${getSiteUrl('/locations/thoothukudi')}#webpage`,
-    name: 'PP Corrugated Sheet Manufacturer in Thoothukudi & Madurai | Twinplast Polymers PVT LTD',
+    name: 'PP Corrugated Sheet Manufacturer in Thoothukudi & Madurai | Twinplast Polymers',
     url: getSiteUrl('/locations/thoothukudi'),
     description:
-      'Twinplast Polymers PVT LTD manufactures industrial PP corrugated sheets, Sunpack boards, and export layer pads from our factory in Thoothukudi, Tamil Nadu.',
+      'Twinplast Polymers manufactures industrial PP corrugated sheets, Sunpack boards, and export layer pads from our factory in Thoothukudi, Tamil Nadu.',
     isPartOf: {
       '@id': `${getSiteUrl('/')}#website`,
     },
@@ -172,7 +145,7 @@ export default function ThoothukudiLocationPage() {
               PP Corrugated Sheet Manufacturer in Thoothukudi & Madurai
             </h1>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed pt-2">
-              Twinplast Polymers PVT LTD operates high-capacity polypropylene extrusion lines in Thoothukudi, Tamil Nadu. We supply factory-direct PP corrugated fluted sheets, export-ready layer pads, Sunpack advertising boards, and floor protection rolls across Thoothukudi, Madurai, Tirunelveli, and southern industrial corridors.
+              Twinplast Polymers operates high-capacity polypropylene extrusion lines in Thoothukudi, Tamil Nadu. We supply factory-direct PP corrugated fluted sheets, export-ready layer pads, Sunpack advertising boards, and floor protection rolls across Thoothukudi, Madurai, Tirunelveli, and southern industrial corridors.
             </p>
             <div className="pt-4 flex flex-wrap gap-3">
               <Link

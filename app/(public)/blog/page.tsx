@@ -1,51 +1,30 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Calendar, User, ChevronRight, BookOpen, ArrowRight } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
+import { createPublicClient } from '@/lib/supabase/public';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { BlogPost } from '@/types';
 import { getSiteUrl } from '@/lib/site';
+import { buildPublicMetadata } from '@/lib/seo';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'Blog & Technical Articles | Twinplast Polymers PVT LTD',
+export const revalidate = 300;
+
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'Blog & Technical Guides on PP Corrugated Sheets',
   description:
-    'Read articles, technical guides, and industry updates on PP Corrugated sheets, Sunpack boards, structural protection, and industrial packaging from Twinplast Polymers PVT LTD.',
-  alternates: {
-    canonical: getSiteUrl('/blog'),
-  },
-  openGraph: {
-    title: 'Blog & Technical Articles | Twinplast Polymers PVT LTD',
-    description:
-      'Read articles, technical guides, and industry updates on PP Corrugated sheets, Sunpack boards, structural protection, and industrial packaging from Twinplast Polymers PVT LTD.',
-    url: getSiteUrl('/blog'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Blog & Technical Articles | Twinplast Polymers PVT LTD',
-    description:
-      'Read articles, technical guides, and industry updates on PP Corrugated sheets, Sunpack boards, structural protection, and industrial packaging from Twinplast Polymers PVT LTD.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+    'Read articles, technical guides, and industry updates on PP corrugated sheets, Sunpack boards, structural protection, and industrial packaging from Twinplast Polymers.',
+  path: '/blog',
+});
 
 export default async function BlogListingPage() {
   let posts: BlogPost[] = [];
   let hasDbError = false;
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
+    if (!supabase) throw new Error('Public Supabase client unavailable');
     const { data, error } = await supabase
       .from('blog_posts')
       .select('*')
@@ -65,10 +44,10 @@ export default async function BlogListingPage() {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     '@id': `${getSiteUrl('/blog')}#collection`,
-    name: 'Twinplast Polymers PVT LTD Blog & Technical Guides',
+    name: 'Blog & Technical Guides on PP Corrugated Sheets | Twinplast Polymers',
     url: getSiteUrl('/blog'),
     description:
-      'Industry insights, polymer extrusion guides, and packaging solutions published by Twinplast Polymers PVT LTD.',
+      'Industry insights, polymer extrusion guides, and packaging solutions published by Twinplast Polymers.',
     publisher: {
       '@id': `${getSiteUrl('/')}#organization`,
     },
@@ -163,6 +142,7 @@ export default async function BlogListingPage() {
                       alt={post.title}
                       aspectRatio="video"
                       fit="cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       unstyled
                     />
                   </div>

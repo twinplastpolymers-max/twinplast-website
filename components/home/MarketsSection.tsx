@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { MarketRegionItem } from '@/types';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 
@@ -41,13 +42,19 @@ export function MarketsSection({
   return (
     <section className="relative py-8 sm:py-10 px-4 sm:px-6 lg:px-8 bg-slate-950 overflow-hidden" aria-labelledby="markets-heading">
       
-      {/* Background: Custom Uploaded Image from Admin with fixed position and black shadow */}
+      {/* Background: Custom Uploaded Image from Admin rendered cleanly without bg-fixed repaint jank */}
       {backgroundImage && (
-        <div 
-          className="absolute inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat bg-fixed"
-          style={{ backgroundImage: `url(${backgroundImage})` }}
-          aria-hidden="true" 
+        <div
+          className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
+          aria-hidden="true"
         >
+          <Image
+            src={backgroundImage}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover object-center"
+          />
           {/* Black shadow / overlay */}
           <div className="absolute inset-0 bg-black/65" />
         </div>
@@ -102,7 +109,7 @@ export function MarketsSection({
           {/* 4-Node Responsive Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-y-4 md:gap-x-0 relative z-10">
             {marketItems.map((item) => {
-              const resolvedImg = item.image_url || (item.image ? getOptimizedImageUrl(item.image, { quality: 'best', upscale: true }) : '');
+              const resolvedImg = item.image_url || (item.image ? getOptimizedImageUrl(item.image, { width: 240, quality: 'auto' }) : '');
               const lower = item.label.toLowerCase();
               const locHref = lower.includes('tamil')
                 ? '/locations/tamil-nadu'
@@ -122,9 +129,12 @@ export function MarketsSection({
                     {/* Circular Node with Uploaded Map Image and 360 Soft Blue Glow */}
                     <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-white shadow-[0_0_36px_rgba(59,130,246,0.18)] border border-blue-50 flex items-center justify-center p-2 sm:p-2.5 relative z-10 transition-all duration-300 group-hover/item:scale-105 group-hover/item:shadow-[0_0_42px_rgba(37,99,235,0.28)] overflow-hidden">
                       {resolvedImg ? (
-                        <img
+                        <Image
                           src={resolvedImg}
                           alt={item.label}
+                          width={80}
+                          height={80}
+                          sizes="(max-width: 768px) 64px, 80px"
                           className="w-16 h-16 md:w-20 md:h-20 object-contain transition-transform duration-300 group-hover/item:scale-110"
                         />
                       ) : (

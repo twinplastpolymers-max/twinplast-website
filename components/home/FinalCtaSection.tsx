@@ -32,11 +32,9 @@ export function FinalCtaSection({
       <div className="absolute inset-0 z-0">
         {bgImage ? (
           <Image
-            src={getOptimizedImageUrl(bgImage, { quality: 'best', sharpen: 90, upscale: true })}
+            src={getOptimizedImageUrl(bgImage, { width: 1600, quality: 'auto' })}
             alt="Industrial texture background"
             fill
-            priority
-            unoptimized
             sizes="100vw"
             className="object-cover object-center pointer-events-none"
           />

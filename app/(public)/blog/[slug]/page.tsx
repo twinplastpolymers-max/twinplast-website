@@ -2,11 +2,17 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Calendar, User, ChevronRight, ArrowLeft, Clock, Share2, Layers, MapPin, Building2 } from 'lucide-react';
-import { createClient } from '@/lib/supabase/server';
+import { createPublicClient } from '@/lib/supabase/public';
 import { ImageContainer } from '@/components/shared/ImageContainer';
 import { BlogPost } from '@/types';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { getSiteUrl } from '@/lib/site';
+import {
+  BRAND_NAME,
+  buildPublicMetadata,
+  normalizeBrandTitleSuffix,
+  normalizeMetaDescription,
+} from '@/lib/seo';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
@@ -14,12 +20,23 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const supabase = createPublicClient();
+  if (!supabase) return [];
+  const { data } = await supabase.from('blog_posts').select('slug').eq('status', 'published');
+  return ((data || []) as Array<{ slug: string }>)
+    .filter((p) => typeof p.slug === 'string' && p.slug.trim().length > 0)
+    .map((p) => ({ slug: p.slug.trim() }));
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const canonicalUrl = getSiteUrl(`/blog/${slug}`);
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
+    if (!supabase) throw new Error('Public Supabase client unavailable');
     const { data: post } = await supabase
       .from('blog_posts')
       .select('title, excerpt, content, featured_image, featured_image_cloudinary_public_id, seo_title, seo_description')
@@ -28,60 +45,32 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       .single() as unknown as { data: BlogPost | null };
 
     if (!post) {
-      return { title: 'Article Not Found | Twinplast Polymers PVT LTD' };
+      return { title: 'Article Not Found' };
     }
 
-    const title = post.seo_title || `${post.title} | Twinplast Polymers PVT LTD`;
-    const description = post.seo_description || post.excerpt || post.content.slice(0, 155);
+    const fullTitle = normalizeBrandTitleSuffix(post.seo_title || post.title);
+    const description = normalizeMetaDescription(post.seo_description || post.excerpt || post.content, 160);
 
     const ogImageUrl = post.featured_image_cloudinary_public_id
       ? getOptimizedImageUrl(post.featured_image_cloudinary_public_id, { width: 1200, height: 630, quality: 'auto' })
-      : post.featured_image || getSiteUrl('/logo.png');
+      : post.featured_image || undefined;
 
-    return {
-      title,
+    return buildPublicMetadata({
+      title: fullTitle,
       description,
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title,
-        description,
-        url: canonicalUrl,
-        siteName: 'Twinplast Polymers PVT LTD',
-        type: 'article',
-        images: [
-          {
-            url: ogImageUrl,
-            alt: post.title,
-          },
-        ],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title,
-        description,
-        images: [ogImageUrl],
-      },
-    };
+      path: `/blog/${slug}`,
+      absoluteTitle: true,
+      type: 'article',
+      imageUrl: ogImageUrl,
+      imageAlt: post.title,
+    });
   } catch {
-    return {
-      title: 'Article | Twinplast Polymers PVT LTD',
-      alternates: {
-        canonical: canonicalUrl,
-      },
-      openGraph: {
-        title: 'Article | Twinplast Polymers PVT LTD',
-        url: canonicalUrl,
-        siteName: 'Twinplast Polymers PVT LTD',
-        type: 'article',
-        images: [{ url: getSiteUrl('/logo.png') }],
-      },
-      twitter: {
-        card: 'summary_large_image',
-        images: [getSiteUrl('/logo.png')],
-      },
-    };
+    return buildPublicMetadata({
+      title: 'Technical Article',
+      description: 'Read technical guides and industrial insights on PP corrugated sheets and polypropylene packaging from Twinplast Polymers.',
+      path: `/blog/${slug}`,
+      type: 'article',
+    });
   }
 }
 
@@ -91,7 +80,8 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
   let recentPosts: BlogPost[] = [];
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
+    if (!supabase) throw new Error('Public Supabase client unavailable');
     const [{ data: postData, error }, { data: recentData }] = await Promise.all([
       supabase.from('blog_posts').select('*').eq('slug', slug).eq('status', 'published').single(),
       supabase
@@ -130,7 +120,7 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
     '@type': 'BlogPosting',
     '@id': `${getSiteUrl(`/blog/${post.slug}`)}#article`,
     headline: post.title,
-    description: post.seo_description || post.excerpt || post.content.slice(0, 155),
+    description: normalizeMetaDescription(post.seo_description || post.excerpt || post.content, 160),
     image: postImageUrl,
     datePublished: post.published_at || post.created_at,
     dateModified: post.updated_at || post.published_at || post.created_at,
@@ -141,7 +131,7 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
     publisher: {
       '@type': 'Organization',
       '@id': `${getSiteUrl('/')}#organization`,
-      name: 'Twinplast Polymers PVT LTD',
+      name: BRAND_NAME,
       logo: {
         '@type': 'ImageObject',
         url: getSiteUrl('/logo.png'),
@@ -285,6 +275,8 @@ export default async function BlogPostDetailPage({ params }: PageProps) {
                 alt={post.title}
                 aspectRatio="wide"
                 fit="cover"
+                sizes="(max-width: 896px) 100vw, 896px"
+                preload
               />
             </div>
           )}

@@ -2,73 +2,46 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight, ShieldCheck, Factory, Truck, Layers, Mail, CheckCircle2, HelpCircle } from 'lucide-react';
 import { getSiteUrl } from '@/lib/site';
+import { buildPublicMetadata } from '@/lib/seo';
+import { buildLocationProducts } from '@/lib/products';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'PP Corrugated Sheet Manufacturer in India | Twinplast Polymers PVT LTD',
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'PP Corrugated Sheet Manufacturer in India',
   description:
-    'Twinplast Polymers PVT LTD is a direct polypropylene (PP) extrusion manufacturer in India producing PP Corrugated Sheets, Sunpack Boards, Hollow Sheets, Layer Pads, and Floor Protection Sheets (200–1500 GSM, 2–10 mm).',
-  alternates: {
-    canonical: getSiteUrl('/locations/india'),
-  },
-  openGraph: {
-    title: 'PP Corrugated Sheet Manufacturer in India | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD is a direct polypropylene (PP) extrusion manufacturer in India producing PP Corrugated Sheets, Sunpack Boards, Hollow Sheets, Layer Pads, and Floor Protection Sheets (200–1500 GSM, 2–10 mm).',
-    url: getSiteUrl('/locations/india'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'PP Corrugated Sheet Manufacturer in India | Twinplast Polymers PVT LTD',
-    description:
-      'Twinplast Polymers PVT LTD is a direct polypropylene (PP) extrusion manufacturer in India producing PP Corrugated Sheets, Sunpack Boards, Hollow Sheets, Layer Pads, and Floor Protection Sheets.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+    'Twinplast Polymers is a direct polypropylene (PP) extrusion manufacturer in India producing PP Corrugated Sheets, Sunpack Boards, Hollow Sheets, Layer Pads, and Floor Protection Sheets (200–1500 GSM, 2–10 mm).',
+  path: '/locations/india',
+  twitterDescription:
+    'Twinplast Polymers is a direct polypropylene (PP) extrusion manufacturer in India producing PP Corrugated Sheets, Sunpack Boards, Hollow Sheets, Layer Pads, and Floor Protection Sheets.',
+});
 
-const products = [
+const products = buildLocationProducts([
   {
-    title: 'PP Corrugated Sheet',
-    slug: 'pp-corrugated-sheet',
+    key: 'corrugatedSheet',
     desc: 'Lightweight, shock-absorbing fluted polypropylene sheet engineered for returnable industrial packaging and cushioning partitions.',
   },
   {
-    title: 'Sunpack Sheet',
-    slug: 'sunpack-sheet',
+    key: 'sunpackSheet',
     desc: 'Corona-treated advertising and signage board offering high dyne level surface tension for vibrant UV flatbed and screen printing.',
   },
   {
-    title: 'PP Hollow Sheet',
-    slug: 'pp-hollow-sheet',
+    key: 'hollowSheet',
     desc: 'Dual-wall extruded polypropylene structured sheet with superior rigidity, thermal insulation, and waterproof durability.',
   },
   {
-    title: 'Floor Protection Sheet',
-    slug: 'floor-protection-sheet',
+    key: 'floorProtectionSheet',
     desc: 'Heavy-duty impact protection board defending tiles, Italian marble, and wooden flooring against heavy site traffic during construction.',
   },
   {
-    title: 'PP Layer Pad',
-    slug: 'pp-layer-pad',
+    key: 'layerPadSheet',
     desc: 'Sealed-edge hygienic separator sheet designed for automated can, glass bottle, and beverage palletizing in industrial bottling plants.',
   },
   {
-    title: 'PP Corrugated Box',
-    slug: 'pp-corrugated-box',
+    key: 'corrugatedBox',
     desc: 'Collapsible, reusable Returnable Transit Packaging (RTP) boxes engineered for automotive parts, retail, and closed-loop logistics.',
   },
-];
+]);
 
 const faqs = [
   {
@@ -94,10 +67,10 @@ export default function IndiaLocationPage() {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': `${getSiteUrl('/locations/india')}#webpage`,
-    name: 'PP Corrugated Sheet Manufacturer in India | Twinplast Polymers PVT LTD',
+    name: 'PP Corrugated Sheet Manufacturer in India | Twinplast Polymers',
     url: getSiteUrl('/locations/india'),
     description:
-      'Twinplast Polymers PVT LTD is an advanced polypropylene sheet manufacturer in India supplying PP corrugated sheets, Sunpack boards, and layer pads across industrial supply chains.',
+      'Twinplast Polymers is an advanced polypropylene sheet manufacturer in India supplying PP corrugated sheets, Sunpack boards, and layer pads across industrial supply chains.',
     isPartOf: {
       '@id': `${getSiteUrl('/')}#website`,
     },
@@ -173,7 +146,7 @@ export default function IndiaLocationPage() {
               PP Corrugated Sheet Manufacturer in India
             </h1>
             <p className="text-sm sm:text-base text-slate-300 leading-relaxed pt-2">
-              Twinplast Polymers PVT LTD is an advanced polypropylene sheet extrusion manufacturer in India. Operating high-precision extrusion machinery in Thoothukudi, Tamil Nadu, we supply high-grade PP Corrugated Sheets, Sunpack Advertising Boards, PP Hollow Sheets, Layer Pads, and Floor Protection sheets to OEM manufacturers, tier-1 suppliers, export packaging houses, and commercial printers nationwide.
+              Twinplast Polymers is an advanced polypropylene sheet extrusion manufacturer in India. Operating high-precision extrusion machinery in Thoothukudi, Tamil Nadu, we supply high-grade PP Corrugated Sheets, Sunpack Advertising Boards, PP Hollow Sheets, Layer Pads, and Floor Protection sheets to OEM manufacturers, tier-1 suppliers, export packaging houses, and commercial printers nationwide.
             </p>
             <div className="pt-4 flex flex-wrap gap-3">
               <Link

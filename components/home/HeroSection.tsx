@@ -1,5 +1,4 @@
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import Image from 'next/image';
 import { SlideButton } from '@/components/shared/SlideButton';
 
 export interface HeroSectionProps {
@@ -23,12 +22,15 @@ export function HeroSection({
 
   return (
     <section className="relative overflow-hidden bg-slate-900 min-h-[calc(100vh-98px)] min-h-[calc(100dvh-98px)] flex items-end sm:items-center" aria-labelledby="hero-heading">
-      {/* Uploaded Background Image */}
+      {/* Uploaded Background Image rendered via next/image with preload for LCP */}
       {bgImageUrl && (
-        <div 
-          className="absolute inset-0 bg-cover bg-[65%] sm:bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${bgImageUrl})` }}
-          aria-hidden="true"
+        <Image
+          src={bgImageUrl}
+          alt={heading}
+          fill
+          preload
+          sizes="100vw"
+          className="object-cover object-[65%] sm:object-center pointer-events-none"
         />
       )}
 

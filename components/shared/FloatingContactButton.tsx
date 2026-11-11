@@ -23,14 +23,14 @@ export function FloatingContactButton({ phone, whatsappNumber }: FloatingContact
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  if (!phone && !whatsappNumber) return null;
-
+  const hasContactInfo = Boolean(phone || whatsappNumber);
   const cleanPhone = phone ? phone.replace(/[^+\d]/g, '') : '';
   const targetWhatsapp = (whatsappNumber && whatsappNumber.trim()) ? whatsappNumber : phone || '';
   const waNumber = targetWhatsapp.replace(/[^+\d]/g, '').replace('+', '');
 
   // Close when clicking outside
   useEffect(() => {
+    if (!hasContactInfo) return;
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -42,10 +42,11 @@ export function FloatingContactButton({ phone, whatsappNumber }: FloatingContact
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [hasContactInfo, isOpen]);
 
   // Close on Escape key
   useEffect(() => {
+    if (!hasContactInfo) return;
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         setIsOpen(false);
@@ -57,7 +58,9 @@ export function FloatingContactButton({ phone, whatsappNumber }: FloatingContact
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen]);
+  }, [hasContactInfo, isOpen]);
+
+  if (!hasContactInfo) return null;
 
   return (
     <div

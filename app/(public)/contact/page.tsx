@@ -1,94 +1,50 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { createClient } from '@/lib/supabase/server';
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
+import { getPublicShellData } from '@/lib/public-data';
 import { getSiteUrl } from '@/lib/site';
+import { BRAND_NAME, LEGAL_COMPANY_NAME, buildPublicMetadata } from '@/lib/seo';
 import { JsonLd } from '@/components/shared/JsonLd';
 import { HomeContactSection } from '@/components/home/HomeContactSection';
 
-export const metadata: Metadata = {
-  title: 'Contact Twinplast Polymers PVT LTD | Request a PP Sheet Quote',
-  description: 'Contact Twinplast Polymers PVT LTD in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
-  alternates: {
-    canonical: getSiteUrl('/contact'),
-  },
-  openGraph: {
-    title: 'Contact Twinplast Polymers PVT LTD | Request a PP Sheet Quote',
-    description: 'Contact Twinplast Polymers PVT LTD in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
-    url: getSiteUrl('/contact'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Contact Twinplast Polymers PVT LTD | Request a PP Sheet Quote',
-    description: 'Contact Twinplast Polymers PVT LTD in Thoothukudi, Tamil Nadu for PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+export const metadata: Metadata = buildPublicMetadata({
+  title: 'Contact Twinplast Polymers | Request a PP Corrugated Sheet Quote',
+  description:
+    'Contact Twinplast Polymers in Thoothukudi, Tamil Nadu for bulk PP Corrugated, Sunpack, Hollow, Layer Pad, Floor Protection and Box sheet enquiries and quotations.',
+  path: '/contact',
+  absoluteTitle: true,
+});
 
 interface ContactPageProps {
-  searchParams?: Promise<{ product?: string }>;
+  searchParams?: Promise<{ product?: string; solution?: string }>;
 }
 
 export default async function ContactPage({ searchParams }: ContactPageProps) {
   const resolvedParams = searchParams ? await searchParams : undefined;
   const initialProduct = resolvedParams?.product || '';
+  const initialSolution = resolvedParams?.solution || '';
 
-  let publicPhone = '';
-  let publicEmail = '';
-  let publicAddress = '';
-  let internationalPhone = '';
-  let products: string[] = [];
-  let solutions: string[] = [];
+  const {
+    publicPhone,
+    publicEmail,
+    publicAddress,
+    internationalPhone,
+    products: productRows,
+    solutions: solutionRows,
+  } = await getPublicShellData();
 
-  try {
-    const supabase = await createClient();
-    const [{ data: settingRes }, { data: productRes }, { data: industryRes }] = await Promise.all([
-      supabase.from('company_settings').select('*'),
-      supabase.from('products').select('title').eq('active', true).order('display_order', { ascending: true }),
-      supabase.from('industries').select('title').eq('active', true).order('display_order', { ascending: true }),
-    ]);
-
-    if (productRes) {
-      products = (productRes as Array<{ title: string }>).map((p) => p.title);
-    }
-    if (industryRes) {
-      solutions = (industryRes as Array<{ title: string }>).map((i) => i.title);
-    }
-
-    if (settingRes) {
-      const settings = settingRes as Array<{ key: string; value: unknown }>;
-      const pPhone = settings.find((s) => s.key === 'public_phone')?.value;
-      const pEmail = settings.find((s) => s.key === 'public_email')?.value;
-      const pAddr = settings.find((s) => s.key === 'public_address')?.value;
-
-      if (typeof pPhone === 'string' && pPhone.trim()) publicPhone = pPhone.trim();
-      if (typeof pEmail === 'string' && pEmail.trim()) publicEmail = pEmail.trim();
-      if (typeof pAddr === 'string' && pAddr.trim()) publicAddress = pAddr.trim();
-
-      const pIntlPhone = settings.find((s) => s.key === 'international_phone')?.value;
-      if (typeof pIntlPhone === 'string' && pIntlPhone.trim()) internationalPhone = pIntlPhone.trim();
-    }
-  } catch {
-    // Graceful fallback
-  }
+  const products = productRows.map((p) => p.title);
+  const solutions = solutionRows.map((s) => s.title);
 
   const localBusinessSchema = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${getSiteUrl('/')}#localbusiness`,
-    name: 'Twinplast Polymers PVT LTD',
+    name: BRAND_NAME,
+    legalName: LEGAL_COMPANY_NAME,
     url: getSiteUrl('/contact'),
     logo: getSiteUrl('/logo.png'),
-    description: 'Sales and customer support for PP sheet orders in Thoothukudi, Tamil Nadu.',
+    description: 'Direct sales, technical specification support, and wholesale enquiries for PP corrugated sheets in Thoothukudi, Tamil Nadu.',
     telephone: publicPhone || undefined,
     email: publicEmail || undefined,
     address: {
@@ -126,17 +82,37 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
   return (
     <div className="flex-1 bg-white">
       <JsonLd data={[localBusinessSchema, breadcrumbSchema]} />
-      <Suspense fallback={null}>
-        <HomeContactSection
-          phone={publicPhone}
-          email={publicEmail}
-          address={publicAddress}
-          initialProduct={initialProduct}
-          products={products}
-          solutions={solutions}
-          internationalPhone={internationalPhone}
-        />
-      </Suspense>
+
+      {/* Server-rendered Header Banner */}
+      <section className="bg-slate-900 text-white py-10 sm:py-14 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+        <div className="mx-auto max-w-7xl space-y-3">
+          <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-400 font-medium">
+            <Link href="/" className="hover:text-white transition-colors">
+              Home
+            </Link>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-600" />
+            <span className="text-white font-bold">Contact Us</span>
+          </nav>
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+            Contact Twinplast Polymers
+          </h1>
+          <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
+            Reach our manufacturing plant in Thoothukudi, Tamil Nadu for factory-direct quotations, custom thickness and GSM runs, bulk supply schedules across South India, and export enquiries.
+          </p>
+        </div>
+      </section>
+
+      <HomeContactSection
+        key={`${initialProduct}|${initialSolution}`}
+        phone={publicPhone}
+        email={publicEmail}
+        address={publicAddress}
+        initialProduct={initialProduct}
+        initialSolution={initialSolution}
+        products={products}
+        solutions={solutions}
+        internationalPhone={internationalPhone}
+      />
     </div>
   );
 }

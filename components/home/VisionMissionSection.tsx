@@ -77,10 +77,9 @@ export function VisionMissionSection({
           <div className="relative rounded-2xl border border-slate-200 bg-slate-100 overflow-hidden shadow-xs min-h-[340px] sm:min-h-[400px] lg:min-h-full">
             {vmImage ? (
               <Image
-                src={getOptimizedImageUrl(vmImage, { width: 900, crop: 'fill', quality: 'best' })}
+                src={getOptimizedImageUrl(vmImage, { width: 900, crop: 'fill', quality: 'auto' })}
                 alt="Twinplast Polymers Vision and Mission"
                 fill
-                unoptimized
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { createClient } from '@/lib/supabase/server';
+import { createPublicClient } from '@/lib/supabase/public';
 import {
   Product,
   HomepageMedia,
@@ -9,6 +9,12 @@ import {
 } from '@/types';
 import { getOptimizedImageUrl } from '@/lib/cloudinary';
 import { getSiteUrl } from '@/lib/site';
+import {
+  BRAND_NAME,
+  LEGAL_COMPANY_NAME,
+  PRIMARY_SEO_POSITIONING,
+  buildPublicMetadata,
+} from '@/lib/seo';
 import { JsonLd } from '@/components/shared/JsonLd';
 
 import { HeroSection } from '@/components/home/HeroSection';
@@ -19,34 +25,18 @@ import { MarketsSection } from '@/components/home/MarketsSection';
 import { WhyChooseSection } from '@/components/home/WhyChooseSection';
 import { CtaBanner } from '@/components/shared/CtaBanner';
 
-export const metadata: Metadata = {
-  title: 'Twinplast Polymers PVT LTD | PP Sheet Manufacturer in Tamil Nadu',
-  description: 'Twinplast Polymers PVT LTD is a PP sheet manufacturer and supplier in Tamil Nadu, specializing in PP corrugated sheets, layer pads, hollow sheets, Sunpack sheets and customized polypropylene products.',
-  alternates: {
-    canonical: getSiteUrl('/'),
-  },
-  openGraph: {
-    title: 'Twinplast Polymers PVT LTD | PP Sheet Manufacturer in Tamil Nadu',
-    description: 'Twinplast Polymers PVT LTD is a PP sheet manufacturer and supplier in Tamil Nadu, specializing in PP corrugated sheets, layer pads, hollow sheets, Sunpack sheets and customized polypropylene products.',
-    url: getSiteUrl('/'),
-    siteName: 'Twinplast Polymers PVT LTD',
-    type: 'website',
-    images: [
-      {
-        url: getSiteUrl('/logo.png'),
-        width: 572,
-        height: 436,
-        alt: 'Twinplast Polymers PVT LTD',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Twinplast Polymers PVT LTD | PP Sheet Manufacturer in Tamil Nadu',
-    description: 'Twinplast Polymers PVT LTD is a PP sheet manufacturer and supplier in Tamil Nadu, specializing in PP corrugated sheets, layer pads, hollow sheets, Sunpack sheets and customized polypropylene products.',
-    images: [getSiteUrl('/logo.png')],
-  },
-};
+const HOME_TITLE = `${BRAND_NAME} | ${PRIMARY_SEO_POSITIONING}`;
+const HOME_DESCRIPTION =
+  'Twinplast Polymers is a PP Corrugated Sheet manufacturer and supplier in Tamil Nadu, specializing in PP corrugated sheets, layer pads, hollow sheets, Sunpack sheets and customized polypropylene products.';
+
+export const revalidate = 300;
+
+export const metadata: Metadata = buildPublicMetadata({
+  title: HOME_TITLE,
+  description: HOME_DESCRIPTION,
+  path: '/',
+  absoluteTitle: true,
+});
 
 export default async function HomePage() {
   let products: Product[] = [];
@@ -56,7 +46,6 @@ export default async function HomePage() {
   let aboutMainImage: string | null = null;
   let aboutSecondary1: string | null = null;
   let aboutSecondary2: string | null = null;
-  let ctaBgImage: string | null = null;
 
   let publicPhone = '';
   let publicEmail = '';
@@ -66,7 +55,8 @@ export default async function HomePage() {
   let secData: HomepageSection[] = [];
 
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
+    if (!supabase) throw new Error('Public Supabase client unavailable');
 
     const [
       { data: prodRes },
@@ -92,7 +82,6 @@ export default async function HomePage() {
       aboutMainImage = mediaData.find((m) => m.slot === 'about_main')?.image_cloudinary_public_id || null;
       aboutSecondary1 = mediaData.find((m) => m.slot === 'about_secondary_1')?.image_cloudinary_public_id || null;
       aboutSecondary2 = mediaData.find((m) => m.slot === 'about_secondary_2')?.image_cloudinary_public_id || null;
-      ctaBgImage = mediaData.find((m) => m.slot === 'cta_background')?.image_cloudinary_public_id || null;
     }
 
     if (settingRes) {
@@ -142,7 +131,7 @@ export default async function HomePage() {
   const heroHeading = (heroContent.heading as string) || (heroContent.headline as string) || undefined;
   const heroShortDescription = (heroContent.short_description as string) || (heroContent.subheadline as string) || undefined;
   const heroBgRaw = (heroContent.background_image as string) || (heroContent.background_image_url as string) || heroImage || null;
-  const heroBgImageUrl = heroBgRaw ? getOptimizedImageUrl(heroBgRaw, { quality: 'best', upscale: true }) : null;
+  const heroBgImageUrl = heroBgRaw ? getOptimizedImageUrl(heroBgRaw, { width: 1920, quality: 'good' }) : null;
 
   // 2. About Content
   const aboutContentData = getSec('about');
@@ -159,7 +148,7 @@ export default async function HomePage() {
   const mktHeading = (mktContentData.heading as string) || (mktContentData.title as string) || undefined;
   const mktBody = (mktContentData.content as string) || (mktContentData.subtitle as string) || undefined;
   const mktBgRaw = (mktContentData.background_image as string) || (mktContentData.background_image_url as string) || null;
-  const mktBgImageUrl = mktBgRaw ? getOptimizedImageUrl(mktBgRaw, { quality: 'best', upscale: true }) : null;
+  const mktBgImageUrl = mktBgRaw ? getOptimizedImageUrl(mktBgRaw, { width: 1600, quality: 'auto' }) : null;
   const mktRegions = (mktContentData.regions as (string | MarketRegionItem)[]) || [];
 
   // 7. Why Choose Content
@@ -171,29 +160,17 @@ export default async function HomePage() {
   const whyPillars = (whyContentData.pillars as Array<{ title: string; description: string }>) || 
                      (whyContentData.reasons as Array<{ title: string; description: string }>) || [];
 
-  // 7. Final CTA Content
-  const ctaContentData = getSec('final_cta');
-  const ctaHeading = (ctaContentData.heading as string) || (ctaContentData.headline as string) || undefined;
-  const ctaSubheadline = (ctaContentData.subheadline as string) || undefined;
-  const ctaPrimaryLabel = (ctaContentData.primary_cta_label as string) || (ctaContentData.button_text as string) || undefined;
-  const ctaPrimaryUrl = (ctaContentData.primary_cta_url as string) || '/contact';
-  const ctaSecondaryLabel = (ctaContentData.secondary_cta_label as string) || undefined;
-  const ctaSecondaryUrl = (ctaContentData.secondary_cta_url as string) || '/contact';
-
-  // 8. Statistics Content (No mock data fallback)
-  const statsContentData = getSec('statistics');
-  const statsItems = (statsContentData.stats as Array<{ count: string; heading: string; description: string }>) || [];
-
   // JSON-LD Schema
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     '@id': `${getSiteUrl('/')}#organization`,
-    name: 'Twinplast Polymers PVT LTD',
-    alternateName: ['Twinplast Polymers', 'Twinplast Polymers Private Limited'],
+    name: BRAND_NAME,
+    legalName: LEGAL_COMPANY_NAME,
+    alternateName: ['Twinplast', LEGAL_COMPANY_NAME],
     url: getSiteUrl('/'),
     logo: getSiteUrl('/logo.png'),
-    description: 'Twinplast Polymers PVT LTD is a PP sheet manufacturer and supplier in Tamil Nadu, specializing in PP corrugated sheets, layer pads, hollow sheets, Sunpack sheets and customized polypropylene products.',
+    description: HOME_DESCRIPTION,
     foundingDate: '2021',
     telephone: publicPhone || undefined,
     email: publicEmail || undefined,
@@ -212,11 +189,8 @@ export default async function HomePage() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': `${getSiteUrl('/')}#website`,
-    name: 'Twinplast Polymers PVT LTD',
-    alternateName: [
-      'Twinplast Polymers',
-      'Twinplast',
-    ],
+    name: BRAND_NAME,
+    alternateName: ['Twinplast', LEGAL_COMPANY_NAME],
     url: getSiteUrl('/'),
     publisher: {
       '@id': `${getSiteUrl('/')}#organization`,
